@@ -8,6 +8,7 @@ export interface LoginCredentials {
 export async function login(credentials: LoginCredentials): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
+    credentials: "include",
     headers: {
       "content-type": "application/json",
     },
