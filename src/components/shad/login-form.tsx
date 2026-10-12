@@ -1,5 +1,4 @@
 import { cn } from "cn";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,11 +18,14 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { loginSchema } from "@/schemas/login-schema";
 import interloidMark from "@/assets/interloid-mark.svg";
+import { login } from "@/services/auth.services";
+import { useNavigate } from "react-router";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -49,14 +51,20 @@ export function LoginForm({
     return false;
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const isValid = validateForm();
-    if(!isValid){
-      return ;
+    if (!isValid) {
+      return;
     }
-
+    try {
+      const response = await login({ email, password });
+      console.log(response);
+      navigate("/dashboard", { replace: true });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -101,8 +109,14 @@ export function LoginForm({
                   className="h-10 text-sm p-3 rounded-[8px]! focus-visible:bg-input"
                   required
                 />
-                {errors.email &&(
-                  <p id="email.error" role="alertk">{errors.email}</p>
+                {errors.email && (
+                  <p
+                    id="email.error"
+                    role="alert"
+                    className="text-destructive/80"
+                  >
+                    {errors.email}
+                  </p>
                 )}
               </Field>
               <Field className="relative top-0.75">
@@ -115,14 +129,14 @@ export function LoginForm({
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
-                    className="h-10! rounded-[8px]! text-sm relative focus-visible:bg-input"
                     placeholder="••••••••"
                     required
+                    className="h-10! rounded-[8px]! text-sm relative focus-visible:bg-input"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-foreground"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-foreground "
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
@@ -136,6 +150,15 @@ export function LoginForm({
                     </span>
                   </button>
                 </div>
+                {errors.password && (
+                  <p
+                    id="password.error"
+                    role="alert"
+                    className="text-destructive/80"
+                  >
+                    {errors.password}
+                  </p>
+                )}
               </Field>
               <Field className="gap-5">
                 <Button
