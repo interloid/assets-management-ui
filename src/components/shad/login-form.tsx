@@ -22,7 +22,12 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
+
+  
   return (
     <div className={cn("flex flex-col w-full gap-6 justify-center items-center", className)} {...props}>
       <div className="flex gap-2.5 justify-center relative md:gap-[8.5px] md:top-px">
@@ -52,6 +57,8 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="name@interloid.com"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                   className="h-10 text-sm p-3 rounded-[8px]! focus-visible:bg-input"
                   required
                 />
@@ -64,6 +71,8 @@ export function LoginForm({
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
                     className="h-10! rounded-[8px]! text-sm relative"
                     placeholder="••••••••"
                     required
