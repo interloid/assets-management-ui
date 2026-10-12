@@ -10,4 +10,4 @@ export const loginSchema = z.object({
   .min(1, "password is Required")
 });
 
-export type LoginFormData = z.infer<typeof loginSchema>;
+export type LoginFormData = z.infer<typeof loginSchema>; // extract the data type of the schema by infer
