@@ -20,11 +20,13 @@ import { loginSchema } from "@/schemas/login-schema";
 import interloidMark from "@/assets/interloid-mark.svg";
 import { login } from "@/services/auth.services";
 import { useNavigate } from "react-router";
+import type { LoginForm } from "@/types/auth";
 
 export function LoginForm({
+  onLoginSuccess,
   className,
   ...props
-}: React.ComponentProps<"div">) {
+}: LoginForm) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,8 +61,8 @@ export function LoginForm({
       return;
     }
     try {
-      const response = await login({ email, password });
-      console.log(response);
+      await login({ email, password });
+      onLoginSuccess();
       navigate("/dashboard", { replace: true });
     } catch (error) {
       console.log(error);
