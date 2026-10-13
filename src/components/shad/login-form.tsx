@@ -15,18 +15,15 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
-import { loginSchema } from "@/schemas/login-schema";
+import { CircleAlert, Eye, EyeOff, LoaderCircle } from "lucide-react";
+import { loginSchema } from "@/schemas/auth";
 import interloidMark from "@/assets/interloid-mark.svg";
 import { login } from "@/services/auth.services";
 import { useNavigate } from "react-router";
 import type { LoginForm } from "@/types/auth";
+import { toast } from "sonner";
 
-export function LoginForm({
-  onLoginSuccess,
-  className,
-  ...props
-}: LoginForm) {
+export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,6 +31,8 @@ export function LoginForm({
   const [errors, setErrors] = useState<
     Partial<Record<"email" | "password", string>>
   >({});
+  const [serverError, setServerError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   function validateForm() {
     const result = loginSchema.safeParse({
@@ -53,19 +52,35 @@ export function LoginForm({
     return false;
   }
 
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+    setErrors((prev) => ({ ...prev, email: "" }));
+  };
+
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+    setErrors((prev) => ({ ...prev, password: "" }));
+  };
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setServerError("");
 
     const isValid = validateForm();
     if (!isValid) {
       return;
     }
     try {
+      setIsLoading(true);
       await login({ email, password });
       onLoginSuccess();
-      navigate("/dashboard", { replace: true });
+      navigate("/dashboard");
+      toast.success("login Successfull!");
     } catch (error) {
       console.log(error);
+      setServerError(error instanceof Error ? error.message : "Login failed");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -88,7 +103,7 @@ export function LoginForm({
           </span>
         </div>
       </div>
-      <Card className="pl-1 py-4 gap-5.5 md:p-8 md:gap-5 w-full shadow-[0_1px_3px_0_oklch(0_0_0/0.1),0_1px_2px_-1px_oklch(0_0_0/0.1)] md:w-100 md:pt-8.5">
+      <Card className="pl-1 py-4 gap-5.5 md:p-8 md:gap-5 w-full shadow-[0_1px_3px_0_oklch(0_0_0/0.1),0_1px_2px_-1px_oklch(0_0_0/0.1)] md:w-100 md:pt-8.5 ring-transparent">
         <CardHeader className="px-4 pt-1.5 tracking-[-0.01em] relative md:px-0 md:pt-0 md:pl-px">
           <CardTitle className="text-[22px] font-semibold relative bottom-px md:top-[0.5px]">
             Sign in
@@ -106,20 +121,17 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="name@interloid.com"
+                  maxLength={254}
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  className="h-10 text-sm p-3 rounded-[8px]! focus-visible:bg-input"
+                  onChange={handleEmailChange}
+                  className={`h-10 text-sm p-3 rounded-[8px]! focus-visible:bg-input ${
+                    errors.email
+                      ? "border-destructive focus-visible:border-destructive"
+                      : ""
+                  }`}
                   required
+                  autoComplete="email"
                 />
-                {errors.email && (
-                  <p
-                    id="email.error"
-                    role="alert"
-                    className="text-destructive/80"
-                  >
-                    {errors.email}
-                  </p>
-                )}
               </Field>
               <Field className="relative top-0.75">
                 <div className="flex items-center">
@@ -130,10 +142,16 @@ export function LoginForm({
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(event) => setPassword(event.target.value)}
+                    maxLength={128}
+                    onChange={handlePasswordChange}
                     placeholder="••••••••"
                     required
-                    className="h-10! rounded-[8px]! text-sm relative focus-visible:bg-input"
+                    className={`h-10! rounded-[8px]! text-sm relative focus-visible:bg-input ${
+                      errors.password
+                        ? "border-destructive focus-visible:border-destructive"
+                        : ""
+                    }`}
+                    autoComplete="current-password"
                   />
                   <button
                     type="button"
@@ -143,7 +161,7 @@ export function LoginForm({
                       showPassword ? "Hide password" : "Show password"
                     }
                   >
-                    <span className="text-xs font-medium">
+                    <span className="text-xs font-medium text-muted-foreground hover:text-foreground">
                       {showPassword ? (
                         <EyeOff className="h-4 w-4 text-mute" />
                       ) : (
@@ -152,28 +170,29 @@ export function LoginForm({
                     </span>
                   </button>
                 </div>
-                {errors.password && (
-                  <p
-                    id="password.error"
-                    role="alert"
-                    className="text-destructive/80"
-                  >
-                    {errors.password}
-                  </p>
-                )}
               </Field>
+              {(errors.email || errors.password || serverError) && (
+                <div className="border-destructive! bg-destructive/10 p-2 border h-10 flex w-full gap-2.5 items-center rounded-md animate-il-shake">
+                  <CircleAlert className="w-4 text-destructive" />
+                  <p className="text-destructive!">
+                    {errors.email || errors.password || serverError}
+                  </p>
+                </div>
+              )}
               <Field className="gap-5">
                 <Button
                   type="submit"
-                  className="h-10.5! relative bottom-px rounded-[8px] md:bottom-0"
+                  disabled={isLoading}
+                  className="h-10.5! relative bottom-px rounded-[8px] md:bottom-0 transition-[transform,background-color,color,border-color,box-shadow,opacity] duration-150 ease-in-out] hover:bg-primary/90 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  Sign in
+                  {isLoading && <LoaderCircle className="animate-spin" />}
+                  {isLoading ? "signing in" : "sign in"}
                 </Button>
                 <FieldDescription className="text-center relative bottom-1 md:bottom-0">
-                  New to Interloid?{" "}
+                  New to Interloid?
                   <a
-                    href="#"
-                    className="text-foreground font-medium underline-offset-2!"
+                    href="/signup"
+                    className="text-foreground font-medium underline-offset-2! md:pl-1"
                   >
                     Create an account
                   </a>
