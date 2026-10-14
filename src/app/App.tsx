@@ -1,13 +1,13 @@
 import { Navigate, Route, Routes } from "react-router";
-import LoginPage from "./pages/auth/login";
 import DashboardPage from "@/layout/dashboard";
-import ProtectedRoute from "./auth/protected-route";
+import ProtectedRoute from "@/app/auth/protected-route";
 import { useState } from "react";
-import SignUpPage from "./pages/auth/signup";
+import SignUpPage from "@/app/pages/auth/signup";
 import { Toaster } from "sonner";
+import LoginPage from "@/app/pages/auth/login";
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   return (
     <>
       <Toaster position="bottom-right" richColors />

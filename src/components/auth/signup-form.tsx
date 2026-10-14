@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import interloidMark from "@/assets/interloid-mark.svg";
-import { Circle } from "lucide-react";
-import { useState } from "react";
+import { Circle, CircleAlert, CircleCheck, LoaderCircle } from "lucide-react";
+import React, { useState } from "react";
 import { signUpSchema } from "@/schemas/auth";
 import { signUp } from "@/services/auth.services";
 import { useNavigate } from "react-router";
@@ -23,9 +23,13 @@ import { toast } from "sonner";
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const navigate = useNavigate();
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
+  const [password, setPassword] = useState<string | null>(null);
+  const [isLoading, setIsloading] = useState<boolean>(false);
+  const hasMinLength = (password ?? "").length >= 8;
+  const hasLetter = /[a-zA-Z]/.test(password ?? "");
+  const hasNumber = /[0-9]/.test(password ?? "");
 
   const [errors, setErrors] = useState<
     Partial<Record<"fullName" | "email" | "password", string>>
@@ -50,6 +54,21 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     return false;
   }
 
+  const handleFullName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFullName(event.target.value);
+    setErrors((prev) => ({ ...prev, fullName: "" }));
+  };
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+    setErrors((prev) => ({ ...prev, email: "" }));
+  };
+
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+    setErrors((prev) => ({ ...prev, password: "" }));
+  };
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -59,11 +78,14 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     }
     try {
       await signUp({ fullName, email, password });
+      setIsloading(true);
       navigate("/login", { replace: true });
       toast.success("Account created, Now you can sign in");
     } catch (error) {
       console.log(error);
       toast.error("sign up Failed");
+    } finally {
+      setIsloading(false);
     }
   }
 
@@ -104,9 +126,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   id="name"
                   type="text"
                   placeholder="Priya Nair"
-                  value={fullName}
+                  value={fullName ?? ""}
                   maxLength={100}
-                  onChange={(event) => setFullName(event.target.value)}
+                  onChange={handleFullName}
                   className={`h-10! text-[14px] border-border relative bottom-px rounded-md pl-3! shadow-xs ${
                     errors.fullName
                       ? "border-destructive focus-visible:border-destructive"
@@ -130,9 +152,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   id="email"
                   type="email"
                   placeholder="name@interloid.com"
-                  value={email}
+                  value={email ?? ""}
                   maxLength={256}
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={handleEmailChange}
                   className={`h-10! text-[14px] rounded-md pl-3! relative bottom-px border-border shadow-xs ${
                     errors.email
                       ? "border-destructive focus-visible:border-destructive"
@@ -141,8 +163,14 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   required
                   autoComplete="email"
                 />
+                {errors.email && (
+                  <div className="gap-0">
+                    <p className="text-destructive/80 text-[13px]">
+                      {errors.email}
+                    </p>
+                  </div>
+                )}
               </Field>
-              {errors.email && <p>{errors.email}</p>}
               <Field className="relative top-0.20">
                 <FieldLabel htmlFor="password">Password</FieldLabel>
                 <Input
@@ -150,8 +178,8 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   type="password"
                   maxLength={128}
                   required
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
+                  value={password ?? ""}
+                  onChange={handlePasswordChange}
                   className={`h-10! text-[14px] rounded-md relative bottom-0.5 pl-3! border-border shadow-xs ${
                     errors.password
                       ? "border-destructive focus-visible:border-destructive"
@@ -161,33 +189,64 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 />
                 <div className="flex gap-4  text-muted-foreground flex-wrap gap-y-0 relative bottom-1.25">
                   <div className="flex gap-1.5 md:gap-1.5">
-                    <Circle className="w-3.5" />
-                    <span className="text-[13px] relative self-end bottom-px">
+                    {hasMinLength ? (
+                      <CircleCheck className="w-3.5 text-success" />
+                    ) : (
+                      <Circle className="w-3.5" />
+                    )}
+                    <span
+                      className={`text-[13px] relative self-end bottom-px ${
+                        hasMinLength ? "text-success" : ""
+                      }`}
+                    >
                       8+ characters
                     </span>
                   </div>
                   <div className="flex gap-1.5 md:gap-1.5">
-                    <Circle className="w-3.5" />
-                    <span className="text-[13px] relative self-end bottom-px">
+                    {hasLetter ? (
+                      <CircleCheck className="w-3.5 text-success" />
+                    ) : (
+                      <Circle className="w-3.5" />
+                    )}
+                    <span
+                      className={`text-[13px] relative self-end bottom-px ${
+                        hasLetter ? "text-success" : ""
+                      }`}
+                    >
                       A letter
                     </span>
                   </div>
                   <div className="flex gap-1.5 md:gap-1.5">
-                    <Circle className="w-3.5" />
-                    <span className="text-[13px] relative self-end bottom-px">
+                    {hasNumber ? (
+                      <CircleCheck className="w-3.5 text-success" />
+                    ) : (
+                      <Circle className="w-3.5" />
+                    )}
+                    <span
+                      className={`text-[13px] relative self-end bottom-px ${
+                        hasNumber ? "text-success" : ""
+                      }`}
+                    >
                       A number
                     </span>
                   </div>
                 </div>
               </Field>
-              {errors.password && <p>{errors.password}</p>}
+              {errors.password && (
+                <div className="border-destructive/40! bg-destructive/10 p-2 px-3 border h-10.5 flex w-full gap-2.5 items-center rounded-md animate-il-shake relative bottom-2">
+                  <CircleAlert className="w-4 text-destructive" />
+                  <p className="text-destructive!">{errors.password}</p>
+                </div>
+              )}
               <FieldGroup>
                 <Field className="relative w-full">
                   <Button
                     type="submit"
+                    disabled={isLoading}
                     className="h-10! relative bottom-2 rounded-[8px] py-4.5 px-0"
                   >
-                    Create account
+                    {isLoading && <LoaderCircle className="animate-spin" />}
+                    {isLoading ? "Creating account" : "Create account"}
                   </Button>
                   <FieldDescription className="px-0 md:px-6 text-center  relative top-px">
                     Already have an account?{" "}

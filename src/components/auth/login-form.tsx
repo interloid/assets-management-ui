@@ -20,19 +20,17 @@ import { loginSchema } from "@/schemas/auth";
 import interloidMark from "@/assets/interloid-mark.svg";
 import { login } from "@/services/auth.services";
 import { useNavigate } from "react-router";
-import type { LoginForm } from "@/types/auth";
+import type { LoginErrors, LoginForm } from "@/types/auth";
 import { toast } from "sonner";
 
 export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<
-    Partial<Record<"email" | "password", string>>
-  >({});
-  const [serverError, setServerError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState<string | null>(null);
+  const [password, setPassword] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [errors, setErrors] = useState<LoginErrors | null>({});
+  const [serverError, setServerError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   function validateForm() {
     const result = loginSchema.safeParse({
@@ -40,9 +38,10 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
       password,
     });
     if (result.success) {
-      setErrors({});
+      setErrors(null);
       return true;
     }
+
     const fieldErrors = result.error.flatten().fieldErrors;
 
     setErrors({
@@ -72,13 +71,29 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
     }
     try {
       setIsLoading(true);
-      await login({ email, password });
-      onLoginSuccess();
-      navigate("/dashboard");
-      toast.success("login Successfull!");
+      const response = await login({ email, password });
+      if (response.ok) {
+        onLoginSuccess();
+        navigate("/dashboard");
+        toast.success("login Successfull!");
+      }
+      if (!response.ok) {
+        switch(response.status) {
+          case 401:
+            setServerError("Invalid email or password.");
+            break;
+          case 422:
+            setServerError("Please check the submitted information.");
+            break
+          default:
+            if(response.status >= 500) {
+              setServerError("Server error. Please try again later.");
+            }
+            setServerError("Login failed. Try again later.");
+        }
+      }
     } catch (error) {
       console.log(error);
-      setServerError(error instanceof Error ? error.message : "Login failed");
     } finally {
       setIsLoading(false);
     }
@@ -122,14 +137,12 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
                   type="email"
                   placeholder="name@interloid.com"
                   maxLength={254}
-                  value={email}
+                  value={email ?? ""}
                   onChange={handleEmailChange}
                   className={`h-10 text-sm p-3 rounded-[8px]! focus-visible:bg-input ${
-                    errors.email
-                      ? "border-destructive focus-visible:border-destructive"
-                      : ""
+                    errors?.email &&
+                    "border-destructive focus-visible:border-destructive"
                   }`}
-                  required
                   autoComplete="email"
                 />
               </Field>
@@ -141,22 +154,20 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    value={password}
+                    value={password ?? ""}
                     maxLength={128}
                     onChange={handlePasswordChange}
                     placeholder="••••••••"
-                    required
                     className={`h-10! rounded-[8px]! text-sm relative focus-visible:bg-input ${
-                      errors.password
-                        ? "border-destructive focus-visible:border-destructive"
-                        : ""
+                      errors?.password &&
+                      "border-destructive focus-visible:border-destructive"
                     }`}
                     autoComplete="current-password"
                   />
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-foreground "
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-foreground bg-transparent"
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
@@ -168,14 +179,14 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
                         <Eye className="h-4 w-4 text-muted-text" />
                       )}
                     </span>
-                  </button>
+                  </Button>
                 </div>
               </Field>
-              {(errors.email || errors.password || serverError) && (
+              {(errors?.email || errors?.password || serverError) && (
                 <div className="border-destructive! bg-destructive/10 p-2 border h-10 flex w-full gap-2.5 items-center rounded-md animate-il-shake">
                   <CircleAlert className="w-4 text-destructive" />
                   <p className="text-destructive!">
-                    {errors.email || errors.password || serverError}
+                    {errors?.email || errors?.password || serverError}
                   </p>
                 </div>
               )}

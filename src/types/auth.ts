@@ -6,3 +6,6 @@ export interface LoginPageProps {
 
 export type LoginForm = LoginPageProps & ComponentProps<"div">;
 
+export type LoginErrors = Partial<
+  Record<"email" | "password", string>
+>;

@@ -1,17 +1,17 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export interface LoginCredentials {
-  email: string;
-  password: string;
+  email: string | null;
+  password: string | null;
 }
 export interface signUpCredentials {
-  fullName: string;
-  email: string;
-  password: string;
+  fullName: string | null;
+  email: string | null;
+  password: string | null;
 }
 
-export async function login(credentials: LoginCredentials): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+export async function login(credentials: LoginCredentials): Promise<Response> {
+  const result = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -19,28 +19,24 @@ export async function login(credentials: LoginCredentials): Promise<void> {
     },
     body: JSON.stringify(credentials),
   });
-  if (!response.ok) {
-    if (response.status === 401) {
-      throw new Error("Invalid email or password.");
-    }
-    if (response.status === 422) {
-      throw new Error("Please check the submitted information.");
-    }
-    if (response.status >= 500) {
-      throw new Error("Server error. please try again later");
-    }
-    throw new Error("login failed. try again later");
-  }
+  const response = await result.json();
+  return response;
 }
 
 export async function signUp(credentials: signUpCredentials): Promise<void> {
+  const signUpPayload = {
+    full_name: credentials.fullName,
+    email: credentials.email,
+    password: credentials.password,
+  };
+
   const response = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",
     credentials: "include",
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify(credentials),
+    body: JSON.stringify(signUpPayload),
   });
   if (!response.ok) {
     if (response.status === 401) {
