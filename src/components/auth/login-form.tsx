@@ -52,11 +52,8 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
     console.log('fieldErrors', fieldErrors);
 
     return false;
-
-  
   }
 
-  
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -97,6 +94,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
               setServerError("Server error. Please try again later.");
             }
             setServerError("Login failed. Try again later.");
+            break;
         }
       }
     } catch (error) {

@@ -11,7 +11,7 @@ export interface signUpCredentials {
 }
 
 export async function login(credentials: LoginCredentials): Promise<Response> {
-  const result = await fetch(`${API_BASE_URL}/auth/login`, {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -19,7 +19,6 @@ export async function login(credentials: LoginCredentials): Promise<Response> {
     },
     body: JSON.stringify(credentials),
   });
-  const response = await result.json();
   return response;
 }
 
