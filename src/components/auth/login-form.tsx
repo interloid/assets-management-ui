@@ -48,8 +48,15 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
       email: fieldErrors.email?.[0], //checks the first error message
       password: fieldErrors.password?.[0],
     });
+
+    console.log('fieldErrors', fieldErrors);
+
     return false;
+
+  
   }
+
+  
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -167,12 +174,12 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
                   <Button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-foreground bg-transparent"
+                    className="absolute right-2 top-1 rounded-md p-1 text-foreground bg-transparent hover:bg-transparent"
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
                   >
-                    <span className="text-xs font-medium text-muted-foreground hover:text-foreground">
+                    <span className="text-xs font-medium text-muted-foreground">
                       {showPassword ? (
                         <EyeOff className="h-4 w-4 text-mute" />
                       ) : (
