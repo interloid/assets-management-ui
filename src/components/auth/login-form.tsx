@@ -29,7 +29,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
   const [password, setPassword] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errors, setErrors] = useState<LoginErrors | null>({});
-  const [serverError, setServerError] = useState<string>("");
+  const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   function validateForm() {
@@ -37,6 +37,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
       email,
       password,
     });
+
     if (result.success) {
       setErrors(null);
       return true;
@@ -48,12 +49,8 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
       email: fieldErrors.email?.[0], //checks the first error message
       password: fieldErrors.password?.[0],
     });
-
-    console.log('fieldErrors', fieldErrors);
-
     return false;
   }
-
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -76,25 +73,17 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
     try {
       setIsLoading(true);
       const response = await login({ email, password });
-      if (response.ok) {
+      if (response.success) {
         onLoginSuccess();
         navigate("/dashboard");
         toast.success("login Successfull!");
-      }
-      if (!response.ok) {
-        switch(response.status) {
-          case 401:
-            setServerError("Invalid email or password.");
-            break;
-          case 422:
-            setServerError("Please check the submitted information.");
-            break
-          default:
-            if(response.status >= 500) {
-              setServerError("Server error. Please try again later.");
-            }
-            setServerError("Login failed. Try again later.");
-            break;
+      } else {
+        if (response.errors && response.errors !== null) {
+          setServerError(
+            response.errors.map((error) => error.message).join(","),
+          );
+        } else {
+          setServerError(response.message);
         }
       }
     } catch (error) {
