@@ -1,10 +1,14 @@
 import type { ComponentProps } from "react";
 
+export type LoginSuccessHandler = (isAuthenticated: boolean) => void;
+
 export interface LoginPageProps {
-  onLoginSuccess: () => void;
+  setIsAuthenticated: LoginSuccessHandler;
 }
 
-export type LoginForm = LoginPageProps & ComponentProps<"div">;
+export type LoginForm = {
+  onLoginSuccess: LoginSuccessHandler;
+} & ComponentProps<"div">;
 
 export type LoginErrors = Partial<
   Record<"email" | "password", string>

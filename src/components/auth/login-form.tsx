@@ -73,17 +73,18 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
     try {
       setIsLoading(true);
       const response = await login({ email, password });
-      if (response.success) {
-        onLoginSuccess();
+      if(response.success) {
+        onLoginSuccess(true);
         navigate("/dashboard");
         toast.success("login Successfull!");
-      } else {
-        if (response.errors && response.errors !== null) {
-          setServerError(
+      }
+      if (!response.success) {
+        if (response.errors && response.errors !== null ) {
+                   setServerError( 
             response.errors.map((error) => error.message).join(","),
           );
         } else {
-          setServerError(response.message);
+          setServerError(response.message)
         }
       }
     } catch (error) {

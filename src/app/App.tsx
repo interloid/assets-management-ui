@@ -15,7 +15,7 @@ export default function App() {
         <Route
           path="/login"
           element={
-            <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />
+            <LoginPage setIsAuthenticated={setIsAuthenticated}/>
           }
         />
         <Route path="/signup" element={<SignUpPage />} />
