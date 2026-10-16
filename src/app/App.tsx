@@ -16,7 +16,6 @@ export default function App() {
     async function CurrentSession() {
       try {
         const response = await getCurrentSession();
-        console.log("response", response);
         if (response.success) {
           setIsAuthenticated(response.success);
         } else {
