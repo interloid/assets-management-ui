@@ -8,7 +8,7 @@ export default function ProtectedRoute({
   isAuthenticated,
 }: ProtectedRouteProps) {
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" replace/>;
   }
   return <Outlet />;
 }

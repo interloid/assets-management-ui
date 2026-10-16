@@ -20,20 +20,21 @@ import { signUpSchema } from "@/schemas/auth";
 import { signUp } from "@/services/auth.services";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import type { AuthErrors } from "@/types/auth";
+import PasswordEye from "./password-eye";
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const navigate = useNavigate();
   const [fullName, setFullName] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
-  const [isLoading, setIsloading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<AuthErrors | null>({});
+  const [serverError, setServerError] = useState<string | null>(null);
   const hasMinLength = (password ?? "").length >= 8;
   const hasLetter = /[a-zA-Z]/.test(password ?? "");
   const hasNumber = /[0-9]/.test(password ?? "");
-
-  const [errors, setErrors] = useState<
-    Partial<Record<"fullName" | "email" | "password", string>>
-  >({});
 
   function validateForm() {
     const result = signUpSchema.safeParse({
@@ -42,10 +43,11 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       password,
     });
     if (result.success) {
-      setErrors({});
+      setErrors(null);
       return true;
     }
     const fieldErrors = result.error.flatten().fieldErrors;
+
     setErrors({
       fullName: fieldErrors.fullName?.[0],
       email: fieldErrors.email?.[0],
@@ -71,26 +73,36 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setServerError("");
 
     const isValid = validateForm();
     if (!isValid) {
       return;
     }
     try {
-      await signUp({ fullName, email, password });
-      setIsloading(true);
-      navigate("/login", { replace: true });
-      toast.success("Account created, Now you can sign in");
+      setIsLoading(true);
+      const response = await signUp({ fullName, email, password });
+      if (response.success) {
+        navigate("/login?registered=true", { replace: true });
+        toast.success(response.message);
+      }
+      if (!response.success) {
+        if (response.errors && response.errors !== null) {
+          response.errors.map((error) => error.message).join(",");
+        } else {
+          setServerError(response.message);
+          toast.error(response.message);
+        }
+      }
     } catch (error) {
       console.log(error);
-      toast.error("sign up Failed");
     } finally {
-      setIsloading(false);
+      setIsLoading(false);
     }
   }
 
   return (
-    <div
+    <main
       className="flex flex-col w-full gap-6 justify-center items-center"
       {...props}
     >
@@ -130,14 +142,13 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   maxLength={100}
                   onChange={handleFullName}
                   className={`h-10! text-[14px] border-border relative bottom-px rounded-md pl-3! shadow-xs ${
-                    errors.fullName
+                    errors?.fullName
                       ? "border-destructive focus-visible:border-destructive"
                       : ""
                   }`}
-                  required
                   autoComplete="name"
                 />
-                {errors.fullName && (
+                {errors?.fullName && (
                   <div className="gap-0">
                     <p className="text-destructive/80 text-[13px]">
                       {errors.fullName}
@@ -156,14 +167,13 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   maxLength={256}
                   onChange={handleEmailChange}
                   className={`h-10! text-[14px] rounded-md pl-3! relative bottom-px border-border shadow-xs ${
-                    errors.email
+                    errors?.email
                       ? "border-destructive focus-visible:border-destructive"
                       : ""
                   }`}
-                  required
                   autoComplete="email"
                 />
-                {errors.email && (
+                {errors?.email && (
                   <div className="gap-0">
                     <p className="text-destructive/80 text-[13px]">
                       {errors.email}
@@ -173,20 +183,26 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               </Field>
               <Field className="relative top-0.20">
                 <FieldLabel htmlFor="password">Password</FieldLabel>
-                <Input
-                  id="password"
-                  type="password"
-                  maxLength={128}
-                  required
-                  value={password ?? ""}
-                  onChange={handlePasswordChange}
-                  className={`h-10! text-[14px] rounded-md relative bottom-0.5 pl-3! border-border shadow-xs ${
-                    errors.password
-                      ? "border-destructive focus-visible:border-destructive"
-                      : ""
-                  }`}
-                  autoComplete="new-password"
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    maxLength={128}
+                    value={password ?? ""}
+                    placeholder="••••••••"
+                    onChange={handlePasswordChange}
+                    className={`h-10! text-[14px] rounded-md relative bottom-0.5 pl-3! border-border shadow-xs ${
+                      errors?.password
+                        ? "border-destructive focus-visible:border-destructive"
+                        : ""
+                    }`}
+                    autoComplete="new-password"
+                  />
+                  <PasswordEye
+                    showPassword={showPassword}
+                    onToggle={() => setShowPassword((visible) => !visible)}
+                  />
+                </div>
                 <div className="flex gap-4  text-muted-foreground flex-wrap gap-y-0 relative bottom-1.25">
                   <div className="flex gap-1.5 md:gap-1.5">
                     {hasMinLength ? (
@@ -232,10 +248,12 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   </div>
                 </div>
               </Field>
-              {errors.password && (
-                <div className="border-destructive/40! bg-destructive/10 p-2 px-3 border h-10.5 flex w-full gap-2.5 items-center rounded-md animate-il-shake relative bottom-2">
+              {(errors?.password || serverError) && (
+                <div className="border-destructive/40! bg-destructive/10 p-2 px-3 border h-fit flex w-full gap-2.5 items-center rounded-md animate-il-shake relative bottom-2">
                   <CircleAlert className="w-4 text-destructive" />
-                  <p className="text-destructive!">{errors.password}</p>
+                  <p className="text-destructive!">
+                    {errors?.password || serverError}
+                  </p>
                 </div>
               )}
               <FieldGroup>
@@ -245,8 +263,15 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     disabled={isLoading}
                     className="h-10! relative bottom-2 rounded-[8px] py-4.5 px-0"
                   >
-                    {isLoading && <LoaderCircle className="animate-spin" />}
-                    {isLoading ? "Creating account" : "Create account"}
+                    {/* {isLoading && } */}
+                    {isLoading ? (
+                      <>
+                        <LoaderCircle className="animate-spin" /> 
+                        Creating account...
+                      </>
+                    ) : (
+                      "Create account"
+                    )}
                   </Button>
                   <FieldDescription className="px-0 md:px-6 text-center  relative top-px">
                     Already have an account?{" "}
@@ -263,6 +288,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           </form>
         </CardContent>
       </Card>
-    </div>
+    </main>
   );
 }

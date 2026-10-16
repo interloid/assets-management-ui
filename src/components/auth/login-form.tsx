@@ -15,22 +15,26 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { CircleAlert, Eye, EyeOff, LoaderCircle } from "lucide-react";
+import { CircleAlert, CircleCheck, LoaderCircle } from "lucide-react";
 import { loginSchema } from "@/schemas/auth";
 import interloidMark from "@/assets/interloid-mark.svg";
 import { login } from "@/services/auth.services";
-import { useNavigate } from "react-router";
-import type { LoginErrors, LoginForm } from "@/types/auth";
+import { useNavigate, useSearchParams } from "react-router";
+import type { AuthErrors, LoginForm } from "@/types/auth";
 import { toast } from "sonner";
+import PasswordEye from "@/components/auth/password-eye";
 
 export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [errors, setErrors] = useState<LoginErrors | null>({});
+  const [errors, setErrors] = useState<AuthErrors | null>({});
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [searchParams] = useSearchParams();
+
+  const isRegistered = searchParams.get("registered") === "true";
 
   function validateForm() {
     const result = loginSchema.safeParse({
@@ -73,18 +77,18 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
     try {
       setIsLoading(true);
       const response = await login({ email, password });
-      if(response.success) {
+      if (response.success) {
         onLoginSuccess(true);
         navigate("/dashboard");
         toast.success("login Successfull!");
       }
       if (!response.success) {
-        if (response.errors && response.errors !== null ) {
-                   setServerError( 
+        if (response.errors && response.errors !== null) {
+          setServerError(
             response.errors.map((error) => error.message).join(","),
           );
         } else {
-          setServerError(response.message)
+          setServerError(response.message);
         }
       }
     } catch (error) {
@@ -95,7 +99,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
   }
 
   return (
-    <div
+    <main
       className={cn(
         "flex flex-col w-full gap-6 justify-center items-center",
         className,
@@ -122,6 +126,18 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
             Use your Interloid work email.
           </CardDescription>
         </CardHeader>
+        {isRegistered && (
+          <div
+            role="status"
+            className="rounded-md m-4 sm:m-0 flex justify-between bg-success/12 p-3 text-sm"
+          >
+            <CircleCheck className="size-6.5 xs:size-4! xs:top-0.5 md:size-4.5! text-success/90 relative bottom-1 md:bottom-1" />
+            <span className="text-foreground pl-2">
+              {" "}
+              Account created. Sign in with your new password.{" "}
+            </span>
+          </div>
+        )}
         <CardContent className="pr-5 md:px-0">
           <form onSubmit={handleSubmit} noValidate>
             <FieldGroup>
@@ -159,22 +175,10 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
                     }`}
                     autoComplete="current-password"
                   />
-                  <Button
-                    type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-2 top-1 rounded-md p-1 text-foreground bg-transparent hover:bg-transparent"
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
-                  >
-                    <span className="text-xs font-medium text-muted-foreground">
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-mute" />
-                      ) : (
-                        <Eye className="h-4 w-4 text-muted-text" />
-                      )}
-                    </span>
-                  </Button>
+                  <PasswordEye
+                    showPassword={showPassword}
+                    onToggle={() => setShowPassword((visible) => !visible)}
+                  />
                 </div>
               </Field>
               {(errors?.email || errors?.password || serverError) && (
@@ -208,6 +212,6 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
           </form>
         </CardContent>
       </Card>
-    </div>
+    </main>
   );
 }

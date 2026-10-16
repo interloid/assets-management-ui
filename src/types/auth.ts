@@ -10,6 +10,6 @@ export type LoginForm = {
   onLoginSuccess: LoginSuccessHandler;
 } & ComponentProps<"div">;
 
-export type LoginErrors = Partial<
-  Record<"email" | "password", string>
+export type AuthErrors = Partial<
+  Record<"email" | "password" | "fullName", string>
 >;

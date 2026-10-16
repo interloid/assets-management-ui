@@ -10,16 +10,44 @@ export interface signUpCredentials {
   password: string | null;
 }
 
-export interface LoginResponse {
+export interface authResponse {
   success: boolean;
   status_code: number;
   message: string;
   errors?: { field: string; message: string }[];
 }
 
+export interface User {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    full_name: string;
+    email: string;
+    role: string;
+    created_at: string;
+    updated_at: string;
+  };
+}
+export interface refresh {
+  refresh_token: string | null;
+}
+
+export async function getCurrentSession(): Promise<User> {
+  const result = await fetch(`${API_BASE_URL}/users/me`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      accept: "application/json",
+    },
+  });
+  const response = await result.json();
+  return response;
+}
+
 export async function login(
   credentials: LoginCredentials,
-): Promise<LoginResponse> {
+): Promise<authResponse> {
   const result = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     credentials: "include",
@@ -28,18 +56,17 @@ export async function login(
     },
     body: JSON.stringify(credentials),
   });
-  const response = (await result.json()) as LoginResponse;
+  const response = (await result.json()) as authResponse;
   return response;
 }
 
-export async function signUp(credentials: signUpCredentials): Promise<void> {
+export async function signUp(credentials: signUpCredentials): Promise<authResponse> {
   const signUpPayload = {
     full_name: credentials.fullName,
     email: credentials.email,
     password: credentials.password,
   };
-
-  const response = await fetch(`${API_BASE_URL}/auth/register`, {
+  const result = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -47,16 +74,6 @@ export async function signUp(credentials: signUpCredentials): Promise<void> {
     },
     body: JSON.stringify(signUpPayload),
   });
-  if (!response.ok) {
-    if (response.status === 401) {
-      throw new Error("Invalid email or password.");
-    }
-    if (response.status === 422) {
-      throw new Error("Please check the submitted information.");
-    }
-    if (response.status >= 500) {
-      throw new Error("Server error. please try again later");
-    }
-    throw new Error("registration failed. try again later");
-  }
+  const response = (await result.json()) as authResponse;
+  return response;
 }
