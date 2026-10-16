@@ -19,7 +19,6 @@ import React, { useState } from "react";
 import { signUpSchema } from "@/schemas/auth";
 import { signUp } from "@/services/auth.services";
 import { useNavigate } from "react-router";
-import { toast } from "sonner";
 import type { AuthErrors } from "@/types/auth";
 import PasswordEye from "./password-eye";
 
@@ -84,14 +83,12 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       const response = await signUp({ fullName, email, password });
       if (response.success) {
         navigate("/login?registered=true", { replace: true });
-        toast.success(response.message);
       }
       if (!response.success) {
         if (response.errors && response.errors !== null) {
           response.errors.map((error) => error.message).join(",");
         } else {
           setServerError(response.message);
-          toast.error(response.message);
         }
       }
     } catch (error) {
