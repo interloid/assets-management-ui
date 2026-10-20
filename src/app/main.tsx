@@ -3,11 +3,14 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router";
 import App from "./App";
 import "@/styles/index.css";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <TooltipProvider>
+        <App />
+      </TooltipProvider>
     </BrowserRouter>
   </StrictMode>,
 );
