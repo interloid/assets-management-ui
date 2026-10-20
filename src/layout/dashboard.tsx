@@ -1,22 +1,18 @@
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar"
+import Header from "@/components/dashboard/dashboard-header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Outlet } from "react-router";
 
-export default function DashboardPage() {
+export default function DashboardLayout() {
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "19rem",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar />
+    <SidebarProvider>
+      <div >
+        <AppSidebar />
+      </div>
       <SidebarInset>
-
+        <Header />
+        <Outlet />
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }

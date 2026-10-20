@@ -26,6 +26,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { NavUser } from "../ui/nav-user";
+import { Link, useLocation } from "react-router";
 
 export type NavMainItem = {
   title: string;
@@ -41,6 +42,7 @@ export type SidebarData = {
     name: string;
     email: string;
     avatar: string;
+    role: string;
   };
   navMain: NavMainItem[];
 };
@@ -50,6 +52,7 @@ const data: SidebarData = {
     name: "kavin",
     email: "kavi@example.com",
     avatar: "src/assets/interloid-mark.svg",
+    role: "Admin",
   },
   navMain: [
     {
@@ -59,17 +62,16 @@ const data: SidebarData = {
           title: "Dashboard",
           icon: LayoutDashboard,
           url: "/dashboard",
-          isActive: true,
         },
         {
           title: "Assets",
           icon: Boxes,
-          url: "/assets",
+          url: "/dashboard/assets",
         },
         {
           title: "Users",
           icon: Users,
-          url: "/users",
+          url: "/dashboard/users",
         },
       ],
     },
@@ -79,12 +81,12 @@ const data: SidebarData = {
         {
           title: "My assets",
           icon: Package,
-          url: "#",
+          url: "/dashboard/myassets",
         },
         {
           title: "Profile",
           icon: UserRound,
-          url: "#",
+          url: "/dashboard/profile",
         },
       ],
     },
@@ -92,6 +94,7 @@ const data: SidebarData = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { pathname } = useLocation();
   return (
     <Sidebar
       collapsible="icon"
@@ -101,38 +104,48 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader className="group-data-[collapsible=icon]:px-4.5 group-data-[collapsible=icon]:py-3.5 pt-1.5">
         <AppSidebarHeader />
       </SidebarHeader>
-      <div className="flex justify-center px-0 pt-2 group-data-[collapsible=icon]:pt-2 group-data-[collapsible=icon]:h-3">
-        <SidebarSeparator className="hidden h-px group-data-[collapsible=icon]:block group-data-[collapsible=icon]:w-6 group-data-[collapsible=icon]:mx-auto" />
+      <div className="hidden justify-center group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:h-3 group-data-[collapsible=icon]:mt-1">
+        <SidebarSeparator className="h-px w-6" />
       </div>
-      <SidebarContent className="px-2">
+      <SidebarContent className="group-data-[collapsible=icon]:px-2 px-1">
         {data.navMain.map((item) => (
-          <SidebarGroup key={item.title}>
-            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {item.items.map((navItem) => (
-                  <SidebarMenuItem key={navItem.title}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={navItem.isActive}
-                      tooltip={navItem.title}
-                      className="bg-transparent!"
-                    >
-                      <a href={navItem.url}>
-                        {navItem.icon && (
-                          <navItem.icon className="text-muted-foreground" />
-                        )}
-                        <span>{navItem.title}</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+          <>
+            <SidebarGroup key={item.title} className="pt-0">
+              <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu className="gap-2">
+                  {item.items.map((navItem) => (
+                    <SidebarMenuItem key={navItem.title}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={
+                          pathname === navItem.url ||
+                          (navItem.url !== "/dashboard" &&
+                            pathname.startsWith(`${navItem.url}/`))
+                        }
+                        tooltip={navItem.title}
+                        className="bg-transparent! h-9  data-[active=true]:bg-muted! hover:bg-muted!"
+                      >
+                        <Link to={navItem.url}>
+                          {navItem.icon && (
+                            <navItem.icon className="text-muted-foreground group-data-[active=true]/menu-button:text-sidebar-primary!" />
+                          )}
+                          <span>{navItem.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+            <div className="hidden justify-center group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:h-3">
+              <SidebarSeparator className="h-px w-6" />
+            </div>
+          </>
         ))}
       </SidebarContent>
-      <SidebarFooter>
+
+      <SidebarFooter className="border-t">
         <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />

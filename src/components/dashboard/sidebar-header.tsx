@@ -39,9 +39,9 @@ export default function AppSidebarHeader() {
               aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
               {isCollapsed ? (
-                <PanelRightOpen className="size-4" />
-              ) : (
                 <PanelLeftOpen className="size-4" />
+              ) : (
+                <PanelRightOpen className="size-4" />
               )}
             </SidebarTrigger>
           </div>

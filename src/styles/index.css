@@ -6,6 +6,7 @@
 
 @theme inline {
     --breakpoint-xs: 425px;
+    --breakpoint-xsm: 470px;
     --font-heading: var(--font-sans);
     --font-sans: 'Geist Variable', sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);

@@ -1,57 +1,49 @@
-"use client"
+"use client";
 
-import {
-  LogOut,
-} from "lucide-react"
+import { Dot, LogOut } from "lucide-react";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
-import {
-    DropdownMenu,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { Button } from "./button";
+} from "@/components/ui/sidebar";
 
 export function NavUser({
   user,
 }: {
   user: {
-    name: string
-    email: string
-    avatar: string
-  }
+    name: string;
+    email: string;
+    avatar: string;
+    role: string;
+  };
 }) {
-
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:text-sidebar-accent-foreground bg-transparent!"
-            >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
-              </div>
-              <Button className="bg-transparent! hover:bg-transparent!"> <LogOut className="text-muted-foreground"/> </Button>
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
-  )
+<SidebarMenu>
+  <SidebarMenuItem>
+    <div className="flex items-center gap-3 p-0 group-data-[collapsible=icon]:flex-col">
+      <Avatar className="h-8 w-8 shrink-0 rounded-lg ">
+        <AvatarImage src={user.avatar} alt={user.name} />
+        <AvatarFallback className="rounded-lg">KK</AvatarFallback>
+      </Avatar>
+      <div className="min-w-0 flex-1 text-left text-sm group-data-[collapsible=icon]:hidden">
+        <span className="truncate font-medium">{user.name}</span>
+
+        <div className="flex min-w-0 items-center text-xs text-muted-foreground">
+          <span>{user.role}</span>
+          <Dot />
+          <span className="truncate">{user.email}</span>
+        </div>
+      </div>
+      <button
+        type="button"
+        aria-label="Log out"
+        className="flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+      >
+        <LogOut className="size-4" />
+      </button>
+    </div>
+  </SidebarMenuItem>
+</SidebarMenu>
+  );
 }

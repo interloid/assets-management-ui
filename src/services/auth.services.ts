@@ -29,9 +29,6 @@ export interface User {
     updated_at: string;
   };
 }
-export interface refresh {
-  refresh_token: string | null;
-}
 
 export async function getCurrentSession(): Promise<User> {
   const result = await fetch(`${API_BASE_URL}/users/me`, {
