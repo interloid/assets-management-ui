@@ -12,7 +12,7 @@ export interface signUpCredentials {
 
 export interface authResponse {
   success: boolean;
-  status_code: number;
+  statusCode: number;
   message: string;
   errors?: { field: string; message: string }[];
 }
@@ -22,15 +22,12 @@ export interface User {
   message: string;
   data: {
     id: string;
-    full_name: string;
+    fullName: string;
     email: string;
     role: string;
-    created_at: string;
-    updated_at: string;
+    createdAt: string;
+    updatedAt: string;
   };
-}
-export interface refresh {
-  refresh_token: string | null;
 }
 
 export async function getCurrentSession(): Promise<User> {
