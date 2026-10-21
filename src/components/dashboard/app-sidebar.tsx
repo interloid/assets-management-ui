@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { NavUser } from "../ui/nav-user";
 import { Link, useLocation } from "react-router";
+import interloidMark from "@/assets/interloid-mark.svg";
 
 export type NavMainItem = {
   title: string;
@@ -51,7 +52,7 @@ const data: SidebarData = {
   user: {
     name: "kavin",
     email: "kavi@example.com",
-    avatar: "src/assets/interloid-mark.svg",
+    avatar: interloidMark,
     role: "Admin",
   },
   navMain: [

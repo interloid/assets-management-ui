@@ -6,6 +6,7 @@ import {
   SidebarTrigger,
 } from "../ui/sidebar";
 import { useSidebar } from "../ui/sidebar-context";
+import interloidMark from "@/assets/interloid-mark.svg";
 
 export default function AppSidebarHeader() {
   const { state } = useSidebar();
@@ -21,7 +22,7 @@ export default function AppSidebarHeader() {
             >
               <div className="flex size-7 shrink-0 items-center justify-center">
                 <img
-                  src="/src/assets/interloid-mark.svg"
+                  src={interloidMark}
                   alt="Interloid logo"
                   className="size-full object-contain"
                 />
