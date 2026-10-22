@@ -107,9 +107,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
       {...props}
     >
       <div className="flex gap-2.5 justify-center relative md:gap-[8.5px] md:top-px">
-        <div className="relative bottom-px">
-          <img src={interloidMark} alt="logo" className="w-8" />
-        </div>
+          <img src={interloidMark} alt="logo" className="w-8 relative bottom-px" />
         <div className="flex flex-col leading-4 relative bottom-px left-px">
           <span className="font-semibold text-[16px]">Interloid</span>
           <span className="text-muted-foreground text-[13px]">
@@ -170,7 +168,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
                     onChange={handlePasswordChange}
                     placeholder="••••••••"
                     className={cn(
-                      "h-10! rounded-[8px]! text-sm relative focus-visible:bg-input",
+                      "h-10 rounded-[8px] text-sm relative focus-visible:bg-input",
                       errors?.password &&
                         "border-destructive focus-visible:border-destructive",
                     )}

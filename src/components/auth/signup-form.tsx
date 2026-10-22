@@ -30,7 +30,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [password, setPassword] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<AuthErrors | null>({});
+  const [errors, setErrors] = useState<AuthErrors | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
   const hasMinLength = (password ?? "").length >= 8;
   const hasLetter = /[a-zA-Z]/.test(password ?? "");
@@ -105,9 +105,11 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       {...props}
     >
       <div className="flex gap-2.5 justify-center relative md:gap-[8.5px]">
-        <div className="relative bottom-px">
-          <img src={interloidMark} alt="logo" className="w-8" />
-        </div>
+        <img
+          src={interloidMark}
+          alt="logo"
+          className="w-8 relative bottom-px"
+        />
         <div className="flex flex-col leading-4 relative md:left-px">
           <span className="font-semibold text-[16px]">Interloid</span>
           <span className="text-muted-foreground text-[13px]">
@@ -262,7 +264,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="h-10! relative bottom-2 rounded-[8px] py-4.5 px-0"
+                    className="h-10 relative bottom-2 rounded-[8px] py-4.5 px-0"
                   >
                     {isLoading ? (
                       <>
