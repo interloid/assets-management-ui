@@ -30,6 +30,7 @@ export interface User {
   };
 }
 
+
 export async function getCurrentSession(): Promise<User> {
   const result = await fetch(`${API_BASE_URL}/users/me`, {
     method: "GET",
@@ -72,5 +73,13 @@ export async function signUp(credentials: signUpCredentials): Promise<authRespon
     body: JSON.stringify(signUpPayload),
   });
   const response = (await result.json()) as authResponse;
+  return response;
+}
+
+export async function logOut(){
+  const response = await fetch(`${API_BASE_URL}/auth/logout`,{
+    method: "POST",
+    credentials: "include",
+  });
   return response;
 }

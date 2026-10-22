@@ -90,7 +90,7 @@ const recentAssets = [
 export default function Dashboard() {
   return (
     <>
-      <section className="p-4 md:p-5.5 md:pt-6 lg:p-11.25 lg:pt-7.75! lg:pb-6 lg:pr-7 2xl:px-18.5 gap-6 flex flex-col xs:flex-row lg:justify-between">
+      <section className="p-4 md:p-5.5 md:pt-6 lg:p-11.25 lg:pt-7.75! lg:pb-6 lg:pr-7 xl:pt-8.5! xl:pl-8 2xl:px-8 gap-6 flex flex-col xs:flex-row lg:justify-between">
         <div className="gap-4 flex flex-col w-full xsm:flex-row xsm:justify-between">
           <div className="flex flex-col gap-1 md:gap-1.5">
             <h1 className="text-[22px] md:text-2xl font-semibold tracking-[-0.01em]">
@@ -119,14 +119,14 @@ export default function Dashboard() {
           </div>
         </div>
       </section>
-      <div className="space-y-6 pt-1.75 p-4 md:p-6 md:pt-1 lg:p-10 lg:pl-11.5 lg:pt-0 lg:pr-7 lg:pb-6 gap-6 2xl:px-18.5">
+      <div className="space-y-6 pt-1.75 p-4 md:p-6 md:pt-1 lg:p-10 lg:pl-11.5 lg:pt-0 lg:pr-7 lg:pb-6 gap-6 xl:pl-8 2xl:px-8">
         <StackedProgressBar segments={assetStatuses} />
       </div>
-      <div className="xl:flex w-full gap-6 2xl:px-7 ">
-        <div className="p-4 md:p-6 md:pt-0 lg:p-10 lg:pl-11.5 lg:pt-0 lg:pr-7 lg:pb-6.5 border-none xl:w-1/2 xl:pl-11.5 xl:py-0 xl:px-0">
+      <div className="xl:flex w-full gap-6 xl:gap-6 2xl:px-7 ">
+        <div className="p-4 md:p-6 md:pt-0 lg:p-10 lg:pl-11.5 lg:pt-0 lg:pr-7 lg:pb-6.5 border-none xl:w-1/2 xl:py-0 xl:pr-0 xl:pl-8 2xl:pl-1">
           <WarrantyExpiring assets={warrantyAssets} />
         </div>
-        <div className="p-4 md:p-6 md:pt-0 lg:p-10 lg:pl-11.5 lg:pt-0 lg:pr-7 xl:w-1/2 xl:pr-11 xl:py-0 xl:px-0 border-none">
+        <div className="p-4 md:p-6 md:pt-0 lg:p-10 lg:pl-11.5 lg:pt-0 lg:pr-7 xl:w-1/2 xl:pr-7 2xl:pr-1 py-0 xl:p-0 border-none">
           <RecentlyAdded assets={recentAssets} />
         </div>
       </div>

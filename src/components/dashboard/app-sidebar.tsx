@@ -94,7 +94,9 @@ const data: SidebarData = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ setIsAuthenticated, ...props }: React.ComponentProps<typeof Sidebar> & {
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const { pathname } = useLocation();
   return (
     <Sidebar
@@ -147,7 +149,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       <SidebarFooter className="border-t">
-        <NavUser user={data.user} />
+        <NavUser user={data.user} onLogout={() => setIsAuthenticated(false)} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

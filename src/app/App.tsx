@@ -54,7 +54,7 @@ export default function App() {
         <Route path="/signup" element={<SignUpPage />} />
 
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
-          <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route path="/dashboard" element={<DashboardLayout setIsAuthenticated={setIsAuthenticated} />}>
             <Route path="" element={<Dashboard />} />
             <Route path="assets" element={<Assets />} />
             <Route path="users" element={<Users />} />
