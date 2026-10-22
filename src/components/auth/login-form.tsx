@@ -195,7 +195,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
                   className="h-10.5! relative bottom-px rounded-[8px] md:bottom-0 transition-[transform,background-color,color,border-color,box-shadow,opacity] duration-150 ease-in-out] hover:bg-primary/90 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {isLoading && <LoaderCircle className="animate-spin" />}
-                  {isLoading ? "signing in" : "sign in"}
+                  {isLoading ? "Signing in" : "Sign in"}
                 </Button>
                 <FieldDescription className="text-center relative bottom-1 md:bottom-0">
                   New to Interloid?

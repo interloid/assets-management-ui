@@ -206,9 +206,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 <div className="flex gap-4  text-muted-foreground flex-wrap gap-y-0 relative bottom-1.25">
                   <div className="flex gap-1.5 md:gap-1.5">
                     {hasMinLength ? (
-                      <CircleCheck className="w-3.5 text-success" />
+                      <CircleCheck className="w-3.5 text-success pt-px" />
                     ) : (
-                      <Circle className="w-3.5" />
+                      <Circle className="w-3.5 pt-px" />
                     )}
                     <span
                       className={cn(
@@ -221,9 +221,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   </div>
                   <div className="flex gap-1.5 md:gap-1.5">
                     {hasLetter ? (
-                      <CircleCheck className="w-3.5 text-success" />
+                      <CircleCheck className="w-3.5 text-success pt-px" />
                     ) : (
-                      <Circle className="w-3.5" />
+                      <Circle className="w-3.5 pt-px" />
                     )}
                     <span
                       className={cn(
@@ -236,9 +236,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   </div>
                   <div className="flex gap-1.5 md:gap-1.5">
                     {hasNumber ? (
-                      <CircleCheck className="w-3.5 text-success" />
+                      <CircleCheck className="w-3.5 text-success pt-px" />
                     ) : (
-                      <Circle className="w-3.5" />
+                      <Circle className="w-3.5 pt-px" />
                     )}
                     <span
                       className={cn(
@@ -275,7 +275,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                       "Create account"
                     )}
                   </Button>
-                  <FieldDescription className="px-0 md:px-6 text-center  relative top-px">
+                  <FieldDescription className="px-0 md:px-6 text-center flex justify-center gap-1 relative top-px">
                     Already have an account?
                     <Link
                       to="/login"
