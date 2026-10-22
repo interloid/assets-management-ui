@@ -1,20 +1,11 @@
+import type { StackedProgressBarProps } from "@/types/dashboard";
 import { useMemo } from "react";
-
-type ProgressSegment = {
-  label: string;
-  count: number;
-  color: string;
-};
-
-type StackedProgressBarProps = {
-  title?: string;
-  segments: ProgressSegment[];
-};
 
 export default function StackedProgressBar({
   title = "Assets by status",
   segments,
 }: StackedProgressBarProps) {
+  
   const total = useMemo(
     () => segments.reduce((sum, segment) => sum + segment.count, 0),
     [segments],

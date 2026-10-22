@@ -1,60 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Keyboard, Laptop, List, Monitor, Plus } from "lucide-react";
+import { Keyboard, Laptop, List, Plus } from "lucide-react";
 import StackedProgressBar from "@/components/dashboard/stackedprogressbar";
 import WarrantyExpiring from "@/components/dashboard/warrantyExpiring";
 import RecentlyAdded from "@/components/dashboard/recentlyadded";
-
-const assetStatuses = [
-  { label: "In stock", count: 8, color: "bg-emerald-700" },
-  { label: "Assigned", count: 10, color: "bg-blue-700" },
-  { label: "In repair", count: 3, color: "bg-amber-700" },
-  { label: "Retired", count: 3, color: "bg-neutral-500" },
-];
-
-const warrantyAssets = [
-  {
-    id: "asset-1",
-    assetCode: "IL-LAP-0045",
-    assignedTo: "Unassigned",
-    daysRemaining: 10,
-    icon: Laptop,
-  },
-  {
-    id: "asset-2",
-    assetCode: "IL-LAP-0044",
-    assignedTo: "Ananya Iyer",
-    daysRemaining: 13,
-    icon: Laptop,
-  },
-  {
-    id: "asset-3",
-    assetCode: "IL-LAP-0043",
-    assignedTo: "Unassigned",
-    daysRemaining: 39,
-    icon: Laptop,
-  },
-  {
-    id: "asset-4",
-    assetCode: "IL-MON-0016",
-    assignedTo: "Unassigned",
-    daysRemaining: 42,
-    icon: Monitor,
-  },
-  {
-    id: "asset-5",
-    assetCode: "IL-MON-0015",
-    assignedTo: "Unassigned",
-    daysRemaining: 42,
-    icon: Monitor,
-  },
-  {
-    id: "asset-4",
-    assetCode: "IL-ACC-0067",
-    assignedTo: "Unassigned",
-    daysRemaining: 42,
-    icon: Keyboard,
-  },
-];
+import { getAssetStats, getWarrantyStats } from "@/services/dashboard.services";
+import { useEffect, useState } from "react";
+import type { ProgressSegment, WarrantyAsset } from "@/types/dashboard";
 
 const recentAssets = [
   {
@@ -88,6 +39,71 @@ const recentAssets = [
 ];
 
 export default function Dashboard() {
+  const [segments, setSegments] = useState<ProgressSegment[]>([]);
+  const [warrantyAssets, setWarrantyAssets] = useState<WarrantyAsset[]>([]);
+  useEffect(() => {
+    async function loadAssetStats() {
+      try {
+        const response = await getAssetStats();
+        console.log("response", response);
+        if (!response.success || !response.data) {
+          return;
+        }
+        if (response.success || response.data) {
+          setSegments([
+            {
+              label: "In stock",
+              count: response.data.in_stock,
+              color: "bg-emerald-700",
+            },
+            {
+              label: "Assigned",
+              count: response.data.assigned,
+              color: "bg-blue-700",
+            },
+            {
+              label: "In repair",
+              count: response.data.repair,
+              color: "bg-amber-700",
+            },
+            {
+              label: "Retired",
+              count: response.data.retired,
+              color: "bg-neutral-500",
+            },
+          ]);
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    }
+    void loadAssetStats();
+  }, []);
+
+  useEffect(() => {
+    async function warrantyAssets() {
+      try {
+        const response = await getWarrantyStats();
+        console.log("response", response);
+        if (!response.success || !response.data) {
+          return;
+        }
+        if (response.success || response.data) {
+          console.log('response.data', response.data)
+          setWarrantyAssets(
+            response.data.map((asset) => ({
+              ...asset,
+              warrantyExpiry: new Date(asset.warrantyExpiry),
+              icon: asset.type.toLowerCase().includes("laptop") ? Laptop : Keyboard,
+            }))
+          );
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    void warrantyAssets();
+  }, []);
   return (
     <>
       <section className="p-4 md:p-5.5 md:pt-6 lg:p-11.25 lg:pt-7.75! lg:pb-6 lg:pr-7 xl:pt-8.5! xl:pl-8 2xl:px-8 gap-6 flex flex-col xs:flex-row lg:justify-between">
@@ -120,7 +136,7 @@ export default function Dashboard() {
         </div>
       </section>
       <div className="space-y-6 pt-1.75 p-4 md:p-6 md:pt-1 lg:p-10 lg:pl-11.5 lg:pt-0 lg:pr-7 lg:pb-6 gap-6 xl:pl-8 2xl:px-8">
-        <StackedProgressBar segments={assetStatuses} />
+        <StackedProgressBar segments={segments} />
       </div>
       <div className="xl:flex w-full gap-6 xl:gap-6 2xl:px-7 ">
         <div className="p-4 md:p-6 md:pt-0 lg:p-10 lg:pl-11.5 lg:pt-0 lg:pr-7 lg:pb-6.5 border-none xl:w-1/2 xl:py-0 xl:pr-0 xl:pl-8 2xl:pl-1">

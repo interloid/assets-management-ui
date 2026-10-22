@@ -1,19 +1,10 @@
-import { type LucideIcon } from "lucide-react";
+import type { WarrantyExpiringProps } from "@/types/dashboard";
 import { Link } from "react-router";
 
-type WarrantyAsset = {
-  id: string;
-  assetCode: string;
-  assignedTo: string;
-  daysRemaining: number;
-  icon: LucideIcon;
-};
-
-type WarrantyExpiringProps = {
-  assets: WarrantyAsset[];
-};
-
 export default function WarrantyExpiring({ assets }: WarrantyExpiringProps) {
+   console.log('assets', assets)
+   console.log('assets.', assets.asset_tag)
+  // const remainingdays = 
   return (
     <section className="overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-sm">
       <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
@@ -51,16 +42,16 @@ export default function WarrantyExpiring({ assets }: WarrantyExpiringProps) {
 
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="font-mono text-[13px] font-medium">
-                      {asset.assetCode}
+                      {asset.asset_tag}
                     </span>
 
                     <span className="truncate text-[13px] text-muted-foreground">
-                      {asset.assignedTo}
+                      {asset.status}
                     </span>
                   </span>
 
                   <span className="shrink-0 whitespace-nowrap text-[13px] font-medium text-warning">
-                    Expires in {asset.daysRemaining} days
+                    Expires in {asset.warranty_expiry} days
                   </span>
                 </Link>
               </li>
