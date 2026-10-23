@@ -110,13 +110,13 @@ export function AppSidebar({ setIsAuthenticated, ...props }: React.ComponentProp
       <div className="hidden justify-center group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:h-3 group-data-[collapsible=icon]:mt-1">
         <SidebarSeparator className="h-px w-6" />
       </div>
-      <SidebarContent className="group-data-[collapsible=icon]:px-2 px-1">
+      <SidebarContent className="group-data-[collapsible=icon]:px-2 px-1 gap-1.25 ">
         {data.navMain.map((item) => (
           <>
-            <SidebarGroup key={item.title} className="pt-0">
+            <SidebarGroup key={item.title} className="pt-0 group-data-[collapsible=icon]:pb-4">
               <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
               <SidebarGroupContent>
-                <SidebarMenu className="gap-2">
+                <SidebarMenu className="gap-0.5 group-data-[collapsible=icon]:gap-1.5">
                   {item.items.map((navItem) => (
                     <SidebarMenuItem key={navItem.title}>
                       <SidebarMenuButton
@@ -127,7 +127,7 @@ export function AppSidebar({ setIsAuthenticated, ...props }: React.ComponentProp
                             pathname.startsWith(`${navItem.url}/`))
                         }
                         tooltip={navItem.title}
-                        className="bg-transparent! h-9  data-[active=true]:bg-muted! hover:bg-muted!"
+                        className="bg-transparent! flex gap-2.5 h-9  data-[active=true]:bg-muted! hover:bg-muted!"
                       >
                         <Link to={navItem.url}>
                           {navItem.icon && (
@@ -141,8 +141,8 @@ export function AppSidebar({ setIsAuthenticated, ...props }: React.ComponentProp
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
-            <div className="hidden justify-center group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:h-3">
-              <SidebarSeparator className="h-px w-6" />
+            <div className="hidden justify-center group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:h-3 group-data-[collapsible=icon]:pb-1">
+              <SidebarSeparator className="h-px w-6 " />
             </div>
           </>
         ))}

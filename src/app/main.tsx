@@ -5,15 +5,18 @@ import App from "./App";
 import "@/styles/index.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { ThemeProvider } from "@/context/theme-provider";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ErrorBoundary>
-      <BrowserRouter>
-        <TooltipProvider>
-          <App />
-        </TooltipProvider>
-      </BrowserRouter>
-    </ErrorBoundary>
+    <ThemeProvider>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <TooltipProvider>
+            <App />
+          </TooltipProvider>
+        </BrowserRouter>
+      </ErrorBoundary>
+    </ThemeProvider>
   </StrictMode>,
 );

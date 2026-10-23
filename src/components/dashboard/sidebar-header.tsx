@@ -1,4 +1,4 @@
-import { PanelLeftOpen, PanelRightOpen } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -18,7 +18,7 @@ export default function AppSidebarHeader() {
           <div className="relative flex flex-col">
             <SidebarMenuButton
               size="lg"
-              className=" data-[state=open]:text-sidebar-accent-foreground bg-transparent!"
+              className=" data-[state=open]:text-sidebar-accent-foreground bg-transparent! leading-1"
             >
               <div className="flex size-7 shrink-0 items-center justify-center">
                 <img
@@ -29,7 +29,7 @@ export default function AppSidebarHeader() {
               </div>
 
               <div className="grid flex-1 text-left text-sm leading-[1.15] pl-0.5 whitespace-nowrap group-data-[collapsible=icon]:hidden">
-                <span className="truncate font-semibold">Interloid</span>
+                <span className="truncate font-semibold relative top-px">Interloid</span>
                 <span className="truncate text-xs text-muted-foreground font-normal">
                   Asset Register
                 </span>
@@ -42,7 +42,7 @@ export default function AppSidebarHeader() {
               {isCollapsed ? (
                 <PanelLeftOpen className="size-4" />
               ) : (
-                <PanelRightOpen className="size-4" />
+                <PanelLeftClose className="size-4" />
               )}
             </SidebarTrigger>
           </div>

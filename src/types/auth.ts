@@ -11,5 +11,5 @@ export type LoginForm = {
 } & ComponentProps<"div">;
 
 export type AuthErrors = Partial<
-  Record<"email" | "password" | "fullName", string>
+  Record<"email" | "password" | "fullName", string | null>
 >;

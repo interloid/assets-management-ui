@@ -18,9 +18,10 @@ import { Circle, CircleAlert, CircleCheck, LoaderCircle } from "lucide-react";
 import React, { useState } from "react";
 import { signUpSchema } from "@/schemas/auth";
 import { signUp } from "@/services/auth.services";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import type { AuthErrors } from "@/types/auth";
 import PasswordEye from "./password-eye";
+import { cn } from "cn";
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [password, setPassword] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<AuthErrors | null>({});
+  const [errors, setErrors] = useState<AuthErrors | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
   const hasMinLength = (password ?? "").length >= 8;
   const hasLetter = /[a-zA-Z]/.test(password ?? "");
@@ -57,22 +58,22 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 
   const handleFullName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFullName(event.target.value);
-    setErrors((prev) => ({ ...prev, fullName: "" }));
+    setErrors((prev) => ({ ...prev, fullName: null }));
   };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
-    setErrors((prev) => ({ ...prev, email: "" }));
+    setErrors((prev) => ({ ...prev, email: null }));
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
-    setErrors((prev) => ({ ...prev, password: "" }));
+    setErrors((prev) => ({ ...prev, password: null }));
   };
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setServerError("");
+    setServerError(null);
 
     const isValid = validateForm();
     if (!isValid) {
@@ -104,9 +105,11 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       {...props}
     >
       <div className="flex gap-2.5 justify-center relative md:gap-[8.5px]">
-        <div className="relative bottom-px">
-          <img src={interloidMark} alt="logo" className="w-8" />
-        </div>
+        <img
+          src={interloidMark}
+          alt="logo"
+          className="w-8 relative bottom-px"
+        />
         <div className="flex flex-col leading-4 relative md:left-px">
           <span className="font-semibold text-[16px]">Interloid</span>
           <span className="text-muted-foreground text-[13px]">
@@ -135,14 +138,14 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   id="name"
                   type="text"
                   placeholder="Priya Nair"
-                  value={fullName ?? ""}
+                  value={fullName ?? undefined}
                   maxLength={100}
                   onChange={handleFullName}
-                  className={`h-10! text-[14px] border-border relative bottom-px rounded-md pl-3! shadow-xs ${
-                    errors?.fullName
-                      ? "border-destructive focus-visible:border-destructive"
-                      : ""
-                  }`}
+                  className={cn(
+                    "h-10 text-[14px] border-border relative bottom-px rounded-md pl-3 shadow-xs",
+                    errors?.fullName &&
+                      "border-destructive focus-visible:border-destructive",
+                  )}
                   autoComplete="name"
                 />
                 {errors?.fullName && (
@@ -160,14 +163,14 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   id="email"
                   type="email"
                   placeholder="name@interloid.com"
-                  value={email ?? ""}
+                  value={email ?? undefined}
                   maxLength={256}
                   onChange={handleEmailChange}
-                  className={`h-10! text-[14px] rounded-md pl-3! relative bottom-px border-border shadow-xs ${
-                    errors?.email
-                      ? "border-destructive focus-visible:border-destructive"
-                      : ""
-                  }`}
+                  className={cn(
+                    "h-10 text-[14px] rounded-md pl-3 relative bottom-px border-border shadow-xs",
+                    errors?.email &&
+                      "border-destructive focus-visible:border-destructive",
+                  )}
                   autoComplete="email"
                 />
                 {errors?.email && (
@@ -185,14 +188,14 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     maxLength={128}
-                    value={password ?? ""}
+                    value={password ?? undefined}
                     placeholder="••••••••"
                     onChange={handlePasswordChange}
-                    className={`h-10! text-[14px] rounded-md relative bottom-0.5 pl-3! border-border shadow-xs ${
-                      errors?.password
-                        ? "border-destructive focus-visible:border-destructive"
-                        : ""
-                    }`}
+                    className={cn(
+                      "h-10 text-[14px] rounded-md relative bottom-0.5 pl-3 border-border shadow-xs",
+                      errors?.password &&
+                        "border-destructive focus-visible:border-destructive",
+                    )}
                     autoComplete="new-password"
                   />
                   <PasswordEye
@@ -203,42 +206,45 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 <div className="flex gap-4  text-muted-foreground flex-wrap gap-y-0 relative bottom-1.25">
                   <div className="flex gap-1.5 md:gap-1.5">
                     {hasMinLength ? (
-                      <CircleCheck className="w-3.5 text-success" />
+                      <CircleCheck className="w-3.5 text-success pt-px" />
                     ) : (
-                      <Circle className="w-3.5" />
+                      <Circle className="w-3.5 pt-px" />
                     )}
                     <span
-                      className={`text-[13px] relative self-end bottom-px ${
-                        hasMinLength ? "text-success" : ""
-                      }`}
+                      className={cn(
+                        "text-[13px] relative self-end bottom-px",
+                        hasMinLength && "text-success",
+                      )}
                     >
                       8+ characters
                     </span>
                   </div>
                   <div className="flex gap-1.5 md:gap-1.5">
                     {hasLetter ? (
-                      <CircleCheck className="w-3.5 text-success" />
+                      <CircleCheck className="w-3.5 text-success pt-px" />
                     ) : (
-                      <Circle className="w-3.5" />
+                      <Circle className="w-3.5 pt-px" />
                     )}
                     <span
-                      className={`text-[13px] relative self-end bottom-px ${
-                        hasLetter ? "text-success" : ""
-                      }`}
+                      className={cn(
+                        "text-[13px] relative self-end bottom-px",
+                        hasLetter && "text-success",
+                      )}
                     >
                       A letter
                     </span>
                   </div>
                   <div className="flex gap-1.5 md:gap-1.5">
                     {hasNumber ? (
-                      <CircleCheck className="w-3.5 text-success" />
+                      <CircleCheck className="w-3.5 text-success pt-px" />
                     ) : (
-                      <Circle className="w-3.5" />
+                      <Circle className="w-3.5 pt-px" />
                     )}
                     <span
-                      className={`text-[13px] relative self-end bottom-px ${
-                        hasNumber ? "text-success" : ""
-                      }`}
+                      className={cn(
+                        "text-[13px] relative self-end bottom-px",
+                        hasNumber && "text-success",
+                      )}
                     >
                       A number
                     </span>
@@ -258,26 +264,25 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="h-10! relative bottom-2 rounded-[8px] py-4.5 px-0"
+                    className="h-10 relative bottom-2 rounded-[8px] py-4.5 px-0"
                   >
-                    {/* {isLoading && } */}
                     {isLoading ? (
                       <>
-                        <LoaderCircle className="animate-spin" /> 
+                        <LoaderCircle className="animate-spin" />
                         Creating account...
                       </>
                     ) : (
                       "Create account"
                     )}
                   </Button>
-                  <FieldDescription className="px-0 md:px-6 text-center  relative top-px">
-                    Already have an account?{" "}
-                    <a
-                      href="/login"
+                  <FieldDescription className="px-0 md:px-6 text-center flex justify-center gap-1 relative top-px">
+                    Already have an account?
+                    <Link
+                      to="/login"
                       className="text-foreground font-medium underline-offset-3!"
                     >
                       Sign in
-                    </a>
+                    </Link>
                   </FieldDescription>
                 </Field>
               </FieldGroup>

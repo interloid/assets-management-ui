@@ -19,7 +19,7 @@ import { CircleAlert, CircleCheck, LoaderCircle } from "lucide-react";
 import { loginSchema } from "@/schemas/auth";
 import interloidMark from "@/assets/interloid-mark.svg";
 import { login } from "@/services/auth.services";
-import { useNavigate, useSearchParams } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import type { AuthErrors, LoginForm } from "@/types/auth";
 import { toast } from "sonner";
 import PasswordEye from "@/components/auth/password-eye";
@@ -28,7 +28,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
-  const [errors, setErrors] = useState<AuthErrors | null>({});
+  const [errors, setErrors] = useState<AuthErrors | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -58,17 +58,17 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
-    setErrors((prev) => ({ ...prev, email: "" }));
+    setErrors((prev) => ({ ...prev, email: null }));
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
-    setErrors((prev) => ({ ...prev, password: "" }));
+    setErrors((prev) => ({ ...prev, password: null }));
   };
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setServerError("");
+    setServerError(null);
 
     const isValid = validateForm();
     if (!isValid) {
@@ -107,9 +107,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
       {...props}
     >
       <div className="flex gap-2.5 justify-center relative md:gap-[8.5px] md:top-px">
-        <div className="relative bottom-0.5!">
-          <img src={interloidMark} alt="logo" className="w-8" />
-        </div>
+          <img src={interloidMark} alt="logo" className="w-8 relative bottom-px" />
         <div className="flex flex-col leading-4 relative bottom-px left-px">
           <span className="font-semibold text-[16px]">Interloid</span>
           <span className="text-muted-foreground text-[13px]">
@@ -133,8 +131,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
           >
             <CircleCheck className="size-6.5 xs:size-4! xs:top-0.5 md:size-4.5! text-success/90 relative bottom-1 md:bottom-1" />
             <span className="text-foreground pl-2">
-              {" "}
-              Account created. Sign in with your new password.{" "}
+              Account created. Sign in with your new password.
             </span>
           </div>
         )}
@@ -148,12 +145,13 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
                   type="email"
                   placeholder="name@interloid.com"
                   maxLength={254}
-                  value={email ?? ""}
+                  value={email ?? undefined}
                   onChange={handleEmailChange}
-                  className={`h-10 text-sm p-3 rounded-[8px]! focus-visible:bg-input ${
+                  className={cn(
+                    "h-10 text-sm p-3 rounded-[8px]! focus-visible:bg-input",
                     errors?.email &&
-                    "border-destructive focus-visible:border-destructive"
-                  }`}
+                      "border-destructive focus-visible:border-destructive",
+                  )}
                   autoComplete="email"
                 />
               </Field>
@@ -165,14 +163,15 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    value={password ?? ""}
+                    value={password ?? undefined}
                     maxLength={128}
                     onChange={handlePasswordChange}
                     placeholder="••••••••"
-                    className={`h-10! rounded-[8px]! text-sm relative focus-visible:bg-input ${
+                    className={cn(
+                      "h-10 rounded-[8px] text-sm relative focus-visible:bg-input",
                       errors?.password &&
-                      "border-destructive focus-visible:border-destructive"
-                    }`}
+                        "border-destructive focus-visible:border-destructive",
+                    )}
                     autoComplete="current-password"
                   />
                   <PasswordEye
@@ -196,16 +195,16 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
                   className="h-10.5! relative bottom-px rounded-[8px] md:bottom-0 transition-[transform,background-color,color,border-color,box-shadow,opacity] duration-150 ease-in-out] hover:bg-primary/90 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {isLoading && <LoaderCircle className="animate-spin" />}
-                  {isLoading ? "signing in" : "sign in"}
+                  {isLoading ? "Signing in" : "Sign in"}
                 </Button>
                 <FieldDescription className="text-center relative bottom-1 md:bottom-0">
                   New to Interloid?
-                  <a
-                    href="/signup"
+                  <Link
+                    to="/signup"
                     className="text-foreground font-medium underline-offset-2! md:pl-1"
                   >
                     Create an account
-                  </a>
+                  </Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

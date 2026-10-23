@@ -1,12 +1,13 @@
 "use client";
 
-import { Dot, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar";
 import { logOut } from "@/services/auth.services";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import SidebarThemeButton from "../dashboard/theme-button";
 
 export function NavUser({
   user,
@@ -24,14 +25,14 @@ export function NavUser({
   async function logOutSession() {
     try {
       const response = await logOut();
-        console.log(response.ok, "response");
- 
-      if(!response.ok){
-        toast.error("Logout failed!, please try again.")
-        return ;
+      console.log(response.ok, "response");
+
+      if (!response.ok) {
+        toast.error("Logout failed!, please try again.");
+        return;
       }
-      if(response.ok) {
-        onLogout()
+      if (response.ok) {
+        onLogout();
         navigate("/login");
         toast.success("logged out Successfully!");
       }
@@ -39,10 +40,12 @@ export function NavUser({
       console.log(error);
     }
   }
-    return (
+  return (
+    <>
+      <SidebarThemeButton />
       <SidebarMenu>
         <SidebarMenuItem>
-          <div className="flex items-center gap-3 p-0 group-data-[collapsible=icon]:flex-col">
+          <div className="flex items-center gap-3 p-1.5 group-data-[collapsible=icon]:flex-col">
             <Avatar className="h-8 w-8 shrink-0 rounded-lg ">
               <AvatarImage src={user.avatar} alt={user.name} />
               <AvatarFallback className="rounded-lg">KK</AvatarFallback>
@@ -50,9 +53,10 @@ export function NavUser({
             <div className="min-w-0 flex-1 text-left text-sm group-data-[collapsible=icon]:hidden">
               <span className="truncate font-medium">{user.name}</span>
 
-              <div className="flex min-w-0 items-center text-xs text-muted-foreground">
-                <span>{user.role}</span>
-                <Dot />
+              <div className="flex min-w-0 gap-1 items-center text-xs text-muted-foreground">
+                <span className="flex gap-1">
+                  {user.role} <span className="">·</span>
+                </span>
                 <span className="truncate">{user.email}</span>
               </div>
             </div>
@@ -67,5 +71,6 @@ export function NavUser({
           </div>
         </SidebarMenuItem>
       </SidebarMenu>
-    );
-  }
+    </>
+  );
+}
