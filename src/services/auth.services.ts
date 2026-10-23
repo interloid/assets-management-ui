@@ -1,3 +1,5 @@
+import { toCamelCase, toSnakeCase } from "@/lib/converters";
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export interface LoginCredentials {
@@ -58,19 +60,24 @@ export async function login(
 }
 
 export async function signUp(credentials: signUpCredentials): Promise<authResponse> {
-  const signUpPayload = {
-    full_name: credentials.fullName,
-    email: credentials.email,
-    password: credentials.password,
-  };
   const result = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",
     credentials: "include",
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify(signUpPayload),
+    body: JSON.stringify(toSnakeCase(credentials)),
   });
-  const response = (await result.json()) as authResponse;
+  const response : authResponse = (await result.json());
+  const data = toCamelCase(response);
+  console.log('data', data)
+  return data;
+}
+
+export async function logOut(){
+  const response = await fetch(`${API_BASE_URL}/auth/logout`,{
+    method: "POST",
+    credentials: "include",
+  });
   return response;
 }
