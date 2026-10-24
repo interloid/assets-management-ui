@@ -40,9 +40,8 @@ export default function Dashboard() {
   const [isWarrantyLoading, setIsWarrantyLoading] = useState(true);
   const [isRecentlyAddedLoading, setIsRecentlyAddedLoading] = useState(true);
   const navigate = useNavigate();
-  const today = new Date();
 
-  const formattedDate = today.toLocaleDateString("en-GB", {
+  const currentDate = new Date().toLocaleDateString("en-GB", {
     weekday: "long",
     day: "2-digit",
     month: "long",
@@ -146,7 +145,7 @@ export default function Dashboard() {
               Overview
             </h1>
             <span className="text-muted-foreground text-[14px]">
-              {formattedDate}
+              {currentDate}
             </span>
           </div>
           <div className="flex gap-1.75 items-end">

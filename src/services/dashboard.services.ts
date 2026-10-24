@@ -24,11 +24,29 @@ export interface AssetListResponse {
   data?: {
     id: string;
     assetTag: string;
+    assignedUser: AssignedUser | null;
+    createdAt: string;
     type: string;
     warrantyExpiry: string;
     status: string;
     notes: string;
+    purchaseDate: string;
+    serialNumber: string;
+    updatedAt: string;
   }[];
+  pagination?: {
+    itemsOnPage: number;
+    page: number;
+    recordsPerPage: number;
+    totalItems: number;
+    totalPages: number;
+  }
+}
+
+export type AssignedUser = {
+  id: string;
+  email: string;
+  fullName: string;
 }
 
 export async function getAssetStats(): Promise<AssetResponse> {
