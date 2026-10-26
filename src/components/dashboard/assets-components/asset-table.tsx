@@ -1,4 +1,4 @@
-import { toPascalCase, toStatusLabel } from "@/lib/converters";
+import { formatDate, toPascalCase, toStatusLabel } from "@/lib/converters";
 import type { Asset, AssetTableProps } from "@/types/assets";
 import { cn } from "cn";
 import {
@@ -90,7 +90,7 @@ export default function AssetTable({ assets, isLoading }: AssetTableProps) {
             {assets.map((asset) => (
               <tr
                 key={asset.id}
-                className="border-t border-border transition-colors hover:bg-muted/50"
+                className="border-t border-border transition-colors hover:bg-muted/50 cursor-pointer"
               >
                 <td className="px-4 py-2.75">
                   <Link
@@ -145,10 +145,10 @@ export default function AssetTable({ assets, isLoading }: AssetTableProps) {
                 </td>
 
                 <td className="whitespace-nowrap px-4 py-2.5 tabular-nums">
-                  {asset.purchaseDate}
+                  {formatDate(asset.purchaseDate)}
                 </td>
 
-                <WarrantyCell warranty={asset.warrantyExpiry} />
+                <WarrantyCell warranty={formatDate(asset.warrantyExpiry)} />
 
                 <td className="py-2.5 pl-0 pr-3 text-muted-foreground">
                   <ChevronRight aria-hidden="true" className="size-4" />

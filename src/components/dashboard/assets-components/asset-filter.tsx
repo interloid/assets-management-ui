@@ -55,7 +55,7 @@ export default function AssetFilters({
           { label: "Any warranty", value: "all" },
           { label: "Expires ≤ 30 days", value: "expires_in_30_days" },
           { label: "Expires ≤ 90 days", value: "expires_in_90_days" },
-          { label: "Already expired", value: "expired" },
+          { label: "Already expired", value: "already_expired" },
         ]}
         value={query.warrantyExpiry}
         onChange={(value) => onQueryChange("warrantyExpiry", value)}

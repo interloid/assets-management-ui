@@ -92,3 +92,13 @@ export function toStatusLabel(status: string): string {
     )
     .join(" ");
 }
+
+export function formatDate(date: string | null): string {
+  if (!date) return "—";
+
+  return new Date(`${date}T00:00:00`).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}

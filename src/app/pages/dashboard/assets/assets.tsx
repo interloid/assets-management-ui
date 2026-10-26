@@ -2,6 +2,7 @@ import AssetFilters from "@/components/dashboard/assets-components/asset-filter"
 import AssetTable from "@/components/dashboard/assets-components/asset-table";
 import StatusTabs from "@/components/dashboard/assets-components/status-bar";
 import { Button } from "@/components/ui/button";
+import { useDebounce } from "@/hooks/use-debounce";
 import {
   getAssetsData,
   getListUsers,
@@ -18,7 +19,7 @@ export default function Assets() {
   const [assetsData, setAssetsData] = useState<Asset[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [allUsers, setAllUsers] = useState<User[] | null>(null);
-  const [assetStats, SetAssetStats] = useState<AssetStats | null>(null)
+  const [assetStats, SetAssetStats] = useState<AssetStats | null>(null);
   const [query, setQuery] = useState<AssetQuery>({
     status: "all",
     search: "",
@@ -29,6 +30,7 @@ export default function Assets() {
     page: 1,
     size: 20,
   });
+  const debounceSearch = useDebounce(query.search, 500);
 
   function updateQuery<K extends keyof AssetQuery>(
     key: K,
@@ -45,7 +47,13 @@ export default function Assets() {
     async function AssetsData() {
       try {
         setIsLoading(true);
-        const response = await getAssetsData(query);
+        if (query.search !== debounceSearch) {
+          return;
+        }
+        const response = await getAssetsData({
+          ...query,
+          search: debounceSearch,
+        });
         if (!response.success || !response.data) {
           return;
         }
@@ -69,7 +77,7 @@ export default function Assets() {
       }
     }
     void AssetsData();
-  }, [query]);
+  }, [query, debounceSearch]);
 
   useEffect(() => {
     async function getUsers() {
@@ -92,9 +100,10 @@ export default function Assets() {
     async function assetStats() {
       try {
         const response = await getAssetStats();
-        if(!response.success || !response.data){
-          return ;
-        }if(response.success || response.data){
+        if (!response.success || !response.data) {
+          return;
+        }
+        if (response.success || response.data) {
           SetAssetStats(response.data);
         }
       } catch (error) {

@@ -79,7 +79,7 @@ export default function Dashboard() {
           },
         ]);
       } catch (error) {
-        console.error("Failed to load asset statistics:", error);
+        console.error(error);
       } finally {
         setIsAssetsLoading(false);
       }
@@ -104,7 +104,7 @@ export default function Dashboard() {
           })),
         );
       } catch (error) {
-        console.error("Failed to load warranty statistics:", error);
+        console.error(error);
       } finally {
         setIsWarrantyLoading(false);
       }
