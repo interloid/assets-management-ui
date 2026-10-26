@@ -22,7 +22,7 @@ export async function getAssetsData(
   }
 
   if (query.assignedUser !== "all") {
-    params.set("assigned_user_id", query.assignedUser);
+    params.set("assigned_to", query.assignedUser);
   }
 
   if (query.warrantyExpiry !== "all") {
@@ -46,5 +46,31 @@ export async function getAssetsData(
     },
   });
   const response: AssetListResponse = toCamelCase(await result.json());
+  return response;
+}
+
+export interface User {
+  id: string;
+  fullName: string;
+  email: string;
+  role: string;
+}
+
+export interface UsersResponse {
+  success: boolean;
+  StatusCode: number;
+  message: string;
+  data: User[];
+}
+
+export async function getListUsers(): Promise<UsersResponse> {
+  const result = await fetch(`${API_BASE_URL}/users`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      accept: "application/json",
+    },
+  });
+  const response: UsersResponse = toCamelCase(await result.json());
   return response;
 }

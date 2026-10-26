@@ -1,7 +1,4 @@
-"use client";
-
 import * as React from "react";
-
 import {
   Sidebar,
   SidebarContent,
@@ -94,7 +91,10 @@ const data: SidebarData = {
   ],
 };
 
-export function AppSidebar({ setIsAuthenticated, ...props }: React.ComponentProps<typeof Sidebar> & {
+export function AppSidebar({
+  setIsAuthenticated,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & {
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { pathname } = useLocation();
@@ -112,8 +112,8 @@ export function AppSidebar({ setIsAuthenticated, ...props }: React.ComponentProp
       </div>
       <SidebarContent className="group-data-[collapsible=icon]:px-2 px-1 gap-1.25 ">
         {data.navMain.map((item) => (
-          <>
-            <SidebarGroup key={item.title} className="pt-0 group-data-[collapsible=icon]:pb-4">
+          <React.Fragment key={item.title}>
+            <SidebarGroup className="pt-0 group-data-[collapsible=icon]:pb-4">
               <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu className="gap-0.5 group-data-[collapsible=icon]:gap-1.5">
@@ -144,7 +144,7 @@ export function AppSidebar({ setIsAuthenticated, ...props }: React.ComponentProp
             <div className="hidden justify-center group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:h-3 group-data-[collapsible=icon]:pb-1">
               <SidebarSeparator className="h-px w-6 " />
             </div>
-          </>
+          </React.Fragment>
         ))}
       </SidebarContent>
 

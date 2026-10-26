@@ -2,26 +2,23 @@ import AssetFilters from "@/components/dashboard/assets-components/asset-filter"
 import AssetTable from "@/components/dashboard/assets-components/asset-table";
 import StatusTabs from "@/components/dashboard/assets-components/status-bar";
 import { Button } from "@/components/ui/button";
-import { getAssetsData } from "@/services/assets.services";
+import {
+  getAssetsData,
+  getListUsers,
+  type User,
+} from "@/services/assets.services";
+import { getAssetStats, type AssetStats } from "@/services/dashboard.services";
 import type { Asset, AssetQuery } from "@/types/assets";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
-function getAssignedUsers(assets: Asset[]) {
-  const users = new Map<string, NonNullable<Asset["assignedUser"]>>();
-  for (const { assignedUser } of assets) {
-    if (assignedUser) {
-      users.set(assignedUser.id, assignedUser);
-    }
-  }
-  return [...users.values()];
-}
-
 export default function Assets() {
   const navigate = useNavigate();
   const [assetsData, setAssetsData] = useState<Asset[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [allUsers, setAllUsers] = useState<User[] | null>(null);
+  const [assetStats, SetAssetStats] = useState<AssetStats | null>(null)
   const [query, setQuery] = useState<AssetQuery>({
     status: "all",
     search: "",
@@ -74,8 +71,38 @@ export default function Assets() {
     void AssetsData();
   }, [query]);
 
-  const assignedUsers = getAssignedUsers(assetsData ?? []);
+  useEffect(() => {
+    async function getUsers() {
+      try {
+        const response = await getListUsers();
+        if (!response.success || !response.data) {
+          return;
+        }
+        if (response.success || response.data) {
+          setAllUsers(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    void getUsers();
+  }, []);
 
+  useEffect(() => {
+    async function assetStats() {
+      try {
+        const response = await getAssetStats();
+        if(!response.success || !response.data){
+          return ;
+        }if(response.success || response.data){
+          SetAssetStats(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    void assetStats();
+  }, []);
   return (
     <section className="p-4 md:p-5.5 md:pt-6 lg:p-5.5 lg:pt-7.75! lg:pb-6 lg:pr-7 xl:pt-8.5! xl:pl-8 xl:pr-8 2xl:px-8 gap-5 flex flex-col  lg:justify-between">
       <div className="gap-3.5 flex flex-col w-full xsm:flex-row xsm:justify-between">
@@ -99,10 +126,14 @@ export default function Assets() {
           </Button>
         </div>
       </div>
-      <StatusTabs query={query} />
+      <StatusTabs
+        assetStats={assetStats}
+        status={query.status}
+        onQueryChange={updateQuery}
+      />
       <AssetFilters
         query={query}
-        assignedUsers={assignedUsers}
+        allUsers={allUsers ?? []}
         onQueryChange={updateQuery}
       />
       <AssetTable assets={assetsData ?? []} isLoading={isLoading} />

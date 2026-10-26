@@ -1,17 +1,19 @@
+import { Spinner } from "@/components/ui/spinner";
 import type { AssetStatusProps } from "@/types/assets";
-import { useState } from "react";
 
 const statusTabs = [
-  { label: "All", value: "all" },
-  { label: "In stock", value: "in_stock" },
-  { label: "Assigned", value: "assigned" },
-  { label: "In repair", value: "in_repair" },
-  { label: "Retired", value: "retired" },
+  { label: "All", value: "total", statKey: "total" },
+  { label: "In stock", value: "in_stock", statKey: "inStock" },
+  { label: "Assigned", value: "assigned", statKey: "assigned" },
+  { label: "In repair", value: "repair", statKey: "repair" },
+  { label: "Retired", value: "retired", statKey: "retired" },
 ] as const;
 
-export default function StatusTabs({ query } : AssetStatusProps) {
-  console.log('query', query)
-  const [activeTab, setActiveTab] = useState("All");
+export default function StatusTabs({
+  assetStats,
+  status,
+  onQueryChange,
+}: AssetStatusProps) {
 
   return (
     <div
@@ -20,7 +22,7 @@ export default function StatusTabs({ query } : AssetStatusProps) {
       className="flex gap-1 overflow-x-auto border-b border-border scrollbar-none"
     >
       {statusTabs.map((tab) => {
-        const isActive = activeTab === tab.label;
+        const isActive = status === tab.value;
 
         return (
           <button
@@ -28,7 +30,7 @@ export default function StatusTabs({ query } : AssetStatusProps) {
             type="button"
             role="tab"
             aria-selected={isActive}
-            onClick={() => setActiveTab(tab.label)}
+            onClick={() => onQueryChange("status", tab.value)}
             className={`-mb-px inline-flex h-10 shrink-0 items-center gap-2 border-0 border-b-2 bg-transparent px-3 text-sm transition-colors duration-150 ${
               isActive
                 ? "border-b-primary font-medium text-foreground"
@@ -38,7 +40,11 @@ export default function StatusTabs({ query } : AssetStatusProps) {
             <span>{tab.label}</span>
 
             <span className="inline-grid h-5 min-w-5 place-items-center rounded-full bg-muted px-1.5 text-xs tabular-nums text-muted-foreground">
-              {tab.label}
+              {assetStats ? (
+                assetStats[tab.statKey]
+              ) : (
+                <Spinner className="size-3" />
+              )}
             </span>
           </button>
         );

@@ -1,4 +1,5 @@
-import type { AssignedUser } from "@/services/dashboard.services";
+import type { User } from "@/services/assets.services";
+import type { AssetStats, AssignedUser } from "@/services/dashboard.services";
 
 export type Asset = {
   id: string;
@@ -22,16 +23,21 @@ export type AssetTableProps = {
 
 export type AssetFiltersProps = {
   query: AssetQuery;
-  assignedUsers: Pick<AssignedUser, "id" | "fullName">[];
+  allUsers: User[];
   onQueryChange: <K extends keyof AssetQuery>(
     key: K,
     value: AssetQuery[K],
   ) => void;
 };
 
-export type AssetStatusProps ={
-  query: AssetQuery;
-}
+export type AssetStatusProps = {
+  assetStats: AssetStats | null;
+  status: AssetQuery["status"] ;
+  onQueryChange: <K extends keyof AssetQuery>(
+    key: K,
+    value: AssetQuery[K],
+  ) => void;
+};
 
 export type AssetQuery = {
   status: string;

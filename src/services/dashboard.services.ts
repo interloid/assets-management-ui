@@ -2,18 +2,20 @@ import { toCamelCase } from "@/lib/converters";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+export type AssetStats = {
+  total: number;
+  inStock: number;
+  assigned: number;
+  repair: number;
+  retired: number;
+};
+
 export interface AssetResponse {
   success: boolean;
   statusCode: number;
   message: string;
   errors?: { field: string; message: string }[];
-  data?: {
-    total: number;
-    inStock: number;
-    assigned: number;
-    repair: number;
-    retired: number;
-  };
+  data?: AssetStats;
 }
 
 export interface AssetListResponse {
@@ -40,14 +42,14 @@ export interface AssetListResponse {
     recordsPerPage: number;
     totalItems: number;
     totalPages: number;
-  }
+  };
 }
 
 export type AssignedUser = {
   id: string;
   email: string;
   fullName: string;
-}
+};
 
 export async function getAssetStats(): Promise<AssetResponse> {
   const result = await fetch(`${API_BASE_URL}/assets/stats`, {

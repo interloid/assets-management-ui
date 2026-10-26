@@ -4,7 +4,7 @@ import { ChevronDown, Search } from "lucide-react";
 export default function AssetFilters({
   query,
   onQueryChange,
-  assignedUsers,
+  allUsers,
 }: AssetFiltersProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -41,7 +41,7 @@ export default function AssetFilters({
         label="Assigned to"
         options={[
           { label: "Anyone", value: "all" },
-          ...assignedUsers.map((user) => ({
+          ...allUsers.map((user) => ({
             label: user.fullName,
             value: user.id,
           })),
@@ -77,6 +77,7 @@ export default function AssetFilters({
     </div>
   );
 }
+
 type FilterOption = {
   label: string;
   value: string;
@@ -89,12 +90,7 @@ type FilterSelectProps = {
   onChange: (value: string) => void;
 };
 
-function FilterSelect({
-  label,
-  options,
-  value,
-  onChange,
-}: FilterSelectProps) {
+function FilterSelect({ label, options, value, onChange }: FilterSelectProps) {
   return (
     <label className="relative flex min-w-0 flex-[1_1_160px] sm:max-w-55">
       <span className="sr-only">{label}</span>
@@ -111,7 +107,6 @@ function FilterSelect({
           </option>
         ))}
       </select>
-
       <ChevronDown
         aria-hidden="true"
         className="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
