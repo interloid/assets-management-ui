@@ -39,7 +39,7 @@ export default function Assets() {
     setQuery((current) => ({
       ...current,
       [key]: value,
-      page: 1,
+      ...(key === "page" ? {} : { page: 1 }),
     }));
   }
 
@@ -145,7 +145,13 @@ export default function Assets() {
         allUsers={allUsers ?? []}
         onQueryChange={updateQuery}
       />
-      <AssetTable assets={assetsData ?? []} isLoading={isLoading} />
+      <AssetTable
+        query={query}
+        assetStats={assetStats}
+        onQueryChange={updateQuery}
+        assets={assetsData ?? []}
+        isLoading={isLoading}
+      />
     </section>
   );
 }

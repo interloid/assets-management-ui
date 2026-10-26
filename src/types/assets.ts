@@ -17,8 +17,14 @@ export type Asset = {
 };
 
 export type AssetTableProps = {
+  assetStats: AssetStats | null;
   assets: Asset[];
+  query: AssetQuery;
   isLoading: boolean;
+  onQueryChange: <K extends keyof AssetQuery>(
+    key: K,
+    value: AssetQuery[K],
+  ) => void;
 };
 
 export type AssetFiltersProps = {
@@ -32,7 +38,7 @@ export type AssetFiltersProps = {
 
 export type AssetStatusProps = {
   assetStats: AssetStats | null;
-  status: AssetQuery["status"] ;
+  status: AssetQuery["status"];
   onQueryChange: <K extends keyof AssetQuery>(
     key: K,
     value: AssetQuery[K],

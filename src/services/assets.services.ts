@@ -30,6 +30,7 @@ export async function getAssetsData(
   }
 
   const [sort, order] = query.sort.split(":");
+  
   if (sort && order) {
     params.set("sort", sort);
     params.set("order", order);

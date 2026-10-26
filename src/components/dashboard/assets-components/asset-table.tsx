@@ -49,11 +49,21 @@ function WarrantyCell({ warranty }: { warranty: string }) {
   );
 }
 
-export default function AssetTable({ assets, isLoading }: AssetTableProps) {
+export default function AssetTable({
+  assets,
+  query,
+  assetStats,
+  onQueryChange,
+  isLoading,
+}: AssetTableProps) {
+  const total = assetStats?.total ?? 0;
+  const startItem = total === 0 ? 0 : (query.page - 1) * query.size + 1;
+  const endItem = Math.min(query.page * query.size, total);
+  const totalPages = Math.ceil(total / query.size);
+
   return isLoading ? (
     <div>
-      {" "}
-      <AssetTableSkeleton />{" "}
+      <AssetTableSkeleton />
     </div>
   ) : (
     <section
@@ -159,16 +169,23 @@ export default function AssetTable({ assets, isLoading }: AssetTableProps) {
         </table>
       </div>
       <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-3 text-sm text-muted-foreground">
-        <span>
-          Showing <strong className="font-medium text-foreground">1-20</strong>{" "}
-          of <strong className="font-medium text-foreground">24</strong> assets
+        <span className="flex gap-1">
+          Showing{" "}
+          <strong className="font-medium text-foreground">
+            {startItem}-{endItem}
+          </strong>
+          of <strong className="font-medium text-foreground">{total}</strong>{" "}
+          assets
         </span>
 
         <div className="flex items-center gap-2">
           <label htmlFor="rows-per-page">Rows</label>
           <select
             id="rows-per-page"
-            defaultValue="20"
+            value={query.size}
+            onChange={(event) =>
+              onQueryChange("size", Number(event.target.value))
+            }
             className="h-8 rounded-md border border-input bg-background px-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <option value="10">10</option>
@@ -177,21 +194,26 @@ export default function AssetTable({ assets, isLoading }: AssetTableProps) {
             <option value="100">100</option>
           </select>
 
-          <span className="px-2 tabular-nums">Page 1 of 2</span>
+          <span className="px-2 tabular-nums">
+            {query.page} of {totalPages}
+          </span>
 
           <button
             type="button"
             aria-label="Previous page"
-            disabled
-            className="grid size-8 place-items-center rounded-md border border-border bg-background opacity-50 disabled:cursor-not-allowed"
+            disabled={query.page <= 1}
+            onClick={() => onQueryChange("page", query.page - 1)}
+            className="grid size-8 place-items-center rounded-md border border-border bg-background text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed enabled:cursor-pointer"
           >
             <ChevronLeft className="size-4" />
           </button>
-
           <button
             type="button"
             aria-label="Next page"
-            className="grid size-8 place-items-center rounded-md border border-border bg-background text-foreground transition-colors hover:bg-muted"
+            disabled={query.page >= totalPages}
+            value={query.page + 1}
+            onClick={() => onQueryChange("page", query.page + 1)}
+            className="grid size-8 place-items-center rounded-md border border-border bg-background text-foreground transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed enabled:cursor-pointer"
           >
             <ChevronRight className="size-4" />
           </button>

@@ -37,7 +37,7 @@ export default function StackedProgressBar({
             <p className="text-sm text-muted-foreground">
               <span className="text-[26px] font-semibold tracking-tight text-foreground tabular-nums md:text-3xl">
                 <AnimatedNumber value={total} />
-              </span>{" "}
+              </span>
               total
             </p>
           </div>
