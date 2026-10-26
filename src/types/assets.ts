@@ -18,6 +18,7 @@ export type Asset = {
 
 export type AssetTableProps = {
   assetStats: AssetStats | null;
+  handleClearFilters: () => void;
   assets: Asset[];
   query: AssetQuery;
   isLoading: boolean;
@@ -29,6 +30,7 @@ export type AssetTableProps = {
 
 export type AssetFiltersProps = {
   query: AssetQuery;
+  handleClearFilters: () => void;
   allUsers: User[];
   onQueryChange: <K extends keyof AssetQuery>(
     key: K,

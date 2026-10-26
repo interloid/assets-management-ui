@@ -43,6 +43,19 @@ export default function Assets() {
     }));
   }
 
+  function handleClearFilters() {
+  setQuery((current) => ({
+    ...current,
+    search: "",
+    status: "all",
+    type: "all",
+    assignedUser: "all",
+    warrantyExpiry: "all",
+    page: 1,
+  }));
+}
+
+
   useEffect(() => {
     async function AssetsData() {
       try {
@@ -144,9 +157,11 @@ export default function Assets() {
         query={query}
         allUsers={allUsers ?? []}
         onQueryChange={updateQuery}
+        handleClearFilters={handleClearFilters}
       />
       <AssetTable
         query={query}
+        handleClearFilters={handleClearFilters}
         assetStats={assetStats}
         onQueryChange={updateQuery}
         assets={assetsData ?? []}

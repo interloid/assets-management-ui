@@ -12,6 +12,7 @@ import {
 import { Link } from "react-router";
 import { statusStyles } from "../resuable-components/statusStyles";
 import AssetTableSkeleton from "./assetsTableSkeleton";
+import { AssetEmptyState } from "./asset-empty-state";
 
 function AssetTypeIcon({ type }: { type: Asset["type"] }) {
   const className = "size-4 shrink-0 text-muted-foreground";
@@ -53,6 +54,7 @@ export default function AssetTable({
   assets,
   query,
   assetStats,
+  handleClearFilters,
   onQueryChange,
   isLoading,
 }: AssetTableProps) {
@@ -61,11 +63,18 @@ export default function AssetTable({
   const endItem = Math.min(query.page * query.size, total);
   const totalPages = Math.ceil(total / query.size);
 
-  return isLoading ? (
-    <div>
-      <AssetTableSkeleton />
-    </div>
-  ) : (
+  if (isLoading) {
+    return (
+      <div>
+        <AssetTableSkeleton />
+      </div>
+    );
+  }
+
+  if (assets.length === 0) {
+    return <AssetEmptyState onClearFilters={handleClearFilters} />;
+  }
+  return (
     <section
       aria-label="Asset list"
       className="overflow-hidden rounded-lg border border-border bg-card shadow-sm"
@@ -157,9 +166,14 @@ export default function AssetTable({
                 <td className="whitespace-nowrap px-4 py-2.5 tabular-nums">
                   {formatDate(asset.purchaseDate)}
                 </td>
-
-                <WarrantyCell warranty={formatDate(asset.warrantyExpiry)} />
-
+                {asset.warrantyExpiry === null ? (
+                  <td className="whitespace-nowrap px-4 py-2.5 text-muted-foreground">
+                    {" "}
+                    No warranty{" "}
+                  </td>
+                ) : (
+                  <WarrantyCell warranty={formatDate(asset.warrantyExpiry)} />
+                )}
                 <td className="py-2.5 pl-0 pr-3 text-muted-foreground">
                   <ChevronRight aria-hidden="true" className="size-4" />
                 </td>

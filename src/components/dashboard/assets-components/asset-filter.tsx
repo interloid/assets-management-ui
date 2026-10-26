@@ -1,11 +1,19 @@
+import { Button } from "@/components/ui/button";
 import type { AssetFiltersProps } from "@/types/assets";
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Search, X } from "lucide-react";
 
 export default function AssetFilters({
   query,
   onQueryChange,
+  handleClearFilters,
   allUsers,
 }: AssetFiltersProps) {
+  const hasActiveFilters =
+    query.search !== "" ||
+    query.status !== "all" ||
+    query.type !== "all" ||
+    query.assignedUser !== "all" ||
+    query.warrantyExpiry !== "all";
   return (
     <div className="flex flex-wrap items-center gap-2">
       <label className="relative flex min-w-0 flex-[1_1_260px]">
@@ -74,6 +82,19 @@ export default function AssetFilters({
         value={query.sort}
         onChange={(value) => onQueryChange("sort", value)}
       />
+      {hasActiveFilters && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={handleClearFilters}
+          title="Reset search and all filters"
+          className="h-9 gap-1.5 rounded-md px-3 text-sm font-medium"
+        >
+          <X className="size-4" aria-hidden="true" />
+          Clear filters
+        </Button>
+      )}
     </div>
   );
 }
