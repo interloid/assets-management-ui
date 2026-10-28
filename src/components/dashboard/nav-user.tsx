@@ -2,21 +2,22 @@ import { LogOut } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar";
-import { logout, type User } from "@/services/auth.services";
+import { logout } from "@/services/auth.services";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import SidebarThemeButton from "./theme-button";
 import { getInitials, toCamelCase } from "@/lib/converters";
+import { useAuth } from "@/context/auth";
 
-interface NavUserProps {
-  currentUser: User;
-  onLogout: () => void;
-}
-
-export function NavUser({ currentUser, onLogout }: NavUserProps) {
-  const userdata = toCamelCase(currentUser?.data);
-  const initials = getInitials(userdata.fullName);
+export function NavUser() {
   const navigate = useNavigate();
+  const { currentUser, setCurrentUser } = useAuth();
+
+  if (!currentUser) return null;
+
+  const userdata = toCamelCase(currentUser?.data);
+  const initials = getInitials(userdata.fullName ?? undefined);
+
   async function logOutSession() {
     try {
       const response = await logout();
@@ -25,7 +26,7 @@ export function NavUser({ currentUser, onLogout }: NavUserProps) {
         return;
       }
       if (response.ok) {
-        onLogout();
+        setCurrentUser(null);
         navigate("/login");
         toast.success("Logged out Successfully!");
       }

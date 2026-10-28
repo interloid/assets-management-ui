@@ -25,7 +25,6 @@ import {
 import { NavUser } from "./nav-user";
 import { Link, useLocation } from "react-router";
 import interloidMark from "@/assets/interloid-mark.svg";
-import type { User } from "@/services/auth.services";
 import { useSidebar } from "@/components/ui/sidebar-context";
 
 export type NavMainItem = {
@@ -94,13 +93,8 @@ const data: SidebarData = {
 };
 
 export function AppSidebar({
-  setIsAuthenticated,
-  currentUser,
   ...props
-}: React.ComponentProps<typeof Sidebar> & {
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-  currentUser: User;
-}) {
+}: React.ComponentProps<typeof Sidebar> & {}) {
   const { pathname } = useLocation();
   const { isMobile, setOpenMobile } = useSidebar();
   return (
@@ -161,10 +155,7 @@ export function AppSidebar({
       </SidebarContent>
 
       <SidebarFooter className="border-t">
-        <NavUser
-          currentUser={currentUser}
-          onLogout={() => setIsAuthenticated(false)}
-        />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
