@@ -1,23 +1,19 @@
-
 type SnakeToCamelCase<S extends string> =
   S extends `${infer First}_${infer Rest}`
     ? `${First}${Capitalize<SnakeToCamelCase<Rest>>}`
     : S;
 
-type CamelCaseKeys<T> =
-  T extends readonly (infer U)[]
-    ? CamelCaseKeys<U>[]
-    : T extends object
-      ? {
-          [K in keyof T as K extends string
-            ? SnakeToCamelCase<K>
-            : K]: CamelCaseKeys<T[K]>;
-        }
-      : T;
+type CamelCaseKeys<T> = T extends readonly (infer U)[]
+  ? CamelCaseKeys<U>[]
+  : T extends object
+    ? {
+        [
+          K in keyof T as K extends string ? SnakeToCamelCase<K> : K
+        ]: CamelCaseKeys<T[K]>;
+      }
+    : T;
 
-function isPlainObject(
-  value: unknown,
-): value is Record<string, unknown> {
+function isPlainObject(value: unknown): value is Record<string, unknown> {
   if (value === null || typeof value !== "object") {
     return false;
   }
@@ -35,9 +31,7 @@ export function toSnakeCaseKey(key: string): string {
 }
 
 export function toCamelCaseKey(key: string): string {
-  return key.replace(/_([a-z])/g, (_, letter: string) =>
-    letter.toUpperCase(),
-  );
+  return key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase());
 }
 
 export function toSnakeCase(value: unknown): unknown {
@@ -57,9 +51,7 @@ export function toSnakeCase(value: unknown): unknown {
   );
 }
 
-export function toCamelCase<T>(
-  value: T,
-): CamelCaseKeys<T> {
+export function toCamelCase<T>(value: T): CamelCaseKeys<T> {
   if (Array.isArray(value)) {
     return value.map(toCamelCase) as CamelCaseKeys<T>;
   }
@@ -86,9 +78,7 @@ export function toStatusLabel(status: string): string {
   return status
     .split("_")
     .map((word, index) =>
-      index === 0
-        ? word.charAt(0).toUpperCase() + word.slice(1)
-        : word,
+      index === 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word,
     )
     .join(" ");
 }

@@ -42,7 +42,7 @@ export async function getCurrentSession(): Promise<User> {
       accept: "application/json",
     },
   });
-  const response = (await result.json());
+  const response = await result.json();
   return response;
 }
 
@@ -61,7 +61,9 @@ export async function login(
   return response;
 }
 
-export async function signUp(credentials: SignUpCredentials): Promise<AuthResponse> {
+export async function signUp(
+  credentials: SignUpCredentials,
+): Promise<AuthResponse> {
   const result = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",
     credentials: "include",
@@ -70,13 +72,13 @@ export async function signUp(credentials: SignUpCredentials): Promise<AuthRespon
     },
     body: JSON.stringify(toSnakeCase(credentials)),
   });
-  const response : AuthResponse = (await result.json());
+  const response: AuthResponse = await result.json();
   const data = toCamelCase(response);
   return data;
 }
 
-export async function logout(){
-  const response = await fetch(`${API_BASE_URL}/auth/logout`,{
+export async function logout() {
+  const response = await fetch(`${API_BASE_URL}/auth/logout`, {
     method: "POST",
     credentials: "include",
   });
