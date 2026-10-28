@@ -6,6 +6,7 @@ import "@/styles/index.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { ThemeProvider } from "@/context/theme-provider";
+import { AuthProvider } from "@/context/auth-provider";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -13,7 +14,9 @@ createRoot(document.getElementById("root")!).render(
       <ErrorBoundary>
         <BrowserRouter>
           <TooltipProvider>
-            <App />
+            <AuthProvider>
+              <App />
+            </AuthProvider>
           </TooltipProvider>
         </BrowserRouter>
       </ErrorBoundary>

@@ -19,12 +19,13 @@ import { CircleAlert, CircleCheck, LoaderCircle } from "lucide-react";
 import { loginSchema } from "@/schemas/auth";
 import { login } from "@/services/auth.services";
 import { Link, useNavigate, useSearchParams } from "react-router";
-import type { AuthErrors, LoginFormProps } from "@/types/auth";
+import type { AuthErrors } from "@/types/auth";
 import { toast } from "sonner";
 import PasswordEye from "@/components/auth/password-eye";
 import BrandTitle from "./brand-title";
+import { useAuth } from "@/context/auth";
 
-export function LoginForm({ onLoginSuccess, className }: LoginFormProps) {
+export function LoginForm() {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
@@ -33,8 +34,8 @@ export function LoginForm({ onLoginSuccess, className }: LoginFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
-
   const isRegistered = searchParams.get("registered") === "true";
+  const { refreshSession } = useAuth();
 
   function validateForm() {
     const result = loginSchema.safeParse({
@@ -78,7 +79,7 @@ export function LoginForm({ onLoginSuccess, className }: LoginFormProps) {
       setIsLoading(true);
       const response = await login({ email, password });
       if (response.success) {
-        onLoginSuccess(true);
+        await refreshSession();
         navigate("/dashboard");
         toast.success("Login Successful!");
       }
@@ -102,7 +103,6 @@ export function LoginForm({ onLoginSuccess, className }: LoginFormProps) {
     <main
       className={cn(
         "flex flex-col w-full h-full gap-6 justify-center items-center min-h-full bg-muted p-4 pr-3.5 md:p-10",
-        className,
       )}
     >
       <BrandTitle />
