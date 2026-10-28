@@ -3,7 +3,7 @@ import { Moon, Sun } from "lucide-react";
 import { useSidebar } from "../ui/sidebar-context";
 import { useTheme } from "@/context/theme";
 
-export default function SidebarThemeButton() {
+export default function ThemeButton() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const { theme, toggleTheme } = useTheme();

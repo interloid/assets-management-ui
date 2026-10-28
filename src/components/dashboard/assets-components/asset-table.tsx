@@ -10,10 +10,10 @@ import {
   Smartphone,
 } from "lucide-react";
 import { Link } from "react-router";
-import { statusStyles } from "../resuable-components/reusable-variables";
 import AssetTableSkeleton from "./assetsTableSkeleton";
 import { AssetEmptyState } from "./asset-empty-state";
 import { AssetsMobile } from "./assets-mobile-layout";
+import { statusStyles } from "../reusable-components/reusable-variables";
 
 export function AssetTypeIcon({ type }: { type: Asset["type"] }) {
   const className = "size-4 shrink-0 text-muted-foreground";

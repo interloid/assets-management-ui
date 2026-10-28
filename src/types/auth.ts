@@ -6,7 +6,7 @@ export interface LoginPageProps {
   setIsAuthenticated: LoginSuccessHandler;
 }
 
-export type LoginForm = {
+export type LoginFormProps = {
   onLoginSuccess: LoginSuccessHandler;
 } & ComponentProps<"div">;
 

@@ -22,9 +22,11 @@ import {
   Package,
   UserRound,
 } from "lucide-react";
-import { NavUser } from "../ui/nav-user";
+import { NavUser } from "./nav-user";
 import { Link, useLocation } from "react-router";
 import interloidMark from "@/assets/interloid-mark.svg";
+import type { User } from "@/services/auth.services";
+import { useSidebar } from "@/components/ui/sidebar-context";
 
 export type NavMainItem = {
   title: string;
@@ -64,12 +66,12 @@ const data: SidebarData = {
         {
           title: "Assets",
           icon: Boxes,
-          url: "/dashboard/assets",
+          url: "/assets",
         },
         {
           title: "Users",
           icon: Users,
-          url: "/dashboard/users",
+          url: "/users",
         },
       ],
     },
@@ -79,12 +81,12 @@ const data: SidebarData = {
         {
           title: "My assets",
           icon: Package,
-          url: "/dashboard/myassets",
+          url: "/my-assets",
         },
         {
           title: "Profile",
           icon: UserRound,
-          url: "/dashboard/profile",
+          url: "/profile",
         },
       ],
     },
@@ -93,11 +95,14 @@ const data: SidebarData = {
 
 export function AppSidebar({
   setIsAuthenticated,
+  currentUser,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  currentUser: User;
 }) {
   const { pathname } = useLocation();
+  const { isMobile, setOpenMobile } = useSidebar();
   return (
     <Sidebar
       collapsible="icon"
@@ -127,11 +132,18 @@ export function AppSidebar({
                             pathname.startsWith(`${navItem.url}/`))
                         }
                         tooltip={navItem.title}
-                        className="bg-transparent! flex gap-2.5 h-9  data-[active=true]:bg-muted! hover:bg-muted!"
+                        className="data-active:bg-transparent flex gap-2.5 h-9  data-[active=true]:bg-muted hover:bg-muted"
                       >
-                        <Link to={navItem.url}>
+                        <Link
+                          to={navItem.url}
+                          onClick={() => {
+                            if (isMobile) {
+                              setOpenMobile(false);
+                            }
+                          }}
+                        >
                           {navItem.icon && (
-                            <navItem.icon className="text-muted-foreground group-data-[active=true]/menu-button:text-sidebar-primary!" />
+                            <navItem.icon className="text-muted-foreground group-data-[active=true]/menu-button:text-sidebar-primary" />
                           )}
                           <span>{navItem.title}</span>
                         </Link>
@@ -149,7 +161,10 @@ export function AppSidebar({
       </SidebarContent>
 
       <SidebarFooter className="border-t">
-        <NavUser user={data.user} onLogout={() => setIsAuthenticated(false)} />
+        <NavUser
+          currentUser={currentUser}
+          onLogout={() => setIsAuthenticated(false)}
+        />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

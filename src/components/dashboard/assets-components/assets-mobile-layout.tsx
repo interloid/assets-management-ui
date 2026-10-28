@@ -2,8 +2,8 @@ import type { Asset } from "@/types/assets";
 import { AssetTypeIcon } from "./asset-table";
 import { toPascalCase, toStatusLabel } from "@/lib/converters";
 import { cn } from "cn";
-import { statusStyles } from "../resuable-components/reusable-variables";
 import { Link } from "react-router";
+import { statusStyles } from "../reusable-components/reusable-variables";
 
 export type AssetsMobileProps = {
   assets: Asset[];

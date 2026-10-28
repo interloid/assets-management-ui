@@ -1,18 +1,12 @@
-interface StackProgressSkeletonProps {
-  title: string;
-}
-
-export default function StackProgressSkeleton({
-  title,
-}: StackProgressSkeletonProps) {
+export default function StackedProgressBarSkeleton() {
   return (
-    <div className="space-y-5" aria-busy="true">
-      <div className="flex flex-wrap items-baseline justify-between gap-2 md:pb-1!">
+    <div className="space-y-5 border p-6 rounded-lg" aria-busy="true">
+      <div className="flex flex-wrap items-baseline justify-between gap-2 md:pb-1">
         <h2
           id="status-heading"
           className="text-sm font-medium text-muted-foreground"
         >
-          {title}
+          Assets by Status
         </h2>
 
         <div className="flex items-baseline gap-2" aria-hidden="true">

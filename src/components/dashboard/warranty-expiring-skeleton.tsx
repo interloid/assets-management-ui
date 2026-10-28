@@ -1,4 +1,4 @@
-export function WarrantyExpiringSkeleton() {
+export default function WarrantyExpiringSkeleton() {
   return (
     <section className="animate-pulse overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-sm">
       <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">

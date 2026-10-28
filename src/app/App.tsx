@@ -4,36 +4,40 @@ import { useEffect, useState } from "react";
 import SignUpPage from "@/app/pages/auth/signup";
 import { Toaster } from "sonner";
 import LoginPage from "@/app/pages/auth/login";
-import { getCurrentSession } from "@/services/auth.services";
+import { getCurrentSession, type User } from "@/services/auth.services";
 import { Spinner } from "@/components/ui/spinner";
 import Assets from "./pages/dashboard/assets/assets";
 import Users from "./pages/dashboard/users/users";
-import MyAssets from "./pages/dashboard/my-assets/myassets";
+import MyAssets from "./pages/dashboard/my-assets/my-assets";
 import Profile from "./pages/dashboard/profile/profile";
 import Dashboard from "./pages/dashboard/dashboard";
 import DashboardLayout from "@/layout/dashboard";
-import { AddAsset } from "@/components/dashboard/assets-components/add-asset";
+import NotFound from "./pages/not-found";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
-    async function CurrentSession() {
+    async function currentSession() {
       try {
         const response = await getCurrentSession();
-        if (response.success) {
+        if (!response.success) {
+          setCurrentUser(null);
           setIsAuthenticated(response.success);
-        } else {
-          setIsAuthenticated(false);
+          return;
         }
+        setCurrentUser(response);
+        setIsAuthenticated(response.success);
+        return true;
       } catch (error) {
         console.error(error);
       } finally {
         setIsLoading(false);
       }
     }
-    void CurrentSession();
+    void currentSession();
   }, []);
 
   if (isLoading) {
@@ -53,17 +57,27 @@ export default function App() {
           element={<LoginPage setIsAuthenticated={setIsAuthenticated} />}
         />
         <Route path="/signup" element={<SignUpPage />} />
-
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
-          <Route path="/dashboard" element={<DashboardLayout setIsAuthenticated={setIsAuthenticated} />}>
-            <Route path="" element={<Dashboard />} />
-            <Route path="assets" element={<Assets />} />
-            <Route path="/dashboard/assets/new" element={<AddAsset />} />
-            <Route path="users" element={<Users />} />
-            <Route path="myassets" element={<MyAssets />} />
-            <Route path="profile" element={<Profile />} />
+          <Route
+            element={
+              currentUser ? (
+                <DashboardLayout
+                  setIsAuthenticated={setIsAuthenticated}
+                  currentUser={currentUser}
+                />
+              ) : (
+                <Navigate to="/login" replace></Navigate>
+              )
+            }
+          >
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/assets" element={<Assets />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/my-assets" element={<MyAssets />} />
+            <Route path="/profile" element={<Profile />} />
           </Route>
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </>

@@ -23,12 +23,8 @@ import type {
   AssetType,
   ViewAssetDrawerProps,
 } from "@/types/assets";
-import {
-  statusLabels,
-  statusStyles,
-  typeIcons,
-} from "../resuable-components/reusable-variables";
 import { formatDate, toStatusLabel } from "@/lib/converters";
+import { statusLabels, statusStyles, typeIcons } from "../reusable-components/reusable-variables";
 
 function DetailRow({
   label,

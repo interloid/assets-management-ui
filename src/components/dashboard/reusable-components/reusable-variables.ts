@@ -1,14 +1,17 @@
 import type { AssetStatus, AssetType } from "@/types/assets";
-import { Keyboard, Laptop, Monitor, Smartphone, type LucideIcon } from "lucide-react";
+import {
+  Keyboard,
+  Laptop,
+  Monitor,
+  Smartphone,
+  type LucideIcon,
+} from "lucide-react";
 
 export const statusStyles: Record<string, string> = {
-  "In stock":
-    "text-[var(--success)] bg-[color-mix(in_oklch,var(--success)_12%,transparent)]",
-  Assigned:
-    "text-primary bg-[color-mix(in_oklch,var(--primary)_12%,transparent)]",
-  "In repair":
-    "text-[var(--warning)] bg-[color-mix(in_oklch,var(--warning)_12%,transparent)]",
-  Retired: "text-muted-foreground bg-muted",
+  "In stock": "text-success bg-success/12",
+  "Assigned": "text-primary bg-primary/12",
+  "In repair": "text-warning bg-warning/12",
+  "Retired": "text-muted-foreground bg-muted",
 };
 
 export const statusTabs = [
@@ -26,7 +29,7 @@ export const statusLabels: Record<AssetStatus, string> = {
   retired: "Retired",
 };
 
-export const typeIcons:Record<AssetType, LucideIcon> = {
+export const typeIcons: Record<AssetType, LucideIcon> = {
   laptop: Laptop,
   monitor: Monitor,
   phone: Smartphone,

@@ -9,21 +9,20 @@ export type ProgressSegment = {
 export type StackedProgressBarProps = {
   title?: string;
   segments: ProgressSegment[];
-  isLoading: boolean;
 };
 
 export type WarrantyAsset = {
   id: string;
   assetTag: string;
   status: string;
-  warrantyExpiry: string;
+  warrantyExpiry: string | null;
+  warrantyExpiresInDays: string | null;
   type: string;
   icon: LucideIcon;
 };
 
 export type WarrantyExpiringProps = {
   assets: WarrantyAsset[];
-  isLoading: boolean;
 };
 
 export type RecentAsset = {
@@ -37,5 +36,4 @@ export type RecentAsset = {
 
 export type RecentlyAddedProps = {
   assets: RecentAsset[];
-  isLoading: boolean;
 };

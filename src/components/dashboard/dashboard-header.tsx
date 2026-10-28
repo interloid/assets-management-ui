@@ -7,20 +7,20 @@ import { useLocation } from "react-router";
 
 const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
-  "/dashboard/assets/": "Assets",
-  "/dashboard/assets/new": "Assets",
-  "/dashboard/users": "Users",
-  "/dashboard/myassets": "MyAssets",
-  "/dashboard/profile": "Profile",
+  "/assets": "Assets",
+  "/assets/new": "Assets",
+  "/users": "Users",
+  "/my-assets": "My Assets",
+  "/profile": "Profile",
 };
 
-export default function Header() {
+export default function DashboardHeader() {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
 
   const pageTitle = pageTitles[location.pathname] ?? "Dashboard";
   return (
-    <header className="border-b sticky lg:hidden! h-14 flex justify-between p-1.5 py-3">
+    <header className="border-b sticky lg:hidden h-14 flex justify-between p-1.5 py-3">
       <div className="flex gap-4 px-2.5">
         <SidebarTrigger>
           <Menu className="size-5 mt-1 transition-transform duration-200 ease-in-out" />
