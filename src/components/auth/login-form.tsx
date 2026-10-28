@@ -17,14 +17,14 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { CircleAlert, CircleCheck, LoaderCircle } from "lucide-react";
 import { loginSchema } from "@/schemas/auth";
-import interloidMark from "@/assets/interloid-mark.svg";
 import { login } from "@/services/auth.services";
 import { Link, useNavigate, useSearchParams } from "react-router";
-import type { AuthErrors, LoginForm } from "@/types/auth";
+import type { AuthErrors, LoginFormProps } from "@/types/auth";
 import { toast } from "sonner";
 import PasswordEye from "@/components/auth/password-eye";
+import BrandTitle from "./brand-title";
 
-export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
+export function LoginForm({ onLoginSuccess, className }: LoginFormProps) {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
@@ -47,11 +47,11 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
       return true;
     }
 
-    const fieldErrors = result.error.flatten().fieldErrors;
+    const errorsByField = result.error.flatten().fieldErrors;
 
     setErrors({
-      email: fieldErrors.email?.[0], //checks the first error message
-      password: fieldErrors.password?.[0],
+      email: errorsByField.email?.[0], //checks the first error message
+      password: errorsByField.password?.[0],
     });
     return false;
   }
@@ -80,7 +80,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
       if (response.success) {
         onLoginSuccess(true);
         navigate("/dashboard");
-        toast.success("login Successfull!");
+        toast.success("Login Successful!");
       }
       if (!response.success) {
         if (response.errors && response.errors !== null) {
@@ -92,7 +92,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
         }
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -101,26 +101,17 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
   return (
     <main
       className={cn(
-        "flex flex-col w-full gap-6 justify-center items-center",
+        "flex flex-col w-full h-full gap-6 justify-center items-center min-h-full bg-muted p-4 pr-3.5 md:p-10",
         className,
       )}
-      {...props}
     >
-      <div className="flex gap-2.5 justify-center relative md:gap-[8.5px] md:top-px">
-          <img src={interloidMark} alt="logo" className="w-8 relative bottom-px" />
-        <div className="flex flex-col leading-4 relative bottom-px left-px">
-          <span className="font-semibold text-[16px]">Interloid</span>
-          <span className="text-muted-foreground text-[13px]">
-            Asset Register
-          </span>
-        </div>
-      </div>
-      <Card className="pl-1 py-4 gap-5.5 md:p-8 md:gap-5 w-full shadow-[0_1px_3px_0_oklch(0_0_0/0.1),0_1px_2px_-1px_oklch(0_0_0/0.1)] md:w-100 md:pt-8.5 ring-transparent">
+      <BrandTitle />
+      <Card className="pl-1 max-w-100 py-4 gap-5.5 md:p-8 md:gap-5 w-full shadow-[0_1px_3px_0_oklch(0_0_0/0.1),0_1px_2px_-1px_oklch(0_0_0/0.1)] md:w-100 md:pt-8.5 ring-transparent">
         <CardHeader className="px-4 pt-1.5 tracking-[-0.01em] relative md:px-0 md:pt-0 md:pl-px">
           <CardTitle className="text-[22px] font-semibold relative bottom-px md:top-[0.5px]">
             Sign in
           </CardTitle>
-          <CardDescription className="tracking-normal relative md:top-[1.5px]!">
+          <CardDescription className="tracking-normal relative md:top-[1.5px]">
             Use your Interloid work email.
           </CardDescription>
         </CardHeader>
@@ -129,7 +120,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
             role="status"
             className="rounded-md m-4 sm:m-0 flex justify-between bg-success/12 p-3 text-sm"
           >
-            <CircleCheck className="size-6.5 xs:size-4! xs:top-0.5 md:size-4.5! text-success/90 relative bottom-1 md:bottom-1" />
+            <CircleCheck className="size-6.5 xs:size-4 xs:top-0.5 md:size-4.5 text-success/90 relative bottom-1 md:bottom-1" />
             <span className="text-foreground pl-2">
               Account created. Sign in with your new password.
             </span>
@@ -148,7 +139,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
                   value={email ?? undefined}
                   onChange={handleEmailChange}
                   className={cn(
-                    "h-10 text-sm p-3 rounded-[8px]! focus-visible:bg-input",
+                    "h-10 text-sm p-3 rounded-[8px] focus-visible:bg-input",
                     errors?.email &&
                       "border-destructive focus-visible:border-destructive",
                   )}
@@ -181,9 +172,9 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
                 </div>
               </Field>
               {(errors?.email || errors?.password || serverError) && (
-                <div className="border-destructive! bg-destructive/10 p-2 border h-10 flex w-full gap-2.5 items-center rounded-md animate-il-shake">
+                <div className="border-destructive bg-destructive/10 p-2 border h-10 flex w-full gap-2.5 items-center rounded-md animate-il-shake">
                   <CircleAlert className="w-4 text-destructive" />
-                  <p className="text-destructive!">
+                  <p className="text-destructive">
                     {errors?.email || errors?.password || serverError}
                   </p>
                 </div>
@@ -192,7 +183,7 @@ export function LoginForm({ onLoginSuccess, className, ...props }: LoginForm) {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="h-10.5! relative bottom-px rounded-[8px] md:bottom-0 transition-[transform,background-color,color,border-color,box-shadow,opacity] duration-150 ease-in-out] hover:bg-primary/90 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring"
+                  className="h-10.5 relative bottom-px rounded-[8px] md:bottom-0 transition-[transform,background-color,color,border-color,box-shadow,opacity] duration-150 ease-in-out hover:bg-primary/90 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {isLoading && <LoaderCircle className="animate-spin" />}
                   {isLoading ? "Signing in" : "Sign in"}

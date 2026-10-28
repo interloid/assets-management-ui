@@ -28,6 +28,7 @@ export interface AssetListResponse {
     warrantyExpiry: string;
     status: string;
     notes: string;
+    warrantyExpiresInDays: string;
   }[];
 }
 
@@ -44,7 +45,7 @@ export async function getAssetStats(): Promise<AssetResponse> {
   return data;
 }
 
-export async function getWarrantyStats(): Promise<AssetListResponse> {
+export async function getWarrantyExpiringAssets(): Promise<AssetListResponse> {
   const result = await fetch(
     `${API_BASE_URL}/assets?warranty_expiry=expires_in_90_days&sort=warranty_expiry&order=asc`,
     {
@@ -60,7 +61,7 @@ export async function getWarrantyStats(): Promise<AssetListResponse> {
   return data;
 }
 
-export async function getRecentlyStats(): Promise<AssetListResponse> {
+export async function getRecentlyAddedAssets(): Promise<AssetListResponse> {
   const result = await fetch(
     `${API_BASE_URL}/assets?size=5&sort=created_at&order=desc`,
     {

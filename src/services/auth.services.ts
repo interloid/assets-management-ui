@@ -6,13 +6,13 @@ export interface LoginCredentials {
   email: string | null;
   password: string | null;
 }
-export interface signUpCredentials {
+export interface SignUpCredentials {
   fullName: string | null;
   email: string | null;
   password: string | null;
 }
 
-export interface authResponse {
+export interface AuthResponse {
   success: boolean;
   statusCode: number;
   message: string;
@@ -22,6 +22,8 @@ export interface authResponse {
 export interface User {
   success: boolean;
   message: string;
+  statusCode: number;
+  errors?: { field: string; message: string }[];
   data: {
     id: string;
     fullName: string;
@@ -40,13 +42,13 @@ export async function getCurrentSession(): Promise<User> {
       accept: "application/json",
     },
   });
-  const response = await result.json();
+  const response = (await result.json());
   return response;
 }
 
 export async function login(
   credentials: LoginCredentials,
-): Promise<authResponse> {
+): Promise<AuthResponse> {
   const result = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     credentials: "include",
@@ -55,11 +57,11 @@ export async function login(
     },
     body: JSON.stringify(credentials),
   });
-  const response = (await result.json()) as authResponse;
+  const response = (await result.json()) as AuthResponse;
   return response;
 }
 
-export async function signUp(credentials: signUpCredentials): Promise<authResponse> {
+export async function signUp(credentials: SignUpCredentials): Promise<AuthResponse> {
   const result = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",
     credentials: "include",
@@ -68,13 +70,12 @@ export async function signUp(credentials: signUpCredentials): Promise<authRespon
     },
     body: JSON.stringify(toSnakeCase(credentials)),
   });
-  const response : authResponse = (await result.json());
+  const response : AuthResponse = (await result.json());
   const data = toCamelCase(response);
-  console.log('data', data)
   return data;
 }
 
-export async function logOut(){
+export async function logout(){
   const response = await fetch(`${API_BASE_URL}/auth/logout`,{
     method: "POST",
     credentials: "include",
