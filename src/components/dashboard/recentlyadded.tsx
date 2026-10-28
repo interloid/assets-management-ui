@@ -3,7 +3,7 @@ import type { RecentlyAddedProps } from "@/types/dashboard";
 import { cn } from "cn";
 import { Link } from "react-router";
 import RecentlyAddedSkeleton from "./RecentlyAddedSkeleton";
-import { statusStyles } from "./resuable-components/statusStyles";
+import { statusStyles } from "./resuable-components/reusable-variables";
 
 export default function RecentlyAdded({
   assets,

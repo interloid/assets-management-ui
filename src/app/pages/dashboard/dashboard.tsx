@@ -96,12 +96,18 @@ export default function Dashboard() {
           return;
         }
         setWarrantyAssets(
-          response.data.map((asset) => ({
-            ...asset,
-            icon:
-              assetIcons[asset.type.toLowerCase() as keyof typeof assetIcons] ??
-              SquareOff,
-          })),
+          response.data
+            .filter(
+              (asset): asset is typeof asset & { warrantyExpiry: string } =>
+                asset.warrantyExpiry !== null,
+            )
+            .map((asset) => ({
+              ...asset,
+              icon:
+                assetIcons[
+                  asset.type.toLowerCase() as keyof typeof assetIcons
+                ] ?? SquareOff,
+            })),
         );
       } catch (error) {
         console.error(error);
@@ -160,7 +166,7 @@ export default function Dashboard() {
               </span>
             </Button>
             <Button
-              onClick={() => navigate("/dashboard/assets")}
+              onClick={() => navigate("/dashboard/assets/new")}
               className="px-3.5! py-4.5! pb-4.25! md:px-3.5! md:py-4.5! md:pb-4.5! relative top-0.5 rounded-md gap-2 items-center shadow-xs"
             >
               <Plus className="text-primary-foreground font-normal!" />

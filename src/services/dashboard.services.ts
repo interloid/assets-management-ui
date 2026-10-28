@@ -29,7 +29,8 @@ export interface AssetListResponse {
     assignedUser: AssignedUser | null;
     createdAt: string;
     type: string;
-    warrantyExpiry: string;
+    warrantyExpiry: string | null;
+    warrantyExpiresInDays: string | null;
     status: string;
     notes: string;
     purchaseDate: string;

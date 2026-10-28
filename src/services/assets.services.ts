@@ -1,4 +1,4 @@
-import { toCamelCase } from "@/lib/converters";
+import { toCamelCase, toSnakeCase } from "@/lib/converters";
 import type { AssetListResponse } from "./dashboard.services";
 import type { AssetQuery } from "@/types/assets";
 
@@ -30,7 +30,7 @@ export async function getAssetsData(
   }
 
   const [sort, order] = query.sort.split(":");
-  
+
   if (sort && order) {
     params.set("sort", sort);
     params.set("order", order);
@@ -74,4 +74,36 @@ export async function getListUsers(): Promise<UsersResponse> {
   });
   const response: UsersResponse = toCamelCase(await result.json());
   return response;
+}
+
+export type CreateAssetPayload = {
+  type: string | null;
+  serialNumber: string | null;
+  purchaseDate: string | null;
+  warrantyExpiry: string | null;
+  notes: string | null;
+};
+
+export interface createAssetResponse {
+  success: boolean;
+  StatusCode: number;
+  message: string;
+  errors?: { field: string; message: string }[];
+  data: CreateAssetPayload[];
+}
+
+export async function createAsset(
+  payload: CreateAssetPayload,
+): Promise<createAssetResponse> {
+  const result = await fetch(`${API_BASE_URL}/assets`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(toSnakeCase(payload)),
+  });
+  const response: createAssetResponse = await result.json();
+  const data = toCamelCase(response);
+  return data;
 }

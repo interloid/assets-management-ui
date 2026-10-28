@@ -10,7 +10,7 @@ export default function DashboardLayout({ setIsAuthenticated }: {setIsAuthentica
       <div >
         <AppSidebar setIsAuthenticated={setIsAuthenticated}/>
       </div>
-      <SidebarInset>
+      <SidebarInset className="min-w-0">
         <Header />
         <Outlet />
       </SidebarInset>

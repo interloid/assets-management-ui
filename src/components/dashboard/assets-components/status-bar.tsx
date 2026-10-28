@@ -1,20 +1,12 @@
 import { Spinner } from "@/components/ui/spinner";
 import type { AssetStatusProps } from "@/types/assets";
-
-const statusTabs = [
-  { label: "All", value: "all", statKey: "total" },
-  { label: "In stock", value: "in_stock", statKey: "inStock" },
-  { label: "Assigned", value: "assigned", statKey: "assigned" },
-  { label: "In repair", value: "repair", statKey: "repair" },
-  { label: "Retired", value: "retired", statKey: "retired" },
-] as const;
+import { statusTabs } from "../resuable-components/reusable-variables";
 
 export default function StatusTabs({
   assetStats,
   status,
   onQueryChange,
 }: AssetStatusProps) {
-
   return (
     <div
       role="tablist"

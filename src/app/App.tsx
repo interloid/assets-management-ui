@@ -12,6 +12,7 @@ import MyAssets from "./pages/dashboard/my-assets/myassets";
 import Profile from "./pages/dashboard/profile/profile";
 import Dashboard from "./pages/dashboard/dashboard";
 import DashboardLayout from "@/layout/dashboard";
+import { AddAsset } from "@/components/dashboard/assets-components/add-asset";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -57,6 +58,7 @@ export default function App() {
           <Route path="/dashboard" element={<DashboardLayout setIsAuthenticated={setIsAuthenticated} />}>
             <Route path="" element={<Dashboard />} />
             <Route path="assets" element={<Assets />} />
+            <Route path="/dashboard/assets/new" element={<AddAsset />} />
             <Route path="users" element={<Users />} />
             <Route path="myassets" element={<MyAssets />} />
             <Route path="profile" element={<Profile />} />
