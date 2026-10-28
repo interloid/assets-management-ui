@@ -86,10 +86,7 @@ export default function StackedProgressBar({
                   onClick={() => {
                     if (segment.label) {
                       const status = statusByLabel[segment.label];
-                      console.log("status", status);
-
                       if (!status) return;
-
                       navigate(`/dashboard/assets?status=${status}`);
                     }
                   }}

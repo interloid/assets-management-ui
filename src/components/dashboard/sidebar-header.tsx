@@ -29,7 +29,9 @@ export default function SidebarHeader() {
               </div>
 
               <div className="grid flex-1 text-left text-sm leading-[1.15] pl-0.5 whitespace-nowrap group-data-[collapsible=icon]:hidden">
-                <span className="truncate font-semibold relative top-px">Interloid</span>
+                <span className="truncate font-semibold relative top-px">
+                  Interloid
+                </span>
                 <span className="truncate text-xs text-muted-foreground font-normal">
                   Asset Register
                 </span>

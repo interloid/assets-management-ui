@@ -7,7 +7,7 @@ const emailSchema = z
     z
       .string()
       .trim()
-      .min(1,"Email is required.")
+      .min(1, "Email is required.")
       .email("Enter a valid email address."),
   );
 
@@ -40,8 +40,8 @@ export const signUpSchema = z.object({
       z
         .string()
         .trim()
-        .min(1,"Enter your full name.")
-        .max(100,"Full name must not exceed 100 characters.")
+        .min(1, "Enter your full name.")
+        .max(100, "Full name must not exceed 100 characters.")
         .regex(
           /^[\p{L}\p{M}]+(?:[ '-][\p{L}\p{M}]+)*$/u,
           "Full name must contain only letters.",

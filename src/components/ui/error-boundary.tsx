@@ -38,19 +38,19 @@ export class ErrorBoundary extends Component<
             role="alert"
             className="flex w-full h-full flex-col items-center justify-center gap-3 p-6 text-center"
           >
-              <h1 className="text-xl font-semibold">Something went wrong</h1>
+            <h1 className="text-xl font-semibold">Something went wrong</h1>
 
-              <p className="max-w-md text-sm text-muted-foreground">
-                An unexpected error occurred. Please try again.
-              </p>
+            <p className="max-w-md text-sm text-muted-foreground">
+              An unexpected error occurred. Please try again.
+            </p>
 
-              <button
-                type="button"
-                onClick={() => window.location.reload()}
-                className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground cursor-pointer"
-              >
-                Reload application
-              </button>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground cursor-pointer"
+            >
+              Reload application
+            </button>
           </main>
         )
       );
