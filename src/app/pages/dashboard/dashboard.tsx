@@ -65,11 +65,12 @@ export default function Dashboard() {
   useEffect(() => {
     async function loadAssetStats() {
       try {
-        setIsAssetsLoading(true);
         const response = await getAssetStats();
         if (!response.success || !response.data) {
-          return toast.error(response.message);
+          toast.error(response.message);
+          return;
         }
+
         setSegments([
           {
             label: "In stock",
@@ -98,17 +99,12 @@ export default function Dashboard() {
         setIsAssetsLoading(false);
       }
     }
-    void loadAssetStats();
-  }, []);
 
-  useEffect(() => {
-    async function warrantyAssets() {
+    async function loadWarrantyAssets() {
       try {
-        setIsWarrantyLoading(true);
         const response = await getWarrantyExpiringAssets();
-        if (!response.success || !response.data) {
-          return;
-        }
+        if (!response.success || !response.data) return;
+
         setWarrantyAssets(response.data.map(mapAssetWithIcon));
       } catch (error) {
         console.error(error);
@@ -116,17 +112,12 @@ export default function Dashboard() {
         setIsWarrantyLoading(false);
       }
     }
-    void warrantyAssets();
-  }, []);
 
-  useEffect(() => {
-    async function recentlyUpdates() {
+    async function loadRecentAssets() {
       try {
-        setIsRecentlyAddedLoading(true);
         const response = await getRecentlyAddedAssets();
-        if (!response.success || !response.data) {
-          return;
-        }
+        if (!response.success || !response.data) return;
+
         setRecentAssets(response.data.map(mapAssetWithIcon));
       } catch (error) {
         console.error(error);
@@ -134,7 +125,9 @@ export default function Dashboard() {
         setIsRecentlyAddedLoading(false);
       }
     }
-    void recentlyUpdates();
+    void loadAssetStats();
+    void loadWarrantyAssets();
+    void loadRecentAssets();
   }, []);
   return (
     <>
