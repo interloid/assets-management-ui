@@ -3,7 +3,7 @@ import { AuthContext } from "@/context/auth";
 import { getCurrentSession, type User } from "@/services/auth.services";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [sessionResponse, setSessionResponse] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -11,13 +11,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const response = await getCurrentSession();
         if (response.success) {
-          setCurrentUser(response);
+          setSessionResponse(response);
         } else {
-          setCurrentUser(null);
+          setSessionResponse(null);
         }
       } catch (error) {
         console.error(error);
-        setCurrentUser(null);
       } finally {
         setIsLoading(false);
       }
@@ -30,24 +29,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await getCurrentSession();
       if (response.success) {
-        setCurrentUser(response);
+        setSessionResponse(response);
       } else {
-        setCurrentUser(null);
+        setSessionResponse(null);
       }
     } catch (error) {
       console.error(error);
-      setCurrentUser(null);
     }
   }
 
   return (
     <AuthContext.Provider
       value={{
-        currentUser,
-        isAuthenticated: currentUser !== null,
+        sessionResponse,
+        isAuthenticated: sessionResponse !== null,
         isLoading,
         refreshSession,
-        setCurrentUser,
+        setSessionResponse,
       }}
     >
       {children}
