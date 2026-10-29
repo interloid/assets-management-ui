@@ -11,11 +11,11 @@ import { useAuth } from "@/context/auth";
 
 export function NavUser() {
   const navigate = useNavigate();
-  const { currentUser, setCurrentUser } = useAuth();
+  const { sessionResponse, setSessionResponse } = useAuth();
 
-  if (!currentUser) return null;
+  if (!sessionResponse) return null;
 
-  const userdata = toCamelCase(currentUser?.data);
+  const userdata = toCamelCase(sessionResponse?.data);
   const initials = getInitials(userdata.fullName ?? undefined);
 
   async function logOutSession() {
@@ -26,7 +26,7 @@ export function NavUser() {
         return;
       }
       if (response.ok) {
-        setCurrentUser(null);
+        setSessionResponse(null);
         navigate("/login");
         toast.success("Logged out Successfully!");
       }
