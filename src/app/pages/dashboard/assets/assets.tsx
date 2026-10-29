@@ -60,7 +60,7 @@ export default function Assets() {
   }
 
   function handleRowClick(asset: Asset) {
-    setSelectedAsset(asset)
+    setSelectedAsset(asset);
     setIsOpen(true);
   }
 
@@ -176,7 +176,11 @@ export default function Assets() {
         isLoading={isLoading}
         onRowClick={handleRowClick}
       />
-      <ViewAssetDrawer open={isOpen}  onOpenChange={setIsOpen} asset={selectedAsset}/>
+      <ViewAssetDrawer
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        asset={selectedAsset}
+      />
     </section>
   );
 }
