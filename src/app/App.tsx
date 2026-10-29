@@ -28,7 +28,7 @@ export default function App() {
     <>
       <Toaster position="bottom-right" richColors />
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
           <Route element={<DashboardLayout />}>
