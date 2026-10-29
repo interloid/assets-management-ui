@@ -2,19 +2,19 @@ import { z } from "zod";
 
 const emailSchema = z
   .union([z.string(), z.null()])
-  .transform((email) => email ?? "")
+  .transform((email) => email ?? undefined)
   .pipe(
     z
       .string()
       .trim()
-      .min(1, "Email is required")
+      .min(1, "Email is required.")
       .email("Enter a valid email address."),
   );
 
 const passwordSchema = z
   .union([z.string(), z.null()])
-  .transform((password) => password ?? "")
-  .pipe(z.string().min(1, "Password is required"));
+  .transform((password) => password ?? undefined)
+  .pipe(z.string().min(1, "Password is required."));
 
 export const loginSchema = z.object({
   email: emailSchema,
@@ -23,7 +23,7 @@ export const loginSchema = z.object({
 
 const signUpPasswordSchema = z
   .union([z.string(), z.null()])
-  .transform((password) => password ?? "")
+  .transform((password) => password ?? undefined)
   .pipe(
     z
       .string()
@@ -35,13 +35,13 @@ const signUpPasswordSchema = z
 export const signUpSchema = z.object({
   fullName: z
     .union([z.string(), z.null()])
-    .transform((fullname) => fullname ?? "")
+    .transform((fullname) => fullname ?? undefined)
     .pipe(
       z
         .string()
         .trim()
         .min(1, "Enter your full name.")
-        .max(100, "Full name must not exceed 100 characters")
+        .max(100, "Full name must not exceed 100 characters.")
         .regex(
           /^[\p{L}\p{M}]+(?:[ '-][\p{L}\p{M}]+)*$/u,
           "Full name must contain only letters.",
