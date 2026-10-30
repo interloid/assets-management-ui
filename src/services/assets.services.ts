@@ -1,6 +1,6 @@
 import { toCamelCase, toSnakeCase } from "@/lib/converters";
 import type { AssetListResponse } from "./dashboard.services";
-import type { AssetQuery } from "@/types/assets";
+import type { AssetQuery, AssetStatus } from "@/types/assets";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -106,4 +106,45 @@ export async function createAsset(
   const response: createAssetResponse = await result.json();
   const data = toCamelCase(response);
   return data;
+}
+
+export async function assignAsset(assetId: string, userId: string) {
+  const result = await fetch(`${API_BASE_URL}/assets/${assetId}/assign`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ user_id: userId }),
+  });
+
+  const response = await result.json();
+  return toCamelCase(response);
+}
+
+export async function changeStatus(assetId: string, status: AssetStatus) {
+  const result = await fetch(`${API_BASE_URL}/assets/${assetId}/status`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ status: status }),
+  });
+
+  const response = await result.json();
+  return toCamelCase(response);
+}
+
+export async function unassignAsset(assetId: string) {
+  const result = await fetch(`${API_BASE_URL}/assets/${assetId}/unassign`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      accept: "application/json",
+    },
+  });
+
+  const response = await result.json();
+  return toCamelCase(response);
 }

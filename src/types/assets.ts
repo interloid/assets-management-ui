@@ -65,11 +65,38 @@ export type AssetQuery = {
 
 export type ViewAssetDrawerProps = {
   asset: Asset | null;
+  allUsers: User[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAssign?: (asset: Asset) => void;
+  onUnassign?: (assetId: string) => void;
   onChangeStatus?: (asset: Asset) => void;
   onEdit?: (asset: Asset) => void;
   onDelete?: (asset: Asset) => void;
   onOpenFullPage?: (asset: Asset) => void;
+};
+
+export type AssetViewFullPageProps = {
+  allUsers?: User[];
+  onChangeStatus?: (asset: Asset) => void;
+  onEdit?: (asset: Asset) => void;
+  onDelete?: (asset: Asset) => void;
+  onAssign?: (asset: Asset) => void;
+  onUnassign?: (assetId: string) => void;
+};
+
+export type AssignAssetDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  asset: Asset;
+  allUsers: User[];
+  onAssigned?: (userId: string) => void;
+};
+
+export type AssetViewHeaderProps = {
+  asset: Asset;
+  onAssign?: (asset: Asset) => void;
+  onChangeStatus?: (asset: Asset) => void;
+  onEdit?: (asset: Asset) => void;
+  onDelete?: (asset: Asset) => void;
 };

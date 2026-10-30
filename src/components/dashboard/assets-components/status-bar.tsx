@@ -1,6 +1,6 @@
 import { Spinner } from "@/components/ui/spinner";
 import type { AssetStatusProps } from "@/types/assets";
-import { statusTabs } from "../reusable-components/reusable-variables";
+import { statusTabs } from "../reusable-components/utils";
 
 export default function StatusTabs({
   assetStats,

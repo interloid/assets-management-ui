@@ -64,6 +64,23 @@ export default function Assets() {
     setIsOpen(true);
   }
 
+  function handleAssetUnassigned(assetId: string) {
+    const updatedAsset: Partial<Asset> = {
+      status: "in_stock",
+      assignedUser: null,
+      initials: "",
+    };
+    setAssetsData(
+      (current) =>
+        current?.map((item) =>
+          item.id === assetId ? { ...item, ...updatedAsset } : item,
+        ) ?? null,
+    );
+    setSelectedAsset((current) =>
+      current?.id === assetId ? { ...current, ...updatedAsset } : current,
+    );
+  }
+
   useEffect(() => {
     async function AssetsData() {
       try {
@@ -92,7 +109,7 @@ export default function Assets() {
           );
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
@@ -111,13 +128,9 @@ export default function Assets() {
           setAllUsers(response.data);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
-    void getUsers();
-  }, []);
-
-  useEffect(() => {
     async function assetStats() {
       try {
         const response = await getAssetStats();
@@ -128,11 +141,13 @@ export default function Assets() {
           SetAssetStats(response.data);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
     void assetStats();
+    void getUsers();
   }, []);
+
   return (
     <section className="min-w-0 w-full p-4 md:p-5.5 md:pt-6 lg:p-5.5 lg:pt-7.75! lg:pb-6 lg:pr-7 xl:pt-8.5! xl:pl-8 xl:pr-8 2xl:px-8 gap-5 flex flex-col lg:justify-between">
       <div className="gap-3.5 flex flex-col w-full xsm:flex-row xsm:justify-between">
@@ -146,7 +161,7 @@ export default function Assets() {
         </div>
         <div className="flex gap-1.75 items-end">
           <Button
-            onClick={() => navigate("/dashboard/assets/new")}
+            onClick={() => navigate("/assets/new")}
             className="px-3.5! py-4.5! pb-4.25! md:px-3.5! md:py-4.5! md:pb-4.5! relative top-0.5 rounded-md gap-2 items-center shadow-xs"
           >
             <Plus className="text-primary-foreground font-normal!" />
@@ -180,6 +195,8 @@ export default function Assets() {
         open={isOpen}
         onOpenChange={setIsOpen}
         asset={selectedAsset}
+        onUnassign={handleAssetUnassigned}
+        allUsers={allUsers ?? []}
       />
     </section>
   );

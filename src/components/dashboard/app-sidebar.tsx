@@ -153,7 +153,6 @@ export function AppSidebar({
           </React.Fragment>
         ))}
       </SidebarContent>
-
       <SidebarFooter className="border-t">
         <NavUser />
       </SidebarFooter>

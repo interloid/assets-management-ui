@@ -104,7 +104,6 @@ export function AddAssetForm() {
         warrantyExpiry,
         notes,
       });
-      console.log("response", response);
       if (response.success || response.data) {
         toast.success(response.message);
         navigate(`/dashboard/assets`);
@@ -120,7 +119,7 @@ export function AddAssetForm() {
         toast.error(serverErrors);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
   return (
@@ -263,7 +262,7 @@ export function AddAssetForm() {
         <Button
           type="button"
           variant="outline"
-          onClick={() => navigate("/dashboard/assets")}
+          onClick={() => navigate("/assets")}
           title="Discard changes"
           className="h-9 px-3.5 text-sm font-medium shadow-xs cursor-pointer"
         >

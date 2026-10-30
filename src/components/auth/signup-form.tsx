@@ -87,7 +87,7 @@ export function SignUpForm() {
       }
       if (!response.success) {
         if (response.errors && response.errors !== null) {
-          response.errors.map((error) => error.message).join(",");
+          response.errors.map((error) => error.message).join(", ");
         } else {
           setServerError(response.message);
         }

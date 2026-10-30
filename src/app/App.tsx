@@ -12,6 +12,8 @@ import Dashboard from "./pages/dashboard/dashboard";
 import DashboardLayout from "@/layout/dashboard";
 import NotFound from "./pages/not-found";
 import { useAuth } from "@/context/auth";
+import { AddAsset } from "@/components/dashboard/assets-components/add-asset";
+import { AssetViewFullPage } from "@/components/dashboard/assets-components/asset-view-fullpage";
 
 export default function App() {
   const { isLoading, isAuthenticated } = useAuth();
@@ -28,13 +30,27 @@ export default function App() {
     <>
       <Toaster position="bottom-right" richColors />
       <Routes>
-        <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
+        <Route
+          path="/login"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <LoginPage />
+            )
+          }
+        />
         <Route path="/signup" element={<SignUpPage />} />
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
           <Route element={<DashboardLayout />}>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/assets" element={<Assets />} />
+            <Route path="/assets/new" element={<AddAsset />} />
+            <Route
+              path="/assets/asset-details/:assetId"
+              element={<AssetViewFullPage />}
+            />
             <Route path="/users" element={<Users />} />
             <Route path="/my-assets" element={<MyAssets />} />
             <Route path="/profile" element={<Profile />} />

@@ -13,7 +13,7 @@ import { Link } from "react-router";
 import AssetTableSkeleton from "./assetsTableSkeleton";
 import { AssetEmptyState } from "./asset-empty-state";
 import { AssetsMobile } from "./assets-mobile-layout";
-import { statusStyles } from "../reusable-components/reusable-variables";
+import { statusStyles } from "../reusable-components/utils";
 
 export function AssetTypeIcon({ type }: { type: Asset["type"] }) {
   const className = "size-4 shrink-0 text-muted-foreground";
@@ -76,7 +76,7 @@ export default function AssetTable({
   }
   return (
     <>
-      <AssetsMobile assets={assets} onRowClick={onRowClick}/>
+      <AssetsMobile assets={assets} onRowClick={onRowClick} />
       <section
         aria-label="Asset list"
         className="overflow-hidden rounded-lg border border-border bg-card shadow-sm hidden md:block"
@@ -115,10 +115,7 @@ export default function AssetTable({
                   className="border-t border-border transition-colors hover:bg-muted/50 cursor-pointer"
                 >
                   <td className="px-4 py-2.75">
-                    <Link
-                      to={`/dashboard/assets/${asset.id}`}
-                      className="flex flex-col no-underline"
-                    >
+                    <Link to={`/assets`} className="flex flex-col no-underline">
                       <span className="font-mono text-[13px] font-medium text-foreground">
                         {asset.assetTag}
                       </span>
@@ -146,10 +143,7 @@ export default function AssetTable({
                         aria-hidden="true"
                         className="size-1.5 rounded-full bg-current"
                       />
-                      {toStatusLabel(asset.status).replace(
-                        /([a-z])([A-Z])/g,
-                        "$1 $2",
-                      )}
+                      {toStatusLabel(asset.status)}
                     </span>
                   </td>
 

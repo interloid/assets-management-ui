@@ -3,7 +3,7 @@ import { AssetTypeIcon } from "./asset-table";
 import { toPascalCase, toStatusLabel } from "@/lib/converters";
 import { cn } from "cn";
 import { Link } from "react-router";
-import { statusStyles } from "../reusable-components/reusable-variables";
+import { statusStyles } from "../reusable-components/utils";
 
 export type AssetsMobileProps = {
   assets: Asset[];
@@ -16,7 +16,7 @@ export function AssetsMobile({ assets, onRowClick }: AssetsMobileProps) {
         {assets.map((asset) => (
           <div key={asset.id} className="bg-card border border-x-0">
             <Link
-              to={`/dashboard/assets/`}
+              to={`/assets`}
               onClick={() => onRowClick(asset)}
               className="flex flex-col gap-2 px-4 py-3.5 transition-colors hover:bg-muted/50"
             >

@@ -8,7 +8,7 @@ export function AddAsset() {
   return (
     <section className="p-4 md:p-5.5 md:pt-6 lg:p-11.25 lg:pt-7.75! lg:pb-6 lg:pr-7 xl:pt-8.5! xl:pl-8 2xl:px-8 gap-6 flex flex-col xs:flex-row lg:justify-between">
       <div className="flex flex-col w-full gap-6.25">
-        <nav className="flex items-center gap-1.5 text-sm text-muted-foreground cursor-pointer" onClick={() => navigate("/dashboard/assets/")} >
+        <nav className="flex items-center gap-1.5 text-sm text-muted-foreground cursor-pointer" onClick={() => navigate("/assets/")} >
           <ArrowLeft className="size-4"/> Assets
         </nav>
         <header className="flex flex-col gap-1 leading-normal">
