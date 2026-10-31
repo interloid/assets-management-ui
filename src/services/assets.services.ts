@@ -1,6 +1,6 @@
 import { toCamelCase, toSnakeCase } from "@/lib/converters";
 import type { AssetListResponse } from "./dashboard.services";
-import type { AssetQuery, AssetStatus } from "@/types/assets";
+import type { AssetQuery, AssetStatus, AssetType } from "@/types/assets";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -145,6 +145,40 @@ export async function unassignAsset(assetId: string) {
     },
   });
 
+  const response = await result.json();
+  return toCamelCase(response);
+}
+
+export type UpdateAssetPayload = {
+  type: AssetType | string;
+  notes: string;
+  purchase_date: string;
+  warranty_expiry: string | null;
+  serial_number: string;
+};
+
+export interface UpdateAssetResponse {
+  success: string;
+  StatusCode: number;
+  message: string;
+  errors?: { field: string; message: string }[];
+  assetId: string;
+  data: UpdateAssetPayload[];
+}
+
+export async function updateAsset(
+  assetId: string,
+  payload: UpdateAssetPayload,
+): Promise<UpdateAssetResponse> {
+  const result = await fetch(`${API_BASE_URL}//assets/${assetId}`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      "content-type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify(toSnakeCase(payload)),
+  });
   const response = await result.json();
   return toCamelCase(response);
 }

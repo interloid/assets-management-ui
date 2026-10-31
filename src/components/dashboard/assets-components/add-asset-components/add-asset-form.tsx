@@ -4,19 +4,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createAssetSchema } from "@/schemas/asset";
 import { createAsset } from "@/services/assets.services";
-import { Laptop, Monitor, Smartphone, Keyboard, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-
-const assetTypes = [
-  { value: "laptop", label: "Laptop", icon: Laptop },
-  { value: "monitor", label: "Monitor", icon: Monitor },
-  { value: "phone", label: "Phone", icon: Smartphone },
-  { value: "accessory", label: "Accessory", icon: Keyboard },
-] as const;
-
-type AssetType = (typeof assetTypes)[number]["value"];
+import { assetTypes } from "../../reusable-components/utils";
+import type { AssetType } from "@/types/assets";
 
 type FormErrors = {
   type: string | null;
@@ -106,7 +99,7 @@ export function AddAssetForm() {
       });
       if (response.success || response.data) {
         toast.success(response.message);
-        navigate(`/dashboard/assets`);
+        navigate(`/assets`);
       }
       if (!response.success || !response.data) {
         if (response.errors && response.errors !== null) {
@@ -148,7 +141,7 @@ export function AddAssetForm() {
                     type="button"
                     role="radio"
                     aria-checked={isSelected}
-                    value={type ?? ""}
+                    value={type ?? undefined}
                     onClick={() => handleTypeChange(item.value)}
                     className={`flex min-h-19 cursor-pointer flex-col items-start gap-2.5 rounded-md border p-3 text-left transition-colors ${
                       isSelected
@@ -189,16 +182,16 @@ export function AddAssetForm() {
               <Label htmlFor="serialNumber">Serial number</Label>
               <Input
                 id="serialNumber"
-                value={serialNumber ?? ""}
+                value={serialNumber ?? undefined}
                 onChange={handleSerialNumberChange}
                 autoComplete="off"
                 spellCheck={false}
                 placeholder="e.g. C02FK3J1Q6L4"
                 className="h-9 font-mono text-[13px] shadow-sm"
               />
-              {(errors?.serialNumber || serverErrors) && (
+              {(errors?.serialNumber) && (
                 <p className="text-sm text-destructive">
-                  {errors.serialNumber ?? serverErrors}
+                  {errors.serialNumber}
                 </p>
               )}
             </div>
@@ -209,11 +202,11 @@ export function AddAssetForm() {
                 id="purchaseDate"
                 type="date"
                 max={new Date().toLocaleDateString("en-CA")}
-                value={purchaseDate ?? ""}
+                value={purchaseDate ?? undefined}
                 onChange={handlePurchasechange}
                 className="h-9 text-[14px] shadow-sm"
               />
-              {(errors.purchaseDate || serverErrors) && (
+              {(errors.purchaseDate) && (
                 <p className="text-sm text-destructive">
                   {errors.purchaseDate}
                 </p>

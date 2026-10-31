@@ -1,5 +1,5 @@
 import type { Asset } from "@/types/assets";
-import { Section } from "../view-asset-drawer";
+import { Section } from "../view-asset-components/view-asset-drawer";
 
 export function AssetAssignedUser({ asset }: { asset: Asset }) {
   return (

@@ -13,13 +13,13 @@ import {
   allowedStatusTransistions,
   statusDotStyles,
   statusLabels,
-} from "../reusable-components/utils";
+} from "../../reusable-components/utils";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 
 type ChangeStatusCardProps = {
   onOpenChange: (open: boolean) => void;
-  asset: Asset;
+  asset: Asset | null;
   onConfirm: (status: AssetStatus) => void;
   isLoading: boolean;
 };
@@ -30,7 +30,7 @@ export function ChangeStatusCard({
   onConfirm,
   isLoading,
 }: ChangeStatusCardProps) {
-  const currentStatus = asset.status as AssetStatus;
+  const currentStatus = asset?.status as AssetStatus;
   const availableStatuses = allowedStatusTransistions[currentStatus].filter(
     (status) =>
       status !== "assigned" &&

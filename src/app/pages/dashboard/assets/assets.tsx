@@ -1,7 +1,8 @@
 import AssetFilters from "@/components/dashboard/assets-components/asset-filter";
 import AssetTable from "@/components/dashboard/assets-components/asset-table";
+import { EditAssetDrawer } from "@/components/dashboard/assets-components/edit-asset-components/edit-asset-drawer";
 import StatusTabs from "@/components/dashboard/assets-components/status-bar";
-import { ViewAssetDrawer } from "@/components/dashboard/assets-components/view-asset-drawer";
+import { ViewAssetDrawer } from "@/components/dashboard/assets-components/view-asset-components/view-asset-drawer";
 import { Button } from "@/components/ui/button";
 import { useDebounce } from "@/hooks/use-debounce";
 import {
@@ -10,7 +11,7 @@ import {
   type User,
 } from "@/services/assets.services";
 import { getAssetStats, type AssetStats } from "@/services/dashboard.services";
-import type { Asset, AssetQuery } from "@/types/assets";
+import type { Asset, AssetQuery, DrawerMode } from "@/types/assets";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
@@ -35,6 +36,7 @@ export default function Assets() {
   const debounceSearch = useDebounce(query.search, 500);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
+  const [drawerMode, setDrawerMode] = useState<DrawerMode>("view");
 
   function updateQuery<K extends keyof AssetQuery>(
     key: K,
@@ -191,13 +193,22 @@ export default function Assets() {
         isLoading={isLoading}
         onRowClick={handleRowClick}
       />
-      <ViewAssetDrawer
-        open={isOpen}
-        onOpenChange={setIsOpen}
-        asset={selectedAsset}
-        onUnassign={handleAssetUnassigned}
-        allUsers={allUsers ?? []}
-      />
+      {drawerMode === "view" || !selectedAsset? (
+        <ViewAssetDrawer
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          asset={selectedAsset}
+          onUnassign={handleAssetUnassigned}
+          allUsers={allUsers ?? []}
+          onEdit={() => setDrawerMode("edit")}
+        />
+      ) : (
+        <EditAssetDrawer
+          open={isOpen}
+          asset={selectedAsset}
+          onOpenChange={() => setDrawerMode("view")}
+        />
+      )}
     </section>
   );
 }

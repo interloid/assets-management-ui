@@ -1,4 +1,4 @@
-import { DetailRow, Section } from "../view-asset-drawer";
+import { DetailRow, Section } from "../view-asset-components/view-asset-drawer";
 import { statusLabels } from "../../reusable-components/utils";
 import type { Asset, AssetStatus } from "@/types/assets";
 import { formatDate } from "@/lib/converters";

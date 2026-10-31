@@ -1,8 +1,8 @@
-import { AssetDetailTable } from "./reusable-components/asset-detail-table";
+import { AssetDetailTable } from "../reusable-components/asset-detail-table";
 import { Section } from "./view-asset-drawer";
-import { AssetStatusRules } from "./reusable-components/asset-status-rules";
-import { AssetAssignedUser } from "./reusable-components/asset-assigned-user";
-import { AssetViewHeader } from "./reusable-components/asset-view-header";
+import { AssetStatusRules } from "../reusable-components/asset-status-rules";
+import { AssetAssignedUser } from "../reusable-components/asset-assigned-user";
+import { AssetViewHeader } from "../reusable-components/asset-view-header";
 import type {
   Asset,
   AssetStatus,

@@ -12,8 +12,9 @@ import Dashboard from "./pages/dashboard/dashboard";
 import DashboardLayout from "@/layout/dashboard";
 import NotFound from "./pages/not-found";
 import { useAuth } from "@/context/auth";
-import { AddAsset } from "@/components/dashboard/assets-components/add-asset";
-import { AssetViewFullPage } from "@/components/dashboard/assets-components/asset-view-fullpage";
+import { AddAsset } from "@/components/dashboard/assets-components/add-asset-components/add-asset";
+import { AssetViewFullPage } from "@/components/dashboard/assets-components/view-asset-components/asset-view-fullpage";
+import EditAssetFullPage from "@/components/dashboard/assets-components/edit-asset-components/edit-asset-full-page";
 
 export default function App() {
   const { isLoading, isAuthenticated } = useAuth();
@@ -50,6 +51,10 @@ export default function App() {
             <Route
               path="/assets/asset-details/:assetId"
               element={<AssetViewFullPage />}
+            />
+            <Route
+              path="/assets/asset-details/edit/:assetId"
+              element={<EditAssetFullPage />}
             />
             <Route path="/users" element={<Users />} />
             <Route path="/my-assets" element={<MyAssets />} />

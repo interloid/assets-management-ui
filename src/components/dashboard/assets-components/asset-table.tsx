@@ -10,7 +10,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import { Link } from "react-router";
-import AssetTableSkeleton from "./assetsTableSkeleton";
+import AssetTableSkeleton from "./asset-skeleton-components/assetsTableSkeleton";
 import { AssetEmptyState } from "./asset-empty-state";
 import { AssetsMobile } from "./assets-mobile-layout";
 import { statusStyles } from "../reusable-components/utils";

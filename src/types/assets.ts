@@ -63,6 +63,8 @@ export type AssetQuery = {
   size: number;
 };
 
+export type DrawerMode = "view" | "edit";
+
 export type ViewAssetDrawerProps = {
   asset: Asset | null;
   allUsers: User[];
@@ -88,7 +90,7 @@ export type AssetViewFullPageProps = {
 export type AssignAssetDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  asset: Asset;
+  asset: Asset | null;
   allUsers: User[];
   onAssigned?: (userId: string) => void;
 };
@@ -99,4 +101,17 @@ export type AssetViewHeaderProps = {
   onChangeStatus?: (asset: Asset) => void;
   onEdit?: (asset: Asset) => void;
   onDelete?: (asset: Asset) => void;
+};
+
+export type EditFormSectionProps = {
+  open?: boolean,
+  asset: Asset,
+  onOpenChange: (open: boolean) => void;
+};
+
+export type DrawerHeaderProps = {
+  onOpenFullPage?: (asset: Asset) => void;
+  asset: Asset ;
+  onOpenChange: (open: boolean) => void;
+  mode: "view" | "edit"
 };

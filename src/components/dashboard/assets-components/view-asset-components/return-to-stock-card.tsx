@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 
 interface ReturnToStockCardProps {
-  assetTag: string;
+  assetTag: string | undefined;
   assignedUserName: string;
   onClose: () => void;
   onConfirm: () => void;

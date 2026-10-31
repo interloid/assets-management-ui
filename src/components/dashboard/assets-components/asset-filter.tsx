@@ -118,7 +118,7 @@ function FilterSelect({ label, options, value, onChange }: FilterSelectProps) {
 
       <select
         aria-label={label}
-        className="h-9 min-w-0 flex-1 cursor-pointer text-muted-foreground appearance-none rounded-md border border-input bg-background py-0 pl-3 pr-8 text-sm shadow-xs outline-none transition-[border-color,box-shadow] focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
+        className="h-9 min-w-0 flex-1 cursor-pointer text-muted-foreground appearance-none rounded-md border border-input bg-background py-0 pl-3 pr-8 text-sm shadow-xs outline-none  transition-[border-color,box-shadow] focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
         value={value}
         onChange={(event) => onChange(event.currentTarget.value)}
       >

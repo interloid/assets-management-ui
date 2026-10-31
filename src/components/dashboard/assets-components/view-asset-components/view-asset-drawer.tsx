@@ -1,17 +1,18 @@
-import { Copy, Maximize2, X } from "lucide-react";
+import { Copy } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
-import type { AssetStatus, ViewAssetDrawerProps } from "@/types/assets";
+import type {
+  AssetStatus,
+  ViewAssetDrawerProps,
+} from "@/types/assets";
 import {
   getStatusMessage,
   statusDotStyles,
   statusLabels,
   statusTextStyles,
-} from "../reusable-components/utils";
+} from "../../reusable-components/utils";
 import { useSidebar } from "@/components/ui/sidebar-context";
-import { useNavigate } from "react-router";
 import { useState } from "react";
 import { AssignAssetDialog } from "./asset-assign-dialog";
 import { ChangeStatusCard } from "./change-status-card";
@@ -19,8 +20,9 @@ import { changeStatus, unassignAsset } from "@/services/assets.services";
 import { toast } from "sonner";
 import { ReturnToStockCard } from "./return-to-stock-card";
 import { copyValue } from "@/lib/utils";
-import { AssetDetailTable } from "./reusable-components/asset-detail-table";
-import { AssetViewHeader } from "./reusable-components/asset-view-header";
+import { AssetDetailTable } from "../reusable-components/asset-detail-table";
+import { AssetViewHeader } from "../reusable-components/asset-view-header";
+import DrawerHeader from "../reusable-components/drawer-header";
 
 export function DetailRow({
   label,
@@ -78,21 +80,21 @@ export function ViewAssetDrawer({
   asset,
   allUsers,
   open,
+  onOpenFullPage,
   onOpenChange,
+  onEdit,
   onUnassign,
   onChangeStatus,
-  onEdit,
   onDelete,
-  onOpenFullPage,
 }: ViewAssetDrawerProps) {
   const { state } = useSidebar();
-  const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [isChangeStatus, setIsChangeStatus] = useState<boolean>(false);
   const [isReturnToStockOpen, setIsReturnToStockOpen] =
     useState<boolean>(false);
   const [isUnAssignLoading, setIsUnAssignLoading] = useState<boolean>(false);
   const [isConfirmStatus, setIsConfirmStatus] = useState<boolean>(false);
+
 
   function handleAssignAsset() {
     if (!asset) return;
@@ -157,40 +159,7 @@ export function ViewAssetDrawer({
           </div>
         ) : (
           <>
-            <div className="sticky top-0 z-10 border-r-2 flex items-center justify-between gap-3 border-b bg-background px-4 py-3 sm:px-6 md:px-5 lg:px-7">
-              <div className="min-w-0">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Asset details
-                </p>
-              </div>
-              <div className="flex shrink-0 items-center gap-2 text-muted-foreground lg:pr-4">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Open asset as full page"
-                  title="Open as full page"
-                  onClick={() => {
-                    onOpenFullPage?.(asset);
-                    navigate(`/assets/asset-details/${asset.id}`, {
-                      state: { asset },
-                    });
-                  }}
-                >
-                  <Maximize2 className="size-4" />
-                </Button>
-
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Close asset details"
-                  onClick={() => onOpenChange(false)}
-                >
-                  <X className="size-4.5" />
-                </Button>
-              </div>
-            </div>
+            <DrawerHeader onOpenFullPage={onOpenFullPage} asset={asset} onOpenChange={onOpenChange} mode={"view"}/>
             <div className="min-h-0 flex-1 overflow-y-auto pt-2 lg:pt-1 xl:pt-0">
               <div className="flex flex-col gap-6 p-4 sm:gap-6 sm:p-5 lg:p-5.5 xl:p-7">
                 <AssetViewHeader
@@ -287,7 +256,7 @@ export function ViewAssetDrawer({
             <Separator />
           </>
         )}
-        {asset && isDialogOpen && (
+        {isDialogOpen && asset &&(
           <AssignAssetDialog
             open={isDialogOpen}
             onOpenChange={setIsDialogOpen}
@@ -295,7 +264,7 @@ export function ViewAssetDrawer({
             allUsers={allUsers}
           />
         )}
-        {asset && isChangeStatus && (
+        {isChangeStatus && asset && (
           <ChangeStatusCard
             onOpenChange={setIsChangeStatus}
             asset={asset}
@@ -303,7 +272,7 @@ export function ViewAssetDrawer({
             isLoading={isUnAssignLoading}
           />
         )}
-        {asset && isReturnToStockOpen && (
+        {isReturnToStockOpen && asset && (
           <ReturnToStockCard
             assetTag={asset.assetTag}
             assignedUserName={

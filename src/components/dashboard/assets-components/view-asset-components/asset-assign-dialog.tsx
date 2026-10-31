@@ -28,6 +28,7 @@ export function AssignAssetDialog({
 
   async function handleAssignAsset() {
     if (!selectedUserId) return;
+    if (!asset) return;
     setIsAssignLoading(true);
     try {
       const response = await assignAsset(asset.id, selectedUserId);
@@ -64,7 +65,7 @@ export function AssignAssetDialog({
         <CardHeader className="px-5 text-left">
           <CardTitle className="text-lg font-semibold">Assign asset</CardTitle>
           <CardDescription className="w-[90%]">
-            Issue {asset.assetTag} to one person. Only in-stock assets can be
+            Issue {asset?.assetTag} to one person. Only in-stock assets can be
             assigned.
           </CardDescription>
           <Button

@@ -51,12 +51,46 @@ export const typeIcons: Record<AssetType, LucideIcon> = {
   accessory: Keyboard,
 };
 
+export const assetTypes = [
+  { value: "laptop", label: "Laptop", icon: Laptop },
+  { value: "monitor", label: "Monitor", icon: Monitor },
+  { value: "phone", label: "Phone", icon: Smartphone },
+  { value: "accessory", label: "Accessory", icon: Keyboard },
+] as const;
+
 export const allowedStatusTransistions: Record<AssetStatus, AssetStatus[]> = {
   in_stock: ["assigned", "repair", "retired"],
   assigned: ["in_stock", "repair"],
   repair: ["in_stock", "retired"],
   retired: [],
 };
+
+export const assetStatuses = [
+  {
+    label: "In stock",
+    value: "in_stock",
+    color: "bg-success",
+    description: "Available to assign",
+  },
+  {
+    label: "Assigned",
+    value: "assigned",
+    color: "bg-primary",
+    description: "Issued to one person",
+  },
+  {
+    label: "In repair",
+    value: "repair",
+    color: "bg-warning",
+    description: "With IT or the vendor",
+  },
+  {
+    label: "Retired",
+    value: "retired",
+    color: "bg-muted-foreground",
+    description: "Permanent. Cannot be undone",
+  },
+] as const;
 
 export function getStatusMessage(
   current: AssetStatus,

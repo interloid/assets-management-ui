@@ -4,7 +4,7 @@ import {
   statusDotStyles,
   statusLabels,
 } from "../../reusable-components/utils";
-import { Section } from "../view-asset-drawer";
+import { Section } from "../view-asset-components/view-asset-drawer";
 
 export function AssetStatusRules({ asset }: { asset: Asset }) {
   return (
