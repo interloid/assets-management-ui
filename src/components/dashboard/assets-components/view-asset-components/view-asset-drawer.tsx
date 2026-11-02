@@ -24,7 +24,6 @@ import { copyValue } from "@/lib/utils";
 import { AssetDetailTable } from "../reusable-components/asset-detail-table";
 import { AssetViewHeader } from "../reusable-components/asset-view-header";
 import DrawerHeader from "../reusable-components/drawer-header";
-import { useNavigate } from "react-router";
 import DeleteAssetCard from "./delete-confirmation";
 
 export function DetailRow({
@@ -92,7 +91,6 @@ export function ViewAssetDrawer({
   onDelete,
 }: ViewAssetDrawerProps) {
   const { state } = useSidebar();
-  const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [isChangeStatus, setIsChangeStatus] = useState<boolean>(false);
   const [isReturnToStockOpen, setIsReturnToStockOpen] =
@@ -155,11 +153,11 @@ export function ViewAssetDrawer({
     try {
       const response = await deleteAsset(asset.id);
       if (response.success) {
+        setIsDeleteCardOpen(false);
+        onOpenChange(false);
         onDelete?.(asset);
-        setIsDeleteCardOpen(true);
-        toast.success("Asset Deleted Successfully.");
+        toast.success("Asset deleted successfully.");
         await onSaved();
-        navigate("/assets");
       } else {
         toast.error(response.message ?? "Failed to delete asset.");
       }
