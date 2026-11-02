@@ -8,8 +8,8 @@ import {
   Smartphone,
   SquareOff,
 } from "lucide-react";
-import StackedProgressBar from "@/components/dashboard/stacked-progress-bar";
-import RecentlyAdded from "@/components/dashboard/recently-added";
+import StackedProgressBar from "@/components/dashboard/dashboard-components/stacked-progress-bar";
+import RecentlyAdded from "@/components/dashboard/dashboard-components/recently-added";
 import {
   getAssetStats,
   getRecentlyAddedAssets,
@@ -22,11 +22,11 @@ import type {
   WarrantyAsset,
 } from "@/types/dashboard";
 import { useNavigate } from "react-router";
-import WarrantyExpiringSkeleton from "@/components/dashboard/warranty-expiring-skeleton";
-import RecentlyAddedSkeleton from "@/components/dashboard/recently-added-skeleton";
-import StackProgressSkeleton from "@/components/dashboard/stacked-progress-bar-skeleton";
+import WarrantyExpiringSkeleton from "@/components/dashboard/dashboard-components/warranty-expiring-skeleton";
+import RecentlyAddedSkeleton from "@/components/dashboard/dashboard-components/recently-added-skeleton";
+import StackProgressSkeleton from "@/components/dashboard/dashboard-components/stacked-progress-bar-skeleton";
 import { toast } from "sonner";
-import WarrantyExpiring from "@/components/dashboard/warranty-expiring";
+import WarrantyExpiring from "@/components/dashboard/dashboard-components/warranty-expiring";
 
 const assetIcons = {
   laptop: Laptop,

@@ -2,8 +2,8 @@ import type { StackedProgressBarProps } from "@/types/dashboard";
 import { useMemo } from "react";
 import { cn } from "cn";
 import { useNavigate } from "react-router";
-import AnimatedNumber from "./reusable-components/animated-number";
-import { Tooltip, TooltipTrigger } from "../ui/tooltip";
+import AnimatedNumber from "../reusable-components/animated-number";
+import { Tooltip, TooltipTrigger } from "../../ui/tooltip";
 
 const statusByLabel: Record<string, string> = {
   "In stock": "in_stock",

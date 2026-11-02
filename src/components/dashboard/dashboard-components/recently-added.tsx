@@ -2,7 +2,7 @@ import { toStatusLabel } from "@/lib/converters";
 import type { RecentlyAddedProps } from "@/types/dashboard";
 import { cn } from "cn";
 import { Link } from "react-router";
-import { statusStyles } from "./reusable-components/utils";
+import { statusStyles } from "../reusable-components/utils";
 
 export default function RecentlyAdded({ assets }: RecentlyAddedProps) {
   return (

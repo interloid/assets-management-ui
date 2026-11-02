@@ -1,6 +1,6 @@
 import { Menu, Moon, Sun } from "lucide-react";
-import { Button } from "../ui/button";
-import { SidebarTrigger } from "../ui/sidebar";
+import { Button } from "../../ui/button";
+import { SidebarTrigger } from "../../ui/sidebar";
 import interloidMark from "@/assets/interloid-mark.svg";
 import { useTheme } from "@/context/theme";
 import { useLocation } from "react-router";

@@ -24,7 +24,7 @@ export function AssignAssetDialog({
   onAssigned,
 }: AssignAssetDialogProps) {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState<string | null>(null);
   const [isAssignLoading, setIsAssignLoading] = useState<boolean>(false);
 
   async function handleAssignAsset() {
@@ -49,7 +49,7 @@ export function AssignAssetDialog({
     }
   }
   const filteredUsers = allUsers.filter((user) => {
-    const query = searchText.trim().toLowerCase();
+    const query = searchText?.trim().toLowerCase() ?? "";
     return (
       user.fullName.toLowerCase().includes(query) ||
       user.email.toLowerCase().includes(query)
@@ -90,7 +90,7 @@ export function AssignAssetDialog({
             <Input
               type="search"
               placeholder="Search people by name or email"
-              value={searchText}
+              value={searchText ?? undefined}
               onChange={(event) => setSearchText(event.target.value)}
               aria-label="Search people"
               className="rounded-sm pl-9 text-sm h-9"

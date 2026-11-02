@@ -5,7 +5,7 @@ import { Toaster } from "sonner";
 import LoginPage from "@/app/pages/auth/login";
 import { Spinner } from "@/components/ui/spinner";
 import Assets from "./pages/dashboard/assets/assets";
-import Users from "./pages/dashboard/users/users";
+import { UsersPage } from "./pages/dashboard/users/users";
 import MyAssets from "./pages/dashboard/my-assets/my-assets";
 import Profile from "./pages/dashboard/profile/profile";
 import Dashboard from "./pages/dashboard/dashboard";
@@ -56,7 +56,7 @@ export default function App() {
               path="/assets/asset-details/edit/:assetId"
               element={<EditAssetFullPage />}
             />
-            <Route path="/users" element={<Users />} />
+            <Route path="/users" element={<UsersPage />} />
             <Route path="/my-assets" element={<MyAssets />} />
             <Route path="/profile" element={<Profile />} />
           </Route>

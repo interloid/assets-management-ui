@@ -1,5 +1,5 @@
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
-import Header from "@/components/dashboard/dashboard-header";
+import Header from "@/components/dashboard/dashboard-components/dashboard-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Outlet } from "react-router";
 
