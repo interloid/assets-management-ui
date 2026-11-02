@@ -8,25 +8,28 @@ import type {
   AssetStatus,
   AssetViewFullPageProps,
 } from "@/types/assets";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { AssignAssetDialog } from "./asset-assign-dialog";
 import { ChangeStatusCard } from "./change-status-card";
 import { ReturnToStockCard } from "./return-to-stock-card";
 import { changeStatus, unassignAsset } from "@/services/assets.services";
+import type { User } from "@/services/assets.services";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 export function AssetViewFullPage({
-  allUsers = [],
   onChangeStatus,
-  onEdit,
+  onSaved,
   onDelete,
   onUnassign,
 }: AssetViewFullPageProps) {
+  const navigate = useNavigate();
   const location = useLocation();
-  const asset = (location.state as { asset?: Asset } | null)?.asset;
+  const state = location.state as { asset?: Asset; allUsers?: User[] } | null;
+  const asset = state?.asset;
+  const allUsers = state?.allUsers ?? [];
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [isChangeStatus, setIsChangeStatus] = useState<boolean>(false);
   const [isReturnToStockOpen, setIsReturnToStockOpen] = useState(false);
@@ -46,7 +49,6 @@ export function AssetViewFullPage({
 
   function handleAssignAsset() {
     if (!asset) return;
-
     if (asset.status === "assigned") {
       setIsReturnToStockOpen(true);
     } else {
@@ -107,7 +109,11 @@ export function AssetViewFullPage({
           onChangeStatus?.(selectedAsset);
           setIsChangeStatus(true);
         }}
-        onEdit={onEdit}
+        onEdit={(selectedAsset) =>
+          navigate(`/assets/asset-details/edit/${selectedAsset.id}`, {
+            state: { asset: selectedAsset, allUsers },
+          })
+        }
         onDelete={onDelete}
         onAssign={handleAssignAsset}
       />
@@ -131,6 +137,7 @@ export function AssetViewFullPage({
           onOpenChange={setIsDialogOpen}
           asset={asset}
           allUsers={allUsers}
+          onSaved={onSaved}
         />
       )}
       {isChangeStatus && (

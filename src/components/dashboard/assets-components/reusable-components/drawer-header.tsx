@@ -7,6 +7,7 @@ export default function DrawerHeader({
   onOpenFullPage,
   onOpenChange,
   asset,
+  allUsers,
   mode,
 }: DrawerHeaderProps) {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ export default function DrawerHeader({
                 ? `/assets/asset-details/edit/${asset.id}`
                 : `/assets/asset-details/${asset.id}`;
 
-            navigate(destination, { state: { asset } });
+            navigate(destination, { state: { asset, allUsers } });
           }}
         >
           <Maximize2 className="size-4" />

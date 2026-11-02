@@ -13,7 +13,7 @@ import {
 import { getAssetStats, type AssetStats } from "@/services/dashboard.services";
 import type { Asset, AssetQuery, DrawerMode } from "@/types/assets";
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
 export default function Assets() {
@@ -83,41 +83,51 @@ export default function Assets() {
     );
   }
 
+  const refreshAssets = useCallback(async () => {
+    if (query.search !== debounceSearch) return;
+    try {
+      const response = await getAssetsData({
+        ...query,
+        search: debounceSearch,
+      });
+      const updatedAssets = response.data?.map((item) => ({
+        ...item,
+        initials:
+          item.assignedUser?.fullName
+            ?.split(/\s+/)
+            .map((part) => part[0])
+            .join("")
+            .slice(0, 2) ?? "",
+      }));
+      if (!response.success || !response.data) return;
+      if (response.success || response.data) {
+        setAssetsData(updatedAssets ?? null);
+        setSelectedAsset((current) =>
+          current
+            ? (updatedAssets?.find((item) => item.id === current.id) ?? current)
+            : null,
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [query, debounceSearch]);
+
   useEffect(() => {
-    async function AssetsData() {
+    const loadAssets = async () => {
+      setIsLoading(true);
       try {
-        setIsLoading(true);
-        if (query.search !== debounceSearch) {
-          return;
-        }
-        const response = await getAssetsData({
-          ...query,
-          search: debounceSearch,
-        });
-        if (!response.success || !response.data) {
-          return;
-        }
-        if (response.success || response.data) {
-          setAssetsData(
-            response.data.map((item) => ({
-              ...item,
-              initials:
-                item.assignedUser?.fullName
-                  ?.split(/\s+/)
-                  .map((part) => part[0])
-                  .join("")
-                  .slice(0, 2) ?? "",
-            })),
-          );
-        }
+        await refreshAssets();
       } catch (error) {
         console.error(error);
       } finally {
         setIsLoading(false);
       }
-    }
-    void AssetsData();
-  }, [query, debounceSearch]);
+    };
+    void loadAssets();
+  }, [refreshAssets]);
 
   useEffect(() => {
     async function getUsers() {
@@ -193,7 +203,7 @@ export default function Assets() {
         isLoading={isLoading}
         onRowClick={handleRowClick}
       />
-      {drawerMode === "view" || !selectedAsset? (
+      {drawerMode === "view" || !selectedAsset ? (
         <ViewAssetDrawer
           open={isOpen}
           onOpenChange={setIsOpen}
@@ -201,12 +211,15 @@ export default function Assets() {
           onUnassign={handleAssetUnassigned}
           allUsers={allUsers ?? []}
           onEdit={() => setDrawerMode("edit")}
+          onSaved={refreshAssets}
         />
       ) : (
         <EditAssetDrawer
           open={isOpen}
           asset={selectedAsset}
           onOpenChange={() => setDrawerMode("view")}
+          allUsers={allUsers ?? []}
+          onSaved={refreshAssets}
         />
       )}
     </section>

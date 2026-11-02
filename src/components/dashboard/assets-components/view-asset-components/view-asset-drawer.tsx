@@ -2,10 +2,7 @@ import { Copy } from "lucide-react";
 
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
-import type {
-  AssetStatus,
-  ViewAssetDrawerProps,
-} from "@/types/assets";
+import type { AssetStatus, ViewAssetDrawerProps } from "@/types/assets";
 import {
   getStatusMessage,
   statusDotStyles,
@@ -16,13 +13,19 @@ import { useSidebar } from "@/components/ui/sidebar-context";
 import { useState } from "react";
 import { AssignAssetDialog } from "./asset-assign-dialog";
 import { ChangeStatusCard } from "./change-status-card";
-import { changeStatus, unassignAsset } from "@/services/assets.services";
+import {
+  changeStatus,
+  deleteAsset,
+  unassignAsset,
+} from "@/services/assets.services";
 import { toast } from "sonner";
 import { ReturnToStockCard } from "./return-to-stock-card";
 import { copyValue } from "@/lib/utils";
 import { AssetDetailTable } from "../reusable-components/asset-detail-table";
 import { AssetViewHeader } from "../reusable-components/asset-view-header";
 import DrawerHeader from "../reusable-components/drawer-header";
+import { useNavigate } from "react-router";
+import DeleteAssetCard from "./delete-confirmation";
 
 export function DetailRow({
   label,
@@ -80,6 +83,7 @@ export function ViewAssetDrawer({
   asset,
   allUsers,
   open,
+  onSaved,
   onOpenFullPage,
   onOpenChange,
   onEdit,
@@ -88,17 +92,17 @@ export function ViewAssetDrawer({
   onDelete,
 }: ViewAssetDrawerProps) {
   const { state } = useSidebar();
+  const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [isChangeStatus, setIsChangeStatus] = useState<boolean>(false);
   const [isReturnToStockOpen, setIsReturnToStockOpen] =
     useState<boolean>(false);
   const [isUnAssignLoading, setIsUnAssignLoading] = useState<boolean>(false);
   const [isConfirmStatus, setIsConfirmStatus] = useState<boolean>(false);
-
-
+  const [isDeleteCardOpen, setIsDeleteCardOpen] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   function handleAssignAsset() {
     if (!asset) return;
-
     if (asset.status === "assigned") {
       setIsReturnToStockOpen(true);
     } else {
@@ -114,6 +118,7 @@ export function ViewAssetDrawer({
       if (response.success) {
         setIsChangeStatus(false);
         toast.success("Asset status updated successfully.");
+        await onSaved();
       } else {
         toast.error(response.message ?? "Failed to update asset status.");
       }
@@ -133,6 +138,7 @@ export function ViewAssetDrawer({
         onUnassign?.(asset.id);
         setIsReturnToStockOpen(false);
         toast.success("Asset unassigned successfully.");
+        await onSaved();
       } else {
         toast.error(response.message ?? "Failed to unassign asset.");
       }
@@ -140,6 +146,27 @@ export function ViewAssetDrawer({
       console.error(error);
     } finally {
       setIsConfirmStatus(false);
+    }
+  }
+
+  async function handleDeleteAsset() {
+    if (!asset) return;
+    setIsDeleting(true);
+    try {
+      const response = await deleteAsset(asset.id);
+      if (response.success) {
+        onDelete?.(asset);
+        setIsDeleteCardOpen(true);
+        toast.success("Asset Deleted Successfully.");
+        await onSaved();
+        navigate("/assets");
+      } else {
+        toast.error(response.message ?? "Failed to delete asset.");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -159,7 +186,13 @@ export function ViewAssetDrawer({
           </div>
         ) : (
           <>
-            <DrawerHeader onOpenFullPage={onOpenFullPage} asset={asset} onOpenChange={onOpenChange} mode={"view"}/>
+            <DrawerHeader
+              onOpenFullPage={onOpenFullPage}
+              asset={asset}
+              onOpenChange={onOpenChange}
+              mode={"view"}
+              allUsers={allUsers}
+            />
             <div className="min-h-0 flex-1 overflow-y-auto pt-2 lg:pt-1 xl:pt-0">
               <div className="flex flex-col gap-6 p-4 sm:gap-6 sm:p-5 lg:p-5.5 xl:p-7">
                 <AssetViewHeader
@@ -169,7 +202,7 @@ export function ViewAssetDrawer({
                     setIsChangeStatus(true);
                   }}
                   onEdit={onEdit}
-                  onDelete={onDelete}
+                  onDelete={() => setIsDeleteCardOpen(true)}
                   onAssign={handleAssignAsset}
                 />
                 <div className="grid min-w-0 grid-cols-1 items-start gap-5 2xl:gap-5.5 2xl:grid-cols-[3fr_1.55fr]">
@@ -256,12 +289,13 @@ export function ViewAssetDrawer({
             <Separator />
           </>
         )}
-        {isDialogOpen && asset &&(
+        {isDialogOpen && asset && (
           <AssignAssetDialog
             open={isDialogOpen}
             onOpenChange={setIsDialogOpen}
             asset={asset}
             allUsers={allUsers}
+            onSaved={onSaved}
           />
         )}
         {isChangeStatus && asset && (
@@ -282,6 +316,14 @@ export function ViewAssetDrawer({
             onOpenChange={setIsReturnToStockOpen}
             onConfirm={handleConfirmUnassign}
             isLoading={isConfirmStatus}
+          />
+        )}
+        {isDeleteCardOpen && asset && (
+          <DeleteAssetCard
+            assetTag={asset.assetTag}
+            isDeleting={isDeleting}
+            onCancel={() => setIsDeleteCardOpen(false)}
+            onConfirm={handleDeleteAsset}
           />
         )}
       </SheetContent>

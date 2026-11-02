@@ -10,11 +10,13 @@ import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { assetTypes } from "../../reusable-components/utils";
 import type { AssetType } from "@/types/assets";
+import { Spinner } from "@/components/ui/spinner";
 
 type FormErrors = {
   type: string | null;
   serialNumber: string | null;
   purchaseDate: string | null;
+  warrantyExpiry: string | null;
 };
 
 export function AddAssetForm() {
@@ -28,14 +30,17 @@ export function AddAssetForm() {
     type: null,
     serialNumber: null,
     purchaseDate: null,
+    warrantyExpiry: null,
   });
   const [serverErrors, setServerError] = useState<string | null>(null);
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   function validateForm() {
     const result = createAssetSchema.safeParse({
       type,
       serialNumber,
       purchaseDate,
+      warrantyExpiry,
+      status: "in_stock",
     });
 
     if (result.success) {
@@ -43,6 +48,7 @@ export function AddAssetForm() {
         type: null,
         serialNumber: null,
         purchaseDate: null,
+        warrantyExpiry: null,
       });
       return true;
     }
@@ -52,6 +58,7 @@ export function AddAssetForm() {
       type: fieldErrors.type?.[0] ?? null, //checks the first error
       serialNumber: fieldErrors.serialNumber?.[0] ?? null,
       purchaseDate: fieldErrors.purchaseDate?.[0] ?? null,
+      warrantyExpiry: fieldErrors.warrantyExpiry?.[0] ?? null,
     });
     return false;
   }
@@ -76,6 +83,7 @@ export function AddAssetForm() {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setwarrantyExpiry(event.target.value);
+    setErrors((prev) => ({ ...prev, warrantyExpiry: null }));
   };
   const handleNotesChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNotes(event.target.value);
@@ -84,11 +92,11 @@ export function AddAssetForm() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setServerError(null);
-
     const isValid = validateForm();
     if (!isValid) {
       return;
     }
+    setIsLoading(true);
     try {
       const response = await createAsset({
         type,
@@ -97,22 +105,26 @@ export function AddAssetForm() {
         warrantyExpiry,
         notes,
       });
-      if (response.success || response.data) {
-        toast.success(response.message);
+      if (response.success) {
+        toast.success(response.message || "Asset created successfully.");
         navigate(`/assets`);
+        return;
       }
       if (!response.success || !response.data) {
         if (response.errors && response.errors !== null) {
           setServerError(
-            response.errors.map((error) => error.message).join(","),
+            response.errors.map((error) => error.message).join(", "),
           );
+          toast.error(serverErrors);
         } else {
           setServerError(response.message);
+          toast.error(serverErrors);
         }
-        toast.error(serverErrors);
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   }
   return (
@@ -189,7 +201,7 @@ export function AddAssetForm() {
                 placeholder="e.g. C02FK3J1Q6L4"
                 className="h-9 font-mono text-[13px] shadow-sm"
               />
-              {(errors?.serialNumber) && (
+              {errors?.serialNumber && (
                 <p className="text-sm text-destructive">
                   {errors.serialNumber}
                 </p>
@@ -206,7 +218,7 @@ export function AddAssetForm() {
                 onChange={handlePurchasechange}
                 className="h-9 text-[14px] shadow-sm"
               />
-              {(errors.purchaseDate) && (
+              {errors.purchaseDate && (
                 <p className="text-sm text-destructive">
                   {errors.purchaseDate}
                 </p>
@@ -228,6 +240,11 @@ export function AddAssetForm() {
                 onChange={handleWarrantyExpiryChange}
                 className="h-9 text-[14px] shadow-sm"
               />
+              {errors.warrantyExpiry && (
+                <p className="text-sm text-destructive">
+                  {errors.warrantyExpiry || serverErrors}
+                </p>
+              )}
             </div>
             <div className="col-span-full flex min-w-0 flex-col gap-1.5">
               <Label htmlFor="notes">
@@ -265,9 +282,17 @@ export function AddAssetForm() {
         <Button
           type="submit"
           title="Create the asset as In stock"
+          disabled={isLoading}
           className="h-9 gap-2 px-3.5 text-sm font-medium shadow-xs cursor-pointer"
         >
-          Create asset
+          {isLoading ? (
+            <div className="flex gap-2 ">
+              <Spinner />
+              <span>Creating Asset...</span>
+            </div>
+          ) : (
+            "Create asset"
+          )}
         </Button>
       </div>
     </form>

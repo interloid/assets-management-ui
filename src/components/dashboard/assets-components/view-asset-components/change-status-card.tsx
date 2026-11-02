@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Asset, AssetStatus } from "@/types/assets";
+import type { AssetStatus, ChangeStatusCardProps } from "@/types/assets";
 import { Check, X } from "lucide-react";
 import {
   allowedStatusTransistions,
@@ -17,12 +17,6 @@ import {
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 
-type ChangeStatusCardProps = {
-  onOpenChange: (open: boolean) => void;
-  asset: Asset | null;
-  onConfirm: (status: AssetStatus) => void;
-  isLoading: boolean;
-};
 
 export function ChangeStatusCard({
   onOpenChange,

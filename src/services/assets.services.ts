@@ -92,6 +92,18 @@ export interface createAssetResponse {
   data: CreateAssetPayload[];
 }
 
+export async function getAssetsById(assetId: string) {
+  const result = await fetch(`${API_BASE_URL}/assets/${assetId}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      accept: "application/json",
+    },
+  });
+  const response = await result.json();
+  return toCamelCase(response);
+}
+
 export async function createAsset(
   payload: CreateAssetPayload,
 ): Promise<createAssetResponse> {
@@ -117,7 +129,6 @@ export async function assignAsset(assetId: string, userId: string) {
     },
     body: JSON.stringify({ user_id: userId }),
   });
-
   const response = await result.json();
   return toCamelCase(response);
 }
@@ -144,7 +155,6 @@ export async function unassignAsset(assetId: string) {
       accept: "application/json",
     },
   });
-
   const response = await result.json();
   return toCamelCase(response);
 }
@@ -155,6 +165,8 @@ export type UpdateAssetPayload = {
   purchase_date: string;
   warranty_expiry: string | null;
   serial_number: string;
+  status: string;
+  user_id?: string;
 };
 
 export interface UpdateAssetResponse {
@@ -170,7 +182,7 @@ export async function updateAsset(
   assetId: string,
   payload: UpdateAssetPayload,
 ): Promise<UpdateAssetResponse> {
-  const result = await fetch(`${API_BASE_URL}//assets/${assetId}`, {
+  const result = await fetch(`${API_BASE_URL}/assets/${assetId}`, {
     method: "PATCH",
     credentials: "include",
     headers: {
@@ -178,6 +190,19 @@ export async function updateAsset(
       accept: "application/json",
     },
     body: JSON.stringify(toSnakeCase(payload)),
+  });
+  const response = await result.json();
+  return toCamelCase(response);
+}
+
+export async function deleteAsset(assetId: string) {
+  const result = await fetch(`${API_BASE_URL}/assets/${assetId}`, {
+    method: "DELETE",
+    credentials: "include",
+    headers: {
+      "content-type": "application/json",
+      accept: "application/json",
+    },
   });
   const response = await result.json();
   return toCamelCase(response);

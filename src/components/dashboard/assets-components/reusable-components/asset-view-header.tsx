@@ -32,7 +32,6 @@ export function AssetViewHeader({
   const TypeIcon = asset
     ? (typeIcons[asset.type as AssetType] ?? SquareOff)
     : SquareOff;
-
   return (
     <div className="flex flex-col gap-4 xl:flex-row xl:justify-between">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -65,7 +64,6 @@ export function AssetViewHeader({
               {statusLabels[asset.status as AssetStatus]}
             </span>
           </div>
-
           <div className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground">
             <TypeIcon className="size-4 shrink-0" />
             <span className="capitalize">{asset.type}</span>
@@ -79,9 +77,9 @@ export function AssetViewHeader({
           type="button"
           size="sm"
           variant={asset.status === "assigned" ? "outline" : "default"}
-          disabled={asset.status === "retired"}
+          disabled={asset.status === "retired" || asset.status === "repair"}
           onClick={() => onAssign?.(asset)}
-          className="h-9 gap-2 px-3.5 text-sm font-medium shadow-xs cursor-pointer"
+          className="h-9 gap-2 px-3.5 text-sm font-medium shadow-xs cursor-pointer disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           {asset.status === "assigned" ? (
             <>
@@ -99,7 +97,7 @@ export function AssetViewHeader({
           variant="outline"
           disabled={asset.status === "retired"}
           onClick={() => onChangeStatus?.(asset)}
-          className="h-9 gap-2 px-3.5 text-sm font-medium shadow-xs cursor-pointer"
+          className="h-9 gap-2 px-3.5 text-sm font-medium shadow-xs cursor-pointer disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <RefreshCw className="size-4" />
           Change status
@@ -122,7 +120,8 @@ export function AssetViewHeader({
           variant="outline"
           aria-label="Delete asset"
           title="Delete asset"
-          className="text-destructive hover:text-destructive h-9 gap-2 p-4 px-4.25 rounded-sm shadow-xs cursor-pointer"
+          className="text-destructive hover:text-destructive h-9 gap-2 p-4 px-4.25 rounded-sm shadow-xs cursor-pointer disabled:pointer-events-auto disabled:cursor-not-allowed"
+          disabled={asset.status === "assigned" || asset.status === "repair"}
           onClick={() => onDelete?.(asset)}
         >
           <Trash2 className="size-4" />

@@ -20,6 +20,7 @@ export function AssignAssetDialog({
   onOpenChange,
   asset,
   allUsers,
+  onSaved,
   onAssigned,
 }: AssignAssetDialogProps) {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -36,12 +37,13 @@ export function AssignAssetDialog({
         onAssigned?.(selectedUserId);
         onOpenChange(false);
         toast.success("Assets Assigned Successfully");
+        await onSaved?.();
       } else {
         onOpenChange(false);
         toast.error("Asset not assigned");
       }
     } catch (error) {
-      console.error(error);
+      console.error(error); 
     } finally {
       setIsAssignLoading(false);
     }
@@ -85,7 +87,6 @@ export function AssignAssetDialog({
               className="absolute left-3 top-1/2 size-4
               -translate-y-1/2 text-muted-foreground"
             />
-
             <Input
               type="search"
               placeholder="Search people by name or email"
@@ -95,7 +96,6 @@ export function AssignAssetDialog({
               className="rounded-sm pl-9 text-sm h-9"
             />
           </div>
-
           <div
             role="radiogroup"
             aria-label="People"

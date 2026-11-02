@@ -5,14 +5,14 @@ import { Outlet } from "react-router";
 
 export default function DashboardLayout() {
   return (
-    <SidebarProvider>
-      <div>
-        <AppSidebar />
-      </div>
-      <SidebarInset className="min-w-0">
-        <Header />
-        <Outlet />
-      </SidebarInset>
-    </SidebarProvider>
+      <SidebarProvider>
+        <div>
+          <AppSidebar />
+        </div>
+        <SidebarInset className="min-w-0">
+          <Header />
+          <Outlet />
+        </SidebarInset>
+      </SidebarProvider>
   );
 }

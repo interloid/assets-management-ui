@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const serialNumberSchema = z
   .union([z.string(), z.null()])
-  .transform((serialNumber) => serialNumber ?? undefined)
+  .transform((serialNumber) => serialNumber ?? "")
   .pipe(
     z
       .string()
@@ -20,12 +20,14 @@ const serialNumberSchema = z
 
 const purchaseDateSchema = z
   .union([z.string(), z.null()])
-  .transform((purchaseDate) => purchaseDate ?? undefined)
+  .transform((purchaseDate) => purchaseDate ?? "")
   .pipe(z.string().min(1, "Purchase date is required."));
 
-const statusSchema = z.enum(["in_stock", "assigned", "in_repair", "retired"], {
+const statusSchema = z.enum(["in_stock", "assigned", "repair", "retired"], {
   message: "Please select a valid asset status.",
 });
+
+const warrantySchema = z.union([z.iso.date(), z.literal(""), z.null()]);
 
 export const createAssetSchema = z.object({
   type: z.enum(["laptop", "monitor", "phone", "accessory"], {
@@ -34,6 +36,7 @@ export const createAssetSchema = z.object({
   serialNumber: serialNumberSchema,
   purchaseDate: purchaseDateSchema,
   status: statusSchema,
+  warrantyExpiry: warrantySchema,
 });
 
 export const editAssetSchema = z.object({

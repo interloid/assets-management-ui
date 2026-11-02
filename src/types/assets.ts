@@ -76,15 +76,16 @@ export type ViewAssetDrawerProps = {
   onEdit?: (asset: Asset) => void;
   onDelete?: (asset: Asset) => void;
   onOpenFullPage?: (asset: Asset) => void;
+  onSaved: () => Promise<void>;
 };
 
 export type AssetViewFullPageProps = {
-  allUsers?: User[];
   onChangeStatus?: (asset: Asset) => void;
   onEdit?: (asset: Asset) => void;
   onDelete?: (asset: Asset) => void;
   onAssign?: (asset: Asset) => void;
   onUnassign?: (assetId: string) => void;
+  onSaved?: () => Promise<void>;
 };
 
 export type AssignAssetDialogProps = {
@@ -93,6 +94,14 @@ export type AssignAssetDialogProps = {
   asset: Asset | null;
   allUsers: User[];
   onAssigned?: (userId: string) => void;
+  onSaved?: () => Promise<void>;
+};
+
+export type ChangeStatusCardProps = {
+  onOpenChange: (open: boolean) => void;
+  asset: Asset | null;
+  onConfirm: (status: AssetStatus) => void;
+  isLoading: boolean;
 };
 
 export type AssetViewHeaderProps = {
@@ -104,14 +113,17 @@ export type AssetViewHeaderProps = {
 };
 
 export type EditFormSectionProps = {
-  open?: boolean,
-  asset: Asset,
+  open?: boolean;
+  asset: Asset;
   onOpenChange: (open: boolean) => void;
+  allUsers: User[];
+  onSaved: () => Promise<void>;
 };
 
 export type DrawerHeaderProps = {
   onOpenFullPage?: (asset: Asset) => void;
-  asset: Asset ;
+  asset: Asset;
+  allUsers: User[];
   onOpenChange: (open: boolean) => void;
-  mode: "view" | "edit"
+  mode: "view" | "edit";
 };
