@@ -31,7 +31,7 @@ export default function RecentlyAdded({ assets }: RecentlyAddedProps) {
                 className="border-t border-border first:border-t-0"
               >
                 <Link
-                  to={"/assets"}
+                  to={`/assets/asset-details/${asset.id}`}
                   className="flex min-h-14 items-center gap-3 px-5 py-3 no-underline transition-colors duration-150 hover:bg-muted/50"
                 >
                   <Icon
