@@ -8,20 +8,22 @@ import type {
   AssetStatus,
   AssetViewFullPageProps,
 } from "@/types/assets";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { ArrowLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AssignAssetDialog } from "./asset-assign-dialog";
 import { ChangeStatusCard } from "./change-status-card";
 import { ReturnToStockCard } from "./return-to-stock-card";
 import {
   changeStatus,
   deleteAsset,
+  getAssetsById,
   unassignAsset,
 } from "@/services/assets.services";
 import type { User } from "@/services/assets.services";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import DeleteAssetCard from "./delete-confirmation";
 
 export function AssetViewFullPage({
@@ -33,8 +35,10 @@ export function AssetViewFullPage({
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as { asset?: Asset; allUsers?: User[] } | null;
-  const asset = state?.asset;
+  const { assetId } = useParams();
   const allUsers = state?.allUsers ?? [];
+  const [asset, setAsset] = useState<Asset | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [isChangeStatus, setIsChangeStatus] = useState<boolean>(false);
   const [isReturnToStockOpen, setIsReturnToStockOpen] = useState(false);
@@ -43,7 +47,52 @@ export function AssetViewFullPage({
   const [isUnassignLoading, setIsUnassignLoading] = useState<boolean>(false);
   const [isDeleteCardOpen, setIsDeleteCardOpen] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  if (!asset) {
+
+  const routeAsset = state?.asset?.id === assetId ? state?.asset : null;
+
+  useEffect(() => {
+    if (!assetId || routeAsset) return;
+
+    const id = assetId;
+    let active = true;
+
+    async function loadAsset() {
+      try {
+        const response = await getAssetsById(id);
+        if (!response.success || !response.data) {
+          toast.error(response.message ?? "Failed to load asset details.");
+          return;
+        }
+        if (active) {
+          setAsset(response.data);
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to load asset details.");
+      } finally {
+        if (active) {
+          setIsLoading(false);
+        }
+      }
+    }
+    void loadAsset();
+    return () => {
+      active = false;
+    };
+  }, [assetId, routeAsset]);
+
+  const currentAsset = routeAsset ?? asset;
+
+  if (isLoading && !routeAsset) {
+    return (
+      <div className="flex h-full items-center justify-center gap-2">
+        <Spinner />
+        <span>Loading asset details...</span>
+      </div>
+    );
+  }
+
+  if (!currentAsset) {
     return (
       <div className="flex flex-col gap-2 justify-center items-center h-full">
         <p>No asset was provided.</p>
@@ -128,10 +177,10 @@ export function AssetViewFullPage({
           Assets
         </Link>
         <ChevronRight className="size-3.5" />
-        <span className="font-mono text-foreground">{asset.assetTag}</span>
+        <span className="font-mono text-foreground">{asset?.assetTag}</span>
       </div>
       <AssetViewHeader
-        asset={asset}
+        asset={currentAsset}
         onChangeStatus={(selectedAsset) => {
           onChangeStatus?.(selectedAsset);
           setIsChangeStatus(true);
@@ -149,16 +198,16 @@ export function AssetViewFullPage({
       />
       <div className="flex flex-col gap-6 lg:flex-col xl:flex-row xl:w-full">
         <div className="flex min-w-0 flex-1 flex-col gap-6 xl:w-[67%]">
-          <AssetDetailTable asset={asset} isPage={true} />
+          <AssetDetailTable asset={currentAsset} isPage={true} />
           <Section title="Notes">
             <p className="whitespace-pre-wrap py-4 text-sm leading-6">
-              {asset.notes || "No notes added."}
+              {asset?.notes || "No notes added."}
             </p>
           </Section>
         </div>
         <div className="flex w-full flex-col gap-6 xl:w-[33%]">
-          <AssetAssignedUser asset={asset} />
-          <AssetStatusRules asset={asset} isPage={true} />
+          <AssetAssignedUser asset={currentAsset} />
+          <AssetStatusRules asset={currentAsset} isPage={true} />
         </div>
       </div>
       {isDialogOpen && (
@@ -180,8 +229,10 @@ export function AssetViewFullPage({
       )}
       {isReturnToStockOpen && (
         <ReturnToStockCard
-          assetTag={asset.assetTag}
-          assignedUserName={asset.assignedUser?.fullName ?? "the assigned user"}
+          assetTag={currentAsset.assetTag}
+          assignedUserName={
+            currentAsset.assignedUser?.fullName ?? "the assigned user"
+          }
           onClose={() => setIsReturnToStockOpen(false)}
           onOpenChange={setIsReturnToStockOpen}
           onConfirm={handleConfirmUnassign}
