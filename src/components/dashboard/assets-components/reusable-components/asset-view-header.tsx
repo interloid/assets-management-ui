@@ -1,11 +1,10 @@
-import { copyValue } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import type {
   AssetStatus,
   AssetType,
   AssetViewHeaderProps,
 } from "@/types/assets";
 import {
-  Copy,
   Pencil,
   RefreshCw,
   SquareOff,
@@ -21,6 +20,7 @@ import {
 } from "../../reusable-components/utils";
 import { toStatusLabel } from "@/lib/converters";
 import { Button } from "@/components/ui/button";
+import { CopyButton } from "./copy-button";
 
 export function AssetViewHeader({
   asset,
@@ -28,28 +28,25 @@ export function AssetViewHeader({
   onAssign,
   onEdit,
   onDelete,
+  isPage,
 }: AssetViewHeaderProps) {
   const TypeIcon = asset
     ? (typeIcons[asset.type as AssetType] ?? SquareOff)
     : SquareOff;
   return (
-    <div className="flex flex-col gap-4 xl:flex-row xl:justify-between">
+    <div
+      className={cn(
+        "flex flex-col gap-4 xl:flex-row xl:justify-between",
+        isPage && "md:flex-row md:justify-between",
+      )}
+    >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0 flex-1 space-y-1.5">
           <div className="flex flex-wrap items-center gap-5">
             <div className="p-0 text-left">
-              <h1 className="break-all font-mono text-xl tracking-tight md:text-[21.5px] xl:text-2xl">
+              <h1 className="break-all font-mono text-xl tracking-tight md:text-[21.5px] xl:text-[22.5px] 2xl:text-2xl">
                 {asset.assetTag}
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Copy asset tag"
-                  title="Copy asset tag"
-                  onClick={() => copyValue(asset.assetTag)}
-                >
-                  <Copy className="size-3.5 relative left-2.5 bottom-px text-muted-foreground" />
-                </Button>
+                <CopyButton value={asset.assetTag} />
               </h1>
               <p className="sr-only">
                 Details and available actions for asset {asset.assetTag}
@@ -72,7 +69,12 @@ export function AssetViewHeader({
           </div>
         </div>
       </div>
-      <div className="flex flex-wrap gap-2 2xl:mr-4.5 2xl:relative 2xl:bottom-1">
+      <div
+        className={cn(
+          "flex flex-wrap gap-2 2xl:mr-4.5 2xl:relative 2xl:bottom-1",
+          isPage && "2xl:mr-0",
+        )}
+      >
         <Button
           type="button"
           size="sm"

@@ -9,15 +9,20 @@ import type {
   AssetViewFullPageProps,
 } from "@/types/assets";
 import { Link, useLocation, useNavigate } from "react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { AssignAssetDialog } from "./asset-assign-dialog";
 import { ChangeStatusCard } from "./change-status-card";
 import { ReturnToStockCard } from "./return-to-stock-card";
-import { changeStatus, unassignAsset } from "@/services/assets.services";
+import {
+  changeStatus,
+  deleteAsset,
+  unassignAsset,
+} from "@/services/assets.services";
 import type { User } from "@/services/assets.services";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import DeleteAssetCard from "./delete-confirmation";
 
 export function AssetViewFullPage({
   onChangeStatus,
@@ -33,9 +38,11 @@ export function AssetViewFullPage({
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [isChangeStatus, setIsChangeStatus] = useState<boolean>(false);
   const [isReturnToStockOpen, setIsReturnToStockOpen] = useState(false);
-  const [isUnAssignLoading, setIsUnAssignLoading] = useState<boolean>(false);
-  const [isConfirmStatus, setIsConfirmStatus] = useState<boolean>(false);
-
+  const [isStatusChangeLoading, setIsStatusChangeLoading] =
+    useState<boolean>(false);
+  const [isUnassignLoading, setIsUnassignLoading] = useState<boolean>(false);
+  const [isDeleteCardOpen, setIsDeleteCardOpen] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   if (!asset) {
     return (
       <div className="flex flex-col gap-2 justify-center items-center h-full">
@@ -58,7 +65,7 @@ export function AssetViewFullPage({
 
   async function handleConfirmStatusChange(status: AssetStatus) {
     if (!asset) return;
-    setIsUnAssignLoading(true);
+    setIsStatusChangeLoading(true);
     try {
       const response = await changeStatus(asset.id, status);
       if (response.success) {
@@ -70,13 +77,13 @@ export function AssetViewFullPage({
     } catch (error) {
       console.error(error);
     } finally {
-      setIsUnAssignLoading(false);
+      setIsStatusChangeLoading(false);
     }
   }
 
   async function handleConfirmUnassign() {
     if (!asset) return;
-    setIsConfirmStatus(true);
+    setIsUnassignLoading(true);
     try {
       const response = await unassignAsset(asset.id);
       if (response.success) {
@@ -89,18 +96,38 @@ export function AssetViewFullPage({
     } catch (error) {
       console.error(error);
     } finally {
-      setIsConfirmStatus(false);
+      setIsUnassignLoading(false);
+    }
+  }
+
+  async function handleDeleteAsset() {
+    if (!asset) return;
+    setIsDeleting(true);
+    try {
+      const response = await deleteAsset(asset.id);
+      if (response.success) {
+        setIsDeleteCardOpen(false);
+        onDelete?.(asset);
+        toast.success(response.message ?? "Asset deleted successfully.");
+        navigate("/assets");
+      } else {
+        toast.error(response.message ?? "Failed to delete asset.");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsDeleting(false);
     }
   }
 
   return (
-    <section className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 md:p-8">
+    <section className="mx-auto flex w-full max-w-480 flex-col gap-6 p-4 md:p-6 xl:p-8 2xl:gap-7.5">
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Link to="/assets" className="flex items-center gap-1">
-          <ArrowLeft className="size-4" />
+          <ArrowLeft className="size-4 lg:size-4" />
           Assets
         </Link>
-        <span>/</span>
+        <ChevronRight className="size-3.5" />
         <span className="font-mono text-foreground">{asset.assetTag}</span>
       </div>
       <AssetViewHeader
@@ -114,21 +141,24 @@ export function AssetViewFullPage({
             state: { asset: selectedAsset, allUsers },
           })
         }
-        onDelete={onDelete}
+        onDelete={() => {
+          setIsDeleteCardOpen(true);
+        }}
         onAssign={handleAssignAsset}
+        isPage={true}
       />
-      <div className="flex flex-col gap-6 lg:flex-row">
-        <div className="flex min-w-0 flex-1 flex-col gap-6">
-          <AssetDetailTable asset={asset} />
+      <div className="flex flex-col gap-6 lg:flex-col xl:flex-row xl:w-full">
+        <div className="flex min-w-0 flex-1 flex-col gap-6 xl:w-[67%]">
+          <AssetDetailTable asset={asset} isPage={true} />
           <Section title="Notes">
             <p className="whitespace-pre-wrap py-4 text-sm leading-6">
               {asset.notes || "No notes added."}
             </p>
           </Section>
         </div>
-        <div className="flex w-full flex-col gap-6 lg:w-80">
+        <div className="flex w-full flex-col gap-6 xl:w-[33%]">
           <AssetAssignedUser asset={asset} />
-          <AssetStatusRules asset={asset} />
+          <AssetStatusRules asset={asset} isPage={true} />
         </div>
       </div>
       {isDialogOpen && (
@@ -145,7 +175,7 @@ export function AssetViewFullPage({
           onOpenChange={setIsChangeStatus}
           asset={asset}
           onConfirm={handleConfirmStatusChange}
-          isLoading={isUnAssignLoading}
+          isLoading={isStatusChangeLoading}
         />
       )}
       {isReturnToStockOpen && (
@@ -155,7 +185,15 @@ export function AssetViewFullPage({
           onClose={() => setIsReturnToStockOpen(false)}
           onOpenChange={setIsReturnToStockOpen}
           onConfirm={handleConfirmUnassign}
-          isLoading={isConfirmStatus}
+          isLoading={isUnassignLoading}
+        />
+      )}
+      {isDeleteCardOpen && asset && (
+        <DeleteAssetCard
+          assetTag={asset.assetTag}
+          isDeleting={isDeleting}
+          onCancel={() => setIsDeleteCardOpen(false)}
+          onConfirm={handleDeleteAsset}
         />
       )}
     </section>

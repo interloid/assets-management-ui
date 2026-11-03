@@ -27,7 +27,6 @@ export default function EditAssetFullPage() {
   const [asset, setAsset] = useState<Asset | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  console.log("assetId", assetId);
   useEffect(() => {
     if (!assetId) return;
     const currentAssetId = assetId;
@@ -53,7 +52,6 @@ export default function EditAssetFullPage() {
       }
     }
     void loadAsset();
-
     return () => {
       active = false;
     };
@@ -153,9 +151,7 @@ function EditAssetForm({
   async function editAsset(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setServerError(null);
-
     if (!validateForm()) return;
-
     try {
       const response = await updateAsset(asset.id, {
         type: type ?? asset.type,
@@ -177,13 +173,14 @@ function EditAssetForm({
       }
       if (!response.success || !response.data) {
         if (response.errors && response.errors !== null) {
-          setServerError(
-            response.errors.map((error) => error.message).join(", "),
-          );
-          toast.error(serverError);
+          const errorMessage = response.errors
+            .map((error) => error.message)
+            .join(", ");
+          setServerError(errorMessage);
+          toast.error(errorMessage);
         } else {
           setServerError(response.message);
-          toast.error(serverError);
+          toast.error(response.message);
         }
       }
     } catch (error) {
@@ -192,20 +189,22 @@ function EditAssetForm({
   }
 
   return (
-    <section className="mx-auto flex w-full flex-col gap-6 p-4 md:p-8">
+    <section className="mx-auto flex w-full flex-col gap-6 p-4 md:p-6 xl:p-8">
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Link
           to={`/assets`}
           className="flex items-center gap-1 hover:text-foreground transition-colors"
         >
           <ArrowLeft className="size-4" />
-          Assets
         </Link>
-        <span>/</span>
-        <span className="font-mono text-foreground">{asset.assetTag}</span>
+        <span className="font-mono text-muted-foreground">
+          {asset.assetTag}
+        </span>
       </div>
-      <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Edit asset</h1>
+      <header className="flex flex-col gap-1 lg:pt-1">
+        <h1 className="text-[22px] lg:text-2xl font-semibold tracking-tight">
+          Edit asset
+        </h1>
         <p className="text-sm text-muted-foreground">
           Update details, status and assignment in one place.
         </p>
@@ -215,10 +214,10 @@ function EditAssetForm({
         onSubmit={editAsset}
       >
         <div className="2xl:flex 2xl:flex-row 2xl:w-full">
-          <div className="2xl:flex 2xl:w-1/2! 2xl:flex-col">
+          <div className="2xl:flex 2xl:w-[75%] 2xl:flex-col">
             <div className="flex flex-col gap-3 border-b 2xl:border-r p-5">
               <h3 className="text-sm font-medium">Type</h3>
-              <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,130px),1fr))] gap-2">
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,130px),1fr))] xl:grid-cols-4  gap-2">
                 {assetTypes.map(({ label, value, icon: Icon }) => {
                   return (
                     <button
@@ -247,12 +246,12 @@ function EditAssetForm({
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,260px),1fr))] 2xl:grid-cols-2 gap-4 p-5 2xl:border-r">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,260px),1fr))] xl:grid-cols-4 gap-4 p-5 2xl:border-r">
               <div className="flex flex-col gap-1.5">
                 <label className="text-sm font-medium">Asset tag</label>
                 <div className="flex h-9 items-center gap-2 rounded-md border border-dashed bg-muted px-3 font-mono text-xs text-muted-foreground">
                   <Lock className="size-3.5" />
-                  assetTag
+                  {asset.assetTag}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   Asset tags cannot be changed.
@@ -294,7 +293,7 @@ function EditAssetForm({
               </div>
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="warrantyExpiry" className="text-sm font-medium">
-                  Warranty expiry{" "}
+                  Warranty expiry
                   <span className="text-muted-foreground">(optional)</span>
                 </label>
                 <input
@@ -316,17 +315,18 @@ function EditAssetForm({
                   value={notes ?? undefined}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Model, configuration, condition or ticket references"
-                  className="resize-y rounded-md border bg-background px-3 py-2 text-sm"
+                  className="resize-y lg:h-26 rounded-md border bg-background px-3 py-2 text-sm"
                 />
                 <p className="text-xs text-muted-foreground">
                   Searchable from the assets list.
                 </p>
+                {serverError && <span>{serverError}</span>}
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-4 border-t 2xl:border-t-0 p-5 2xl:w-1/2">
+          <div className="flex flex-col gap-4 border-t lg:pb-4 2xl:border-t-0 p-5 2xl:w-1/2">
             <div className="flex flex-col gap-1">
-              <h3 className="text-sm font-medium">Status &amp; assignment</h3>
+              <h3 className="text-sm font-medium">Status & assignment</h3>
               <p className="text-xs text-muted-foreground">
                 Current:{" "}
                 {

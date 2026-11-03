@@ -36,14 +36,14 @@ export function AssignAssetDialog({
       if (response.success) {
         onAssigned?.(selectedUserId);
         onOpenChange(false);
-        toast.success("Assets Assigned Successfully");
+        toast.success("Asset assigned successfully.");
         await onSaved?.();
       } else {
         onOpenChange(false);
-        toast.error("Asset not assigned");
+        toast.error("Failed to assign asset.");
       }
     } catch (error) {
-      console.error(error); 
+      console.error(error);
     } finally {
       setIsAssignLoading(false);
     }
@@ -58,15 +58,15 @@ export function AssignAssetDialog({
 
   return (
     <section
-      className="absolute inset-0 z-20 flex items-center justify-center p-4 backdrop-blur-xs"
+      className="absolute inset-0 z-20 flex items-center bg-black/10 justify-center p-4 backdrop-blur-xs"
       onClick={(event) => {
         if (event.target === event.currentTarget) onOpenChange(false);
       }}
     >
-      <Card className="relative flex max-h-full py-6 w-full max-w-120 flex-col gap-0 overflow-hidden rounded-lg shadow-lg">
+      <Card className="relative flex max-h-full py-6 w-full max-w-120 h-129 flex-col gap-0 overflow-hidden rounded-lg shadow-lg">
         <CardHeader className="px-5 text-left">
           <CardTitle className="text-lg font-semibold">Assign asset</CardTitle>
-          <CardDescription className="w-[90%]">
+          <CardDescription className="w-full">
             Issue {asset?.assetTag} to one person. Only in-stock assets can be
             assigned.
           </CardDescription>
@@ -80,7 +80,7 @@ export function AssignAssetDialog({
             <X className="size-4 text-muted-foreground" />
           </Button>
         </CardHeader>
-        <CardContent className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden px-5 pt-2 pb-4">
+        <CardContent className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden px-5 pt-3 pb-4">
           <div className="relative">
             <Search
               aria-hidden="true"

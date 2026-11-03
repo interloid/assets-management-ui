@@ -3,13 +3,11 @@ import { ArrowLeft } from "lucide-react";
 
 export default function EditAssetFullPageSkeleton() {
   return (
-    <section className="mx-auto flex w-full flex-col gap-6 p-4 md:p-8">
+    <section className="mx-auto max-w-480 flex w-full flex-col gap-6 p-4 md:p-8">
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <span className="flex items-center gap-1 hover:text-foreground transition-colors">
           <ArrowLeft className="size-4" />
-          Assets
         </span>
-        <span>/</span>
         <Skeleton className="h-4 w-24" />
       </div>
       <header className="flex flex-col gap-1">

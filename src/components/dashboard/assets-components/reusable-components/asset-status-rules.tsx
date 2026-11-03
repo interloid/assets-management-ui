@@ -5,8 +5,15 @@ import {
   statusLabels,
 } from "../../reusable-components/utils";
 import { Section } from "../view-asset-components/view-asset-drawer";
+import { cn } from "cn";
 
-export function AssetStatusRules({ asset }: { asset: Asset }) {
+export function AssetStatusRules({
+  asset,
+  isPage,
+}: {
+  asset: Asset;
+  isPage: boolean;
+}) {
   return (
     <Section title="Status rules">
       <ul className="py-1">
@@ -17,12 +24,18 @@ export function AssetStatusRules({ asset }: { asset: Asset }) {
               status,
             );
             return (
-              <li key={status} className="flex items-center gap-2 py-3 text-sm">
+              <li
+                key={status}
+                className={cn(
+                  "flex items-center gap-2 py-3 text-sm",
+                  isPage && "lg:py-2.5",
+                )}
+              >
                 <span
                   className={`size-2 shrink-0 rounded-full ${statusDotStyles[statusLabels[status]]}`}
                 />
                 <span
-                  className={`min-w-0 flex-1 ${message === "Current" ? "font-semibold" : null}`}
+                  className={`min-w-0 flex-1 ${message === "Current" && "font-semibold"}`}
                 >
                   {statusLabels[status]}
                 </span>

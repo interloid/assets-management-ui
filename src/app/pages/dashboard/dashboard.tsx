@@ -1,13 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Keyboard,
-  Laptop,
-  List,
-  Monitor,
-  Plus,
-  Smartphone,
-  SquareOff,
-} from "lucide-react";
+import { List, Plus, SquareOff } from "lucide-react";
 import StackedProgressBar from "@/components/dashboard/stacked-progress-bar";
 import RecentlyAdded from "@/components/dashboard/recently-added";
 import {
@@ -27,21 +19,13 @@ import RecentlyAddedSkeleton from "@/components/dashboard/recently-added-skeleto
 import StackProgressSkeleton from "@/components/dashboard/stacked-progress-bar-skeleton";
 import { toast } from "sonner";
 import WarrantyExpiring from "@/components/dashboard/warranty-expiring";
-
-const assetIcons = {
-  laptop: Laptop,
-  keyboard: Keyboard,
-  mobile: Smartphone,
-  monitor: Monitor,
-  undefined: SquareOff,
-};
+import { typeIcons } from "@/components/dashboard/reusable-components/utils";
+import type { AssetType } from "@/types/assets";
 
 function mapAssetWithIcon<T extends { type: string }>(asset: T) {
   return {
     ...asset,
-    icon:
-      assetIcons[asset.type.toLowerCase() as keyof typeof assetIcons] ??
-      SquareOff,
+    icon: typeIcons[asset.type.toLowerCase() as AssetType] ?? SquareOff,
   };
 }
 

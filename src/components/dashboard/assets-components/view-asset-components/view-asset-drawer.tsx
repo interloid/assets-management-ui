@@ -1,5 +1,3 @@
-import { Copy } from "lucide-react";
-
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import type { AssetStatus, ViewAssetDrawerProps } from "@/types/assets";
@@ -20,12 +18,12 @@ import {
 } from "@/services/assets.services";
 import { toast } from "sonner";
 import { ReturnToStockCard } from "./return-to-stock-card";
-import { copyValue } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { AssetDetailTable } from "../reusable-components/asset-detail-table";
 import { AssetViewHeader } from "../reusable-components/asset-view-header";
 import DrawerHeader from "../reusable-components/drawer-header";
-import { useNavigate } from "react-router";
 import DeleteAssetCard from "./delete-confirmation";
+import { CopyButton } from "../reusable-components/copy-button";
 
 export function DetailRow({
   label,
@@ -33,30 +31,32 @@ export function DetailRow({
   mono = false,
   showCopy = false,
   status,
+  isPage,
 }: {
   label: string;
   value: string;
   mono?: boolean;
   showCopy?: boolean;
   status?: AssetStatus;
+  isPage: boolean;
 }) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-[minmax(120px,180px)_minmax(0,1fr)] py-4 px-1 md:py-5 md:px-0 text-sm">
+    <div
+      className={cn(
+        "grid grid-cols-2 md:grid-cols-[minmax(120px,180px)_minmax(0,1fr)] py-4 px-1 md:py-4  md:px-0 text-sm",
+        isPage && "lg:py-4.25 xl:py-4",
+      )}
+    >
       <dt className="text-muted-foreground">{label}</dt>
       <div className="flex w-full items-center">
         <dd
           className={`min-w-0 wrap-break-words ml-5 relative top-1 ${
             mono ? "font-mono" : ""
-          } ${status ? statusTextStyles[status] : "text-foreground"}`}
+          } ${status ? statusTextStyles[status] : "text-foreground"} ${isPage && "lg:ml-3.5"}`}
         >
           {value}
         </dd>
-        {showCopy && (
-          <Copy
-            className="size-3.5 relative left-2.5 2xl:top-1 text-muted-foreground cursor-pointer"
-            onClick={() => copyValue(value)}
-          />
-        )}
+        {showCopy && <CopyButton value={value} className="relative top-1" />}
       </div>
     </div>
   );
@@ -92,15 +92,16 @@ export function ViewAssetDrawer({
   onDelete,
 }: ViewAssetDrawerProps) {
   const { state } = useSidebar();
-  const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [isChangeStatus, setIsChangeStatus] = useState<boolean>(false);
   const [isReturnToStockOpen, setIsReturnToStockOpen] =
     useState<boolean>(false);
-  const [isUnAssignLoading, setIsUnAssignLoading] = useState<boolean>(false);
-  const [isConfirmStatus, setIsConfirmStatus] = useState<boolean>(false);
+  const [isStatusChangeLoading, setIsStatusChangeLoading] =
+    useState<boolean>(false);
+  const [isUnassignLoading, setIsUnassignLoading] = useState<boolean>(false);
   const [isDeleteCardOpen, setIsDeleteCardOpen] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+
   function handleAssignAsset() {
     if (!asset) return;
     if (asset.status === "assigned") {
@@ -112,7 +113,7 @@ export function ViewAssetDrawer({
 
   async function handleConfirmStatusChange(status: AssetStatus) {
     if (!asset) return;
-    setIsUnAssignLoading(true);
+    setIsStatusChangeLoading(true);
     try {
       const response = await changeStatus(asset.id, status);
       if (response.success) {
@@ -125,13 +126,13 @@ export function ViewAssetDrawer({
     } catch (error) {
       console.error(error);
     } finally {
-      setIsUnAssignLoading(false);
+      setIsStatusChangeLoading(false);
     }
   }
 
   async function handleConfirmUnassign() {
     if (!asset) return;
-    setIsConfirmStatus(true);
+    setIsUnassignLoading(true);
     try {
       const response = await unassignAsset(asset.id);
       if (response.success) {
@@ -145,7 +146,7 @@ export function ViewAssetDrawer({
     } catch (error) {
       console.error(error);
     } finally {
-      setIsConfirmStatus(false);
+      setIsUnassignLoading(false);
     }
   }
 
@@ -155,11 +156,11 @@ export function ViewAssetDrawer({
     try {
       const response = await deleteAsset(asset.id);
       if (response.success) {
+        setIsDeleteCardOpen(false);
+        onOpenChange(false);
         onDelete?.(asset);
-        setIsDeleteCardOpen(true);
-        toast.success("Asset Deleted Successfully.");
+        toast.success("Asset deleted successfully.");
         await onSaved();
-        navigate("/assets");
       } else {
         toast.error(response.message ?? "Failed to delete asset.");
       }
@@ -177,7 +178,7 @@ export function ViewAssetDrawer({
         overlayClassName={`top-14 bottom-0 lg:top-0  ${
           state === "expanded" ? "lg:left-64" : "lg:left-16"
         }`}
-        className="flex w-full fixed  bottom-0 right-0 data-[side=right]:top-14 lg:data-[side=right]:top-0 z-50 min-w-full sm:min-w-153 lg:min-w-153 xl:min-w-[63%] flex-col gap-0 p-0"
+        className="flex w-full fixed  bottom-0 right-0 data-[side=right]:top-14 lg:data-[side=right]:top-0 z-50 min-w-full sm:min-w-153 lg:min-w-153 xl:min-w-[57.5%] 2xl:min-w-[63.25%] flex-col gap-0 p-0"
         style={{ height: "auto" }}
       >
         {!asset ? (
@@ -194,7 +195,7 @@ export function ViewAssetDrawer({
               allUsers={allUsers}
             />
             <div className="min-h-0 flex-1 overflow-y-auto pt-2 lg:pt-1 xl:pt-0">
-              <div className="flex flex-col gap-6 p-4 sm:gap-6 sm:p-5 lg:p-5.5 xl:p-7">
+              <div className="flex flex-col gap-6 p-4 sm:gap-6 sm:p-5 lg:p-5.5 xl:p-6 2xl:p-8">
                 <AssetViewHeader
                   asset={asset}
                   onChangeStatus={(selectedAsset) => {
@@ -204,11 +205,11 @@ export function ViewAssetDrawer({
                   onEdit={onEdit}
                   onDelete={() => setIsDeleteCardOpen(true)}
                   onAssign={handleAssignAsset}
+                  isPage={false}
                 />
                 <div className="grid min-w-0 grid-cols-1 items-start gap-5 2xl:gap-5.5 2xl:grid-cols-[3fr_1.55fr]">
                   <div className="flex min-w-0 flex-col gap-5">
-                    <AssetDetailTable asset={asset} />
-
+                    <AssetDetailTable asset={asset} isPage={false} />
                     <Section title="Notes">
                       <p className="whitespace-pre-wrap py-4 text-sm leading-6">
                         {asset.notes || "No notes added."}
@@ -303,7 +304,7 @@ export function ViewAssetDrawer({
             onOpenChange={setIsChangeStatus}
             asset={asset}
             onConfirm={handleConfirmStatusChange}
-            isLoading={isUnAssignLoading}
+            isLoading={isStatusChangeLoading}
           />
         )}
         {isReturnToStockOpen && asset && (
@@ -315,7 +316,7 @@ export function ViewAssetDrawer({
             onClose={() => setIsReturnToStockOpen(false)}
             onOpenChange={setIsReturnToStockOpen}
             onConfirm={handleConfirmUnassign}
-            isLoading={isConfirmStatus}
+            isLoading={isUnassignLoading}
           />
         )}
         {isDeleteCardOpen && asset && (

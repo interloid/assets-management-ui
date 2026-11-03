@@ -81,13 +81,15 @@ export function LoginForm() {
       if (response.success) {
         await refreshSession();
         navigate("/dashboard");
-        toast.success("Login Successful!");
+        toast.success("Logged in successfully.");
       }
       if (!response.success) {
         if (response.errors && response.errors !== null) {
-          setServerError(
-            response.errors.map((error) => error.message).join(","),
-          );
+          const errorMessage = response.errors
+            .map((error) => error.message)
+            .join(", ");
+          setServerError(errorMessage);
+          toast.error(errorMessage);
         } else {
           setServerError(response.message);
         }

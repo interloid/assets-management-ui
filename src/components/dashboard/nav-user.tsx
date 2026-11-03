@@ -22,13 +22,13 @@ export function NavUser() {
     try {
       const response = await logout();
       if (!response.ok) {
-        toast.error("Logout failed!, please try again.");
+        toast.error("Logout failed, please try again.");
         return;
       }
       if (response.ok) {
         setSessionResponse(null);
         navigate("/login");
-        toast.success("Logged out Successfully!");
+        toast.success("Logged out successfully.");
       }
     } catch (error) {
       console.error(error);

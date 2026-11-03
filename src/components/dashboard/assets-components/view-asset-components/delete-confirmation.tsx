@@ -6,7 +6,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, Trash2, X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 export type DeleteAssetCardProps = {
   assetTag: string;
@@ -15,7 +16,7 @@ export type DeleteAssetCardProps = {
   onConfirm: () => void;
 };
 
-function DeleteAssetCard({
+export default function DeleteAssetCard({
   assetTag,
   isDeleting,
   onCancel,
@@ -23,15 +24,15 @@ function DeleteAssetCard({
 }: DeleteAssetCardProps) {
   return (
     <section
-      className="absolute inset-0 z-20 flex items-center justify-center p-4 backdrop-blur-xs"
+      className="absolute inset-0 z-20 flex items-center bg-black/10 justify-center p-4 backdrop-blur-xs"
       onClick={(event) => {
         if (event.target === event.currentTarget) {
-           onCancel();
+          onCancel();
         }
       }}
     >
       <Card className="w-full max-w-120 gap-0 overflow-hidden rounded-lg shadow-lg">
-        <CardHeader className="flex flex-row items-start justify-between gap-3 px-5 pt-5 pb-0">
+        <CardHeader className="flex flex-row items-start justify-between gap-3 px-5 pb-0">
           <div className="flex flex-col gap-1">
             <CardTitle className="text-lg">Delete asset?</CardTitle>
             <p className="text-sm text-muted-foreground">
@@ -43,35 +44,42 @@ function DeleteAssetCard({
           <Button
             variant="ghost"
             size="icon"
-            className="size-8 shrink-0"
+            className="relative size-8 shrink-0"
             onClick={onCancel}
             disabled={isDeleting}
           >
-            <X className="size-4" />
+            <X className="absolute top-0.5 right-1 size-4 text-muted-foreground" />
             <span className="sr-only">Close</span>
           </Button>
         </CardHeader>
-        <CardContent className="px-5 py-4" />
-        <CardFooter className="flex flex-wrap-reverse justify-end gap-2 px-5 pb-5">
-          <Button variant="outline" onClick={onCancel} disabled={isDeleting}>
+        <CardContent className="py-2" />
+        <CardFooter className="flex flex-wrap-reverse justify-end gap-2 border-none bg-background px-5 pb-5">
+          <Button
+            variant="outline"
+            className="rounded-sm px-3.5 py-4"
+            onClick={onCancel}
+            disabled={isDeleting}
+          >
             Cancel
           </Button>
           <Button
-            variant="destructive"
+            variant="default"
             onClick={onConfirm}
             disabled={isDeleting}
+            className="rounded-sm px-3.5 py-4 bg-destructive text-background hover:bg-destructive/90"
           >
+            {isDeleting ? <Loader2 className="size-4 animate-spin" /> : null}
             {isDeleting ? (
-              <Loader2 className="size-4 animate-spin" />
+              <>
+                {" "}
+                <Spinner /> Deleting...
+              </>
             ) : (
-              <Trash2 className="size-4" />
+              <>Delete</>
             )}
-            {isDeleting ? "Deleting..." : "Delete"}
           </Button>
         </CardFooter>
       </Card>
     </section>
   );
 }
-
-export default DeleteAssetCard;

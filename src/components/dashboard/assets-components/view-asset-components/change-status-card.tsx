@@ -8,15 +8,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { AssetStatus, ChangeStatusCardProps } from "@/types/assets";
-import { Check, X } from "lucide-react";
 import {
-  allowedStatusTransistions,
+  allowedStatusTransitions,
   statusDotStyles,
   statusLabels,
 } from "../../reusable-components/utils";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
-
+import { X } from "lucide-react";
 
 export function ChangeStatusCard({
   onOpenChange,
@@ -25,7 +24,7 @@ export function ChangeStatusCard({
   isLoading,
 }: ChangeStatusCardProps) {
   const currentStatus = asset?.status as AssetStatus;
-  const availableStatuses = allowedStatusTransistions[currentStatus].filter(
+  const availableStatuses = allowedStatusTransitions[currentStatus].filter(
     (status) =>
       status !== "assigned" &&
       !(currentStatus === "assigned" && status === "in_stock"),
@@ -35,15 +34,15 @@ export function ChangeStatusCard({
   );
   return (
     <section
-      className="absolute inset-0 z-20 flex items-center justify-center p-4 backdrop-blur-xs"
+      className="absolute inset-0 z-20 flex items-center bg-black/10 justify-center p-4 backdrop-blur-xs"
       onClick={(event) => {
         if (event.target === event.currentTarget) {
           onOpenChange(false);
         }
       }}
     >
-      <Card className="w-full max-w-120 gap-0 overflow-hidden rounded-xl border bg-popover text-popover-foreground shadow-lg">
-        <CardHeader className="flex flex-row items-start gap-3 px-5 pt-5 pb-0">
+      <Card className="w-full max-w-120 max-h-[85vh] gap-0 overflow-hidden rounded-xl bg-popover text-popover-foreground shadow-lg">
+        <CardHeader className="flex flex-row items-start gap-3 px-5 pt-1 pb-0">
           <div className="min-w-0 flex-1 gap-1">
             <CardTitle className="text-lg font-semibold">
               Change status
@@ -116,24 +115,18 @@ export function ChangeStatusCard({
                             : "No description available."}
                     </span>
                   </div>
-
-                  {isSelected && (
-                    <Check
-                      aria-hidden="true"
-                      className="size-4 shrink-0 text-primary"
-                    />
-                  )}
                 </button>
               );
             })}
           </div>
         </CardContent>
 
-        <CardFooter className="flex flex-wrap-reverse justify-end gap-2 border-t px-5 py-4">
+        <CardFooter className="flex flex-wrap-reverse justify-end border-none bg-background gap-2 px-5 py-4">
           <Button
             type="button"
             variant="outline"
             onClick={() => onOpenChange(false)}
+            className="rounded-sm px-3.5 py-4"
           >
             Cancel
           </Button>
@@ -144,6 +137,7 @@ export function ChangeStatusCard({
             onClick={() => {
               if (selectedStatus) onConfirm(selectedStatus);
             }}
+            className="rounded-sm px-3.5 py-4"
           >
             {isLoading ? (
               <>

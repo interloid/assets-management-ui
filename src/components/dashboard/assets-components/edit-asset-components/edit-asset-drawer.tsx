@@ -102,13 +102,14 @@ export function EditAssetDrawer({
       }
       if (!response.success || !response.data) {
         if (response.errors && response.errors !== null) {
-          setServerError(
-            response.errors.map((error) => error.message).join(", "),
-          );
-          toast.error(serverError);
+          const errorMessage = response.errors
+            .map((error) => error.message)
+            .join(", ");
+          setServerError(errorMessage);
+          toast.error(errorMessage);
         } else {
           setServerError(response.message);
-          toast.error(serverError);
+          toast.error(response.message);
         }
       }
     } catch (error) {
@@ -122,7 +123,7 @@ export function EditAssetDrawer({
         overlayClassName={`top-14 bottom-0 lg:top-0  ${
           state === "expanded" ? "lg:left-64" : "lg:left-16"
         }`}
-        className="flex w-full fixed  bottom-0 right-0 data-[side=right]:top-14 lg:data-[side=right]:top-0 z-50 min-w-full sm:min-w-153 lg:min-w-153 xl:min-w-[63%] flex-col gap-0 p-0"
+        className="flex w-full fixed  bottom-0 right-0 data-[side=right]:top-14 lg:data-[side=right]:top-0 z-50 min-w-full sm:min-w-153 lg:min-w-153 xl:min-w-[57.5%] 2xl:min-w-[63.25%] flex-col gap-2.5 md:gap-1.5 lg:gap-1 xl:gap-0.5  p-0"
         style={{ height: "auto" }}
       >
         <DrawerHeader
@@ -131,9 +132,9 @@ export function EditAssetDrawer({
           mode={"edit"}
           allUsers={allUsers}
         />
-        <section className="flex flex-col gap-6 p-4 sm:gap-6 sm:p-5 lg:p-5.5 xl:p-7">
+        <section className="flex flex-col gap-6 p-4 sm:gap-6 sm:p-5 lg:p-5.5 xl:p-6 2xl:p-9 2xl:pt-6 overflow-y-scroll">
           <header className="flex flex-col gap-1">
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <h1 className="text-[22.5px] md:text-[23px] xl:text-[24.25px] font-semibold tracking-tight">
               Edit asset
             </h1>
 
@@ -146,7 +147,7 @@ export function EditAssetDrawer({
             onSubmit={editAsset}
           >
             <div className="2xl:flex 2xl:flex-row 2xl:w-full">
-              <div className="2xl:flex 2xl:w-1/2! 2xl:flex-col">
+              <div className="2xl:flex 2xl:w-[60%] 2xl:flex-col">
                 <div className="flex flex-col gap-3 border-b 2xl:border-r p-5">
                   <h3 className="text-sm font-medium">Type</h3>
                   <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,130px),1fr))] gap-2">
@@ -183,7 +184,7 @@ export function EditAssetDrawer({
                     <label className="text-sm font-medium">Asset tag</label>
                     <div className="flex h-9 items-center gap-2 rounded-md border border-dashed bg-muted px-3 font-mono text-xs text-muted-foreground">
                       <Lock className="size-3.5" />
-                      assetTag
+                      {asset.assetTag}
                     </div>
                     <p className="text-xs text-muted-foreground">
                       Asset tags cannot be changed.
@@ -261,10 +262,11 @@ export function EditAssetDrawer({
                     <p className="text-xs text-muted-foreground">
                       Searchable from the assets list.
                     </p>
+                    {serverError && <span>{serverError}</span>}
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-4 border-t 2xl:border-t-0 p-5 2xl:w-1/2">
+              <div className="flex flex-col gap-4 border-t 2xl:border-t-0 p-5 2xl:w-[40%]">
                 <div className="flex flex-col gap-1">
                   <h3 className="text-sm font-medium">
                     Status &amp; assignment

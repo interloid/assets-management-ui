@@ -87,7 +87,7 @@ export default function StackedProgressBar({
                     if (segment.label) {
                       const status = statusByLabel[segment.label];
                       if (!status) return;
-                      navigate(`/dashboard/assets?status=${status}`);
+                      navigate(`/assets?status=${status}`);
                     }
                   }}
                 >

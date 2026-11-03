@@ -110,6 +110,7 @@ export type AssetViewHeaderProps = {
   onChangeStatus?: (asset: Asset) => void;
   onEdit?: (asset: Asset) => void;
   onDelete?: (asset: Asset) => void;
+  isPage: boolean;
 };
 
 export type EditFormSectionProps = {

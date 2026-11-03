@@ -31,7 +31,7 @@ const warrantySchema = z.union([z.iso.date(), z.literal(""), z.null()]);
 
 export const createAssetSchema = z.object({
   type: z.enum(["laptop", "monitor", "phone", "accessory"], {
-    message: "choose a type.",
+    message: "Please choose an asset type.",
   }),
   serialNumber: serialNumberSchema,
   purchaseDate: purchaseDateSchema,
