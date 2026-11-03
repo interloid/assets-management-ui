@@ -58,7 +58,7 @@ export const assetTypes = [
   { value: "accessory", label: "Accessory", icon: Keyboard },
 ] as const;
 
-export const allowedStatusTransistions: Record<AssetStatus, AssetStatus[]> = {
+export const allowedStatusTransitions: Record<AssetStatus, AssetStatus[]> = {
   in_stock: ["assigned", "repair", "retired"],
   assigned: ["in_stock", "repair"],
   repair: ["in_stock", "retired"],
@@ -97,7 +97,7 @@ export function getStatusMessage(
   target: AssetStatus,
 ): "Current" | "Can move here" | "Not Allowed" {
   if (current === target) return "Current";
-  return allowedStatusTransistions[current].includes(target)
+  return allowedStatusTransitions[current].includes(target)
     ? "Can move here"
     : "Not Allowed";
 }

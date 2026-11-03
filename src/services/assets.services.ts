@@ -204,6 +204,11 @@ export async function deleteAsset(assetId: string) {
       accept: "application/json",
     },
   });
+
+  if (result.status === 204) {
+    return { success: true, message: "Asset deleted successfully." };
+  }
+
   const response = await result.json();
   return toCamelCase(response);
 }

@@ -217,7 +217,12 @@ export default function Assets() {
         <EditAssetDrawer
           open={isOpen}
           asset={selectedAsset}
-          onOpenChange={() => setDrawerMode("view")}
+          onOpenChange={(open) => {
+            setIsOpen(open);
+            if (!open) {
+              setDrawerMode("view");
+            }
+          }}
           allUsers={allUsers ?? []}
           onSaved={refreshAssets}
         />

@@ -1,15 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Keyboard,
-  Laptop,
-  List,
-  Monitor,
-  Plus,
-  Smartphone,
-  SquareOff,
-} from "lucide-react";
-import StackedProgressBar from "@/components/dashboard/dashboard-components/stacked-progress-bar";
-import RecentlyAdded from "@/components/dashboard/dashboard-components/recently-added";
+import { List, Plus, SquareOff } from "lucide-react";
 import {
   getAssetStats,
   getRecentlyAddedAssets,
@@ -26,22 +16,16 @@ import WarrantyExpiringSkeleton from "@/components/dashboard/dashboard-component
 import RecentlyAddedSkeleton from "@/components/dashboard/dashboard-components/recently-added-skeleton";
 import StackProgressSkeleton from "@/components/dashboard/dashboard-components/stacked-progress-bar-skeleton";
 import { toast } from "sonner";
+import { typeIcons } from "@/components/dashboard/reusable-components/utils";
+import type { AssetType } from "@/types/assets";
+import StackedProgressBar from "@/components/dashboard/dashboard-components/stacked-progress-bar";
 import WarrantyExpiring from "@/components/dashboard/dashboard-components/warranty-expiring";
-
-const assetIcons = {
-  laptop: Laptop,
-  keyboard: Keyboard,
-  mobile: Smartphone,
-  monitor: Monitor,
-  undefined: SquareOff,
-};
+import RecentlyAdded from "@/components/dashboard/dashboard-components/recently-added";
 
 function mapAssetWithIcon<T extends { type: string }>(asset: T) {
   return {
     ...asset,
-    icon:
-      assetIcons[asset.type.toLowerCase() as keyof typeof assetIcons] ??
-      SquareOff,
+    icon: typeIcons[asset.type.toLowerCase() as AssetType] ?? SquareOff,
   };
 }
 

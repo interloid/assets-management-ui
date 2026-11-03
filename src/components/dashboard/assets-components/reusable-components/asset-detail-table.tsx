@@ -3,26 +3,41 @@ import { statusLabels } from "../../reusable-components/utils";
 import type { Asset, AssetStatus } from "@/types/assets";
 import { formatDate } from "@/lib/converters";
 
-export function AssetDetailTable({ asset }: { asset: Asset }) {
+export function AssetDetailTable({
+  asset,
+  isPage,
+}: {
+  asset: Asset;
+  isPage: boolean;
+}) {
   return (
     <Section title="Details">
-      <dl className="divide-y">
-        <DetailRow label="Asset tag" value={asset.assetTag} mono showCopy />
+      <dl className="divide-y ">
+        <DetailRow
+          label="Asset tag"
+          value={asset.assetTag}
+          mono
+          showCopy
+          isPage={isPage}
+        />
         <DetailRow
           label="Serial number"
           value={asset.serialNumber}
           mono
           showCopy
+          isPage={isPage}
         />
-        <DetailRow label="Type" value={asset.type} />
+        <DetailRow label="Type" value={asset.type} isPage={isPage} />
         <DetailRow
           label="Status"
           value={statusLabels[asset.status as AssetStatus]}
           status={asset.status as AssetStatus}
+          isPage={isPage}
         />
         <DetailRow
           label="Purchase date"
           value={formatDate(asset.purchaseDate)}
+          isPage={isPage}
         />
         <DetailRow
           label="Warranty expiry"
@@ -31,10 +46,25 @@ export function AssetDetailTable({ asset }: { asset: Asset }) {
               ? formatDate(asset.warrantyExpiry)
               : "No warranty"
           }
+          isPage={isPage}
         />
-        <DetailRow label="Created" value={formatDate(asset.createdAt)} />
-        <DetailRow label="Last updated" value={formatDate(asset.updatedAt)} />
-        <DetailRow label="Asset ID" value={asset.id} mono showCopy />
+        <DetailRow
+          label="Created"
+          value={formatDate(asset.createdAt)}
+          isPage={isPage}
+        />
+        <DetailRow
+          label="Last updated"
+          value={formatDate(asset.updatedAt)}
+          isPage={isPage}
+        />
+        <DetailRow
+          label="Asset ID"
+          value={asset.id}
+          mono
+          showCopy
+          isPage={isPage}
+        />
       </dl>
     </Section>
   );

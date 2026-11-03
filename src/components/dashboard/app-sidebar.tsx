@@ -24,7 +24,6 @@ import {
 } from "lucide-react";
 import { NavUser } from "./nav-user";
 import { Link, useLocation } from "react-router";
-import interloidMark from "@/assets/interloid-mark.svg";
 import { useSidebar } from "@/components/ui/sidebar-context";
 
 export type NavMainItem = {
@@ -37,22 +36,10 @@ export type NavMainItem = {
   }[];
 };
 export type SidebarData = {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-    role: string;
-  };
   navMain: NavMainItem[];
 };
 
 const data: SidebarData = {
-  user: {
-    name: "kavin",
-    email: "kavi@example.com",
-    avatar: interloidMark,
-    role: "Admin",
-  },
   navMain: [
     {
       title: "Manage",
@@ -78,7 +65,7 @@ const data: SidebarData = {
       title: "You",
       items: [
         {
-          title: "My assets",
+          title: "My Assets",
           icon: Package,
           url: "/my-assets",
         },

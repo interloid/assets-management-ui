@@ -112,13 +112,14 @@ export function AddAssetForm() {
       }
       if (!response.success || !response.data) {
         if (response.errors && response.errors !== null) {
-          setServerError(
-            response.errors.map((error) => error.message).join(", "),
-          );
-          toast.error(serverErrors);
+          const errorMessage = response.errors
+            .map((error) => error.message)
+            .join(", ");
+          setServerError(errorMessage);
+          toast.error(errorMessage);
         } else {
           setServerError(response.message);
-          toast.error(serverErrors);
+          toast.error(response.message);
         }
       }
     } catch (error) {

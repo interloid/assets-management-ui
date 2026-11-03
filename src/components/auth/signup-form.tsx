@@ -22,6 +22,7 @@ import type { AuthErrors } from "@/types/auth";
 import PasswordEye from "./password-eye";
 import { cn } from "cn";
 import BrandTitle from "./brand-title";
+import { toast } from "sonner";
 
 export function SignUpForm() {
   const navigate = useNavigate();
@@ -87,7 +88,11 @@ export function SignUpForm() {
       }
       if (!response.success) {
         if (response.errors && response.errors !== null) {
-          response.errors.map((error) => error.message).join(", ");
+          const errorMessage = response.errors
+            .map((error) => error.message)
+            .join(", ");
+          setServerError(errorMessage);
+          toast.error(errorMessage);
         } else {
           setServerError(response.message);
         }

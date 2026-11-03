@@ -19,9 +19,9 @@ export default function PasswordEye({
     >
       <span className="text-xs font-medium text-muted-foreground hover:text-foreground">
         {showPassword ? (
-          <EyeOff className="h-4 w-4 text-mute" />
+          <EyeOff className="h-4 w-4 text-muted-foreground" />
         ) : (
-          <Eye className="h-4 w-4 text-muted-text" />
+          <Eye className="h-4 w-4 text-muted-foreground" />
         )}
       </span>
     </Button>
