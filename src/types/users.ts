@@ -15,3 +15,13 @@ export type UsersPageProps = {
   totalUsers: number;
   onPageChange: (page: number) => void;
 };
+
+export interface UserAssetListProps {
+  users: User[];
+  totalUsers: number;
+  page: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  startIndex: number;
+  endIndex: number;
+}
