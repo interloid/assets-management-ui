@@ -13,7 +13,6 @@ export function UserAssetListMobile({
   startIndex,
   endIndex,
 }: UserAssetListProps) {
-
   return (
     <section className="overflow-hidden md:hidden rounded-lg border border-border bg-card shadow-sm">
       <ul className="m-0 list-none p-0">

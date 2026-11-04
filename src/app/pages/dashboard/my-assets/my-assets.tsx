@@ -17,13 +17,11 @@ export default function MyAssetsPage() {
       setIsLoading(true);
       try {
         const response = await getMyAssets();
-        console.log("response", response);
         if (response.success || response.data) {
           setMyAssets(response.data ?? []);
           setTotalAssets(
             response.paginationMeta?.totalItems ?? response.data?.length ?? 0,
           );
-          console.log("totalAssets", totalAssets);
         }
         if (!response.success || !response.data) {
           if (response.errors && response.errors !== null) {

@@ -3,7 +3,7 @@ interface AssignedAssetsHeaderProps {
 }
 
 export default function AssignedAssetsHeader({
-  totalAssets
+  totalAssets,
 }: AssignedAssetsHeaderProps) {
   return (
     <header className="flex flex-col gap-5">

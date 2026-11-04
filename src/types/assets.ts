@@ -105,7 +105,7 @@ export type ChangeStatusCardProps = {
 };
 
 export type AssetViewHeaderProps = {
-  asset: Asset ;
+  asset: Asset;
   onAssign?: (asset: Asset) => void;
   onChangeStatus?: (asset: Asset) => void;
   onEdit?: (asset: Asset) => void;

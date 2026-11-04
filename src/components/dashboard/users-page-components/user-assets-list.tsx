@@ -31,7 +31,7 @@ export default function UserAssetList({
                 scope="col"
                 className="px-4 py-2.5 text-xs font-medium text-muted-foreground"
               >
-                Email 
+                Email
               </th>
               <th
                 scope="col"
