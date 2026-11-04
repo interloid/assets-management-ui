@@ -4,7 +4,7 @@ import {
   getAssetStats,
   getRecentlyAddedAssets,
   getWarrantyExpiringAssets,
-} from "@/services/dashboard.services";
+} from "@/services/dashboard-services";
 import { useEffect, useState } from "react";
 import type {
   ProgressSegment,

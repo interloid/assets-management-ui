@@ -10,7 +10,7 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useSidebar } from "@/components/ui/sidebar-context";
 import DrawerHeader from "../reusable-components/drawer-header";
 import { Button } from "@/components/ui/button";
-import { updateAsset } from "@/services/assets.services";
+import { updateAsset } from "@/services/assets-services";
 import { toast } from "sonner";
 import { editAssetSchema } from "@/schemas/asset";
 

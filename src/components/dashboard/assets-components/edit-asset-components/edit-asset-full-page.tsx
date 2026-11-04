@@ -7,7 +7,7 @@ import {
   getAssetsById,
   updateAsset,
   type User,
-} from "@/services/assets.services";
+} from "@/services/assets-services";
 import { toast } from "sonner";
 import { assetStatuses, assetTypes } from "../../reusable-components/utils";
 import { ArrowLeft, ChevronDown, Info, Lock } from "lucide-react";

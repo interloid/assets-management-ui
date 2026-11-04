@@ -31,7 +31,7 @@ export default function UserAssetList({
                 scope="col"
                 className="px-4 py-2.5 text-xs font-medium text-muted-foreground"
               >
-                Email
+                Email 
               </th>
               <th
                 scope="col"
@@ -63,18 +63,15 @@ export default function UserAssetList({
                     <span>{user.fullName}</span>
                   </div>
                 </td>
-
                 <td className="px-4 py-2.5 text-muted-foreground w-1/4">
                   {user.email}
                 </td>
-
                 <td className="px-4 py-2.5 w-1/4">
                   <UserRoleBadge role={user.role} />
                 </td>
-
                 <td className="px-4 py-2.5 text-right w-1/4">
                   <Link
-                    to={`/dashboard/assets?assigned_to=${(user.id)}`}
+                    to={`/dashboard/assets?assigned_to=${user.id}`}
                     aria-label={`View assets held by ${user.fullName}`}
                     className="inline-flex items-center gap-1.5 font-medium tabular-nums hover:underline"
                   >
@@ -84,7 +81,6 @@ export default function UserAssetList({
                 </td>
               </tr>
             ))}
-
             {users.length === 0 && (
               <tr>
                 <td colSpan={4} className="px-4 py-12 text-center">
@@ -98,17 +94,14 @@ export default function UserAssetList({
           </tbody>
         </table>
       </div>
-
       <footer className="flex flex-wrap items-center justify-between gap-3 border-t px-4 py-3 text-sm text-muted-foreground">
         <span className="tabular-nums">
           Showing {startIndex}-{endIndex} of {totalUsers}
         </span>
-
         <div className="flex items-center gap-3">
           <span className="tabular-nums">
             Page {page} of {totalPages}
           </span>
-
           <div className="flex gap-1">
             <Button
               variant="outline"
@@ -120,7 +113,6 @@ export default function UserAssetList({
             >
               <ChevronLeft className="size-4" />
             </Button>
-
             <Button
               variant="outline"
               size="icon"

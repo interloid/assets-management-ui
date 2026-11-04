@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { AuthContext } from "@/context/auth";
-import { getCurrentSession, type User } from "@/services/auth.services";
+import { getCurrentSession, type User } from "@/services/auth-services";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [sessionResponse, setSessionResponse] = useState<User | null>(null);

@@ -37,7 +37,7 @@ export interface AssetListResponse {
     serialNumber: string;
     updatedAt: string;
   }[];
-  pagination?: {
+  paginationMeta?: {
     itemsOnPage: number;
     page: number;
     recordsPerPage: number;

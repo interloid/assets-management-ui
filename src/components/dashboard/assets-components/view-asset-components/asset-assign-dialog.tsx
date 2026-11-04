@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 import type { AssignAssetDialogProps } from "@/types/assets";
 import { Spinner } from "@/components/ui/spinner";
-import { assignAsset } from "@/services/assets.services";
+import { assignAsset } from "@/services/assets-services";
 import { toast } from "sonner";
 
 export function AssignAssetDialog({

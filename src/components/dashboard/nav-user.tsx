@@ -2,7 +2,7 @@ import { LogOut } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar";
-import { logout } from "@/services/auth.services";
+import { logout } from "@/services/auth-services";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import SidebarThemeButton from "./theme-button";

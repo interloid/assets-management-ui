@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Circle, CircleAlert, CircleCheck, LoaderCircle } from "lucide-react";
 import React, { useState } from "react";
 import { signUpSchema } from "@/schemas/auth";
-import { signUp } from "@/services/auth.services";
+import { signUp } from "@/services/auth-services";
 import { Link, useNavigate } from "react-router";
 import type { AuthErrors } from "@/types/auth";
 import PasswordEye from "./password-eye";

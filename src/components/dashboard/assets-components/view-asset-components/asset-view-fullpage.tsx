@@ -19,8 +19,8 @@ import {
   deleteAsset,
   getAssetsById,
   unassignAsset,
-} from "@/services/assets.services";
-import type { User } from "@/services/assets.services";
+} from "@/services/assets-services";
+import type { User } from "@/services/assets-services";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";

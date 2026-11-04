@@ -9,8 +9,8 @@ import {
   getAssetsData,
   getListUsers,
   type User,
-} from "@/services/assets.services";
-import { getAssetStats, type AssetStats } from "@/services/dashboard.services";
+} from "@/services/assets-services";
+import { getAssetStats, type AssetStats } from "@/services/dashboard-services";
 import type { Asset, AssetQuery, DrawerMode } from "@/types/assets";
 import { Plus } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";

@@ -15,7 +15,7 @@ import {
   changeStatus,
   deleteAsset,
   unassignAsset,
-} from "@/services/assets.services";
+} from "@/services/assets-services";
 import { toast } from "sonner";
 import { ReturnToStockCard } from "./return-to-stock-card";
 import { cn } from "@/lib/utils";

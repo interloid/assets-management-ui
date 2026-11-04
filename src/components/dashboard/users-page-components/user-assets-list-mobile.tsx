@@ -13,9 +13,6 @@ export function UserAssetListMobile({
   startIndex,
   endIndex,
 }: UserAssetListProps) {
-  if (users.length === 0) {
-    return <p className="p-4 text-sm text-muted-foreground">No users found.</p>;
-  }
 
   return (
     <section className="overflow-hidden md:hidden rounded-lg border border-border bg-card shadow-sm">
@@ -30,15 +27,12 @@ export function UserAssetListMobile({
                 to={`/dashboard/assets?assigned_to=${user.id}`}
                 className="flex min-h-16 items-center gap-3 px-4 py-3 no-underline transition-colors hover:bg-muted/50"
               >
-                {/* Avatar */}
                 <span
                   aria-hidden="true"
                   className="grid size-9 shrink-0 place-items-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground"
                 >
                   {getInitials(user.fullName)}
                 </span>
-
-                {/* User details */}
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="text-sm font-medium">
                     {user.fullName}
@@ -47,13 +41,10 @@ export function UserAssetListMobile({
                       · {user.role}
                     </span>
                   </span>
-
                   <span className="truncate text-[13px] text-muted-foreground">
                     {user.email}
                   </span>
                 </span>
-
-                {/* Asset count */}
                 <span className="shrink-0 whitespace-nowrap text-[13px] text-muted-foreground">
                   {user.assetsHeld} {user.assetsHeld === 1 ? "asset" : "assets"}
                 </span>
@@ -66,8 +57,6 @@ export function UserAssetListMobile({
           </li>
         )}
       </ul>
-
-      {/* Pagination footer */}
       <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-2.5 text-sm text-muted-foreground">
         <span className="tabular-nums">
           Showing {startIndex}–{endIndex} of {totalUsers}
@@ -77,7 +66,6 @@ export function UserAssetListMobile({
           <span className="whitespace-nowrap tabular-nums">
             Page {page} of {totalPages}
           </span>
-
           <div className="flex gap-1">
             <Button
               type="button"
@@ -90,7 +78,6 @@ export function UserAssetListMobile({
             >
               <ChevronLeft className="size-4" />
             </Button>
-
             <Button
               type="button"
               variant="outline"

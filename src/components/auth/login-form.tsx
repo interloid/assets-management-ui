@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { CircleAlert, CircleCheck, LoaderCircle } from "lucide-react";
 import { loginSchema } from "@/schemas/auth";
-import { login } from "@/services/auth.services";
+import { login } from "@/services/auth-services";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import type { AuthErrors } from "@/types/auth";
 import { toast } from "sonner";

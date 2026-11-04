@@ -1,6 +1,6 @@
 import { toCamelCase, toSnakeCase } from "@/lib/converters";
-import type { AssetListResponse } from "./dashboard.services";
 import type { AssetQuery, AssetStatus, AssetType } from "@/types/assets";
+import type { AssetListResponse } from "./dashboard-services";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 

@@ -1,5 +1,5 @@
-import type { User } from "@/services/assets.services";
-import type { AssetStats, AssignedUser } from "@/services/dashboard.services";
+import type { User } from "@/services/assets-services";
+import type { AssetStats, AssignedUser } from "@/services/dashboard-services";
 
 export type AssetStatus = "in_stock" | "assigned" | "repair" | "retired";
 export type AssetType = "laptop" | "monitor" | "phone" | "accessory";

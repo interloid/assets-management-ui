@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { User } from "@/types/users";
-import { getListUsers } from "@/services/assets.services";
+import { getListUsers } from "@/services/assets-services";
 import { useEffect } from "react";
 import { UserListPage } from "@/components/dashboard/users-page-components/users-page";
 
