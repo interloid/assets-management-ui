@@ -7,6 +7,7 @@ import type {
   Asset,
   AssetStatus,
   AssetViewFullPageProps,
+  User,
 } from "@/types/assets";
 import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { ArrowLeft, ChevronRight } from "lucide-react";
@@ -20,7 +21,6 @@ import {
   getAssetsById,
   unassignAsset,
 } from "@/services/assets-services";
-import type { User } from "@/services/assets-services";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";

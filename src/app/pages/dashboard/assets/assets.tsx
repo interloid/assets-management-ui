@@ -8,10 +8,10 @@ import { useDebounce } from "@/hooks/use-debounce";
 import {
   getAssetsData,
   getListUsers,
-  type User,
 } from "@/services/assets-services";
-import { getAssetStats, type AssetStats } from "@/services/dashboard-services";
-import type { Asset, AssetQuery, DrawerMode } from "@/types/assets";
+import { getAssetStats } from "@/services/dashboard-services";
+import type { Asset, AssetQuery, DrawerMode, User } from "@/types/assets";
+import type { AssetStats } from "@/types/dashboard";
 import { Plus } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";

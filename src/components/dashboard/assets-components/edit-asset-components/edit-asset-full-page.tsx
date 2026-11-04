@@ -1,12 +1,11 @@
 import { editAssetSchema } from "@/schemas/asset";
-import type { Asset, AssetStatus, AssetType } from "@/types/assets";
+import type { Asset, AssetStatus, AssetType, User } from "@/types/assets";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router"; // 👈 Link imported here
 import type { editAssetErrors } from "./edit-asset-drawer";
 import {
   getAssetsById,
   updateAsset,
-  type User,
 } from "@/services/assets-services";
 import { toast } from "sonner";
 import { assetStatuses, assetTypes } from "../../reusable-components/utils";

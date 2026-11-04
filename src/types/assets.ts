@@ -1,5 +1,18 @@
-import type { User } from "@/services/assets-services";
-import type { AssetStats, AssignedUser } from "@/services/dashboard-services";
+import type { AssetStats, AssignedUser } from "./dashboard";
+
+export interface User {
+  id: string;
+  fullName: string;
+  email: string;
+  role: string;
+}
+
+export interface UsersResponse {
+  success: boolean;
+  StatusCode: number;
+  message: string;
+  data: User[];
+}
 
 export type AssetStatus = "in_stock" | "assigned" | "repair" | "retired";
 export type AssetType = "laptop" | "monitor" | "phone" | "accessory";
@@ -128,3 +141,38 @@ export type DrawerHeaderProps = {
   onOpenChange: (open: boolean) => void;
   mode: "view" | "edit";
 };
+
+export type CreateAssetPayload = {
+  type: string | null;
+  serialNumber: string | null;
+  purchaseDate: string | null;
+  warrantyExpiry: string | null;
+  notes: string | null;
+};
+
+export interface createAssetResponse {
+  success: boolean;
+  StatusCode: number;
+  message: string;
+  errors?: { field: string; message: string }[];
+  data: CreateAssetPayload[];
+}
+
+export type UpdateAssetPayload = {
+  type: AssetType | string;
+  notes: string;
+  purchase_date: string;
+  warranty_expiry: string | null;
+  serial_number: string;
+  status: string;
+  user_id?: string;
+};
+
+export interface UpdateAssetResponse {
+  success: string;
+  StatusCode: number;
+  message: string;
+  errors?: { field: string; message: string }[];
+  assetId: string;
+  data: UpdateAssetPayload[];
+}

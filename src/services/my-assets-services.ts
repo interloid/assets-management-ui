@@ -1,5 +1,5 @@
 import { toCamelCase } from "@/lib/converters";
-import type { AssetListResponse } from "./dashboard-services";
+import type { AssetListResponse } from "@/types/dashboard";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 

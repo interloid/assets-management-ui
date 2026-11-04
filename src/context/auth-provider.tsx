@@ -1,16 +1,18 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { AuthContext } from "@/context/auth";
-import { getCurrentSession, type User } from "@/services/auth-services";
+import { getCurrentSession } from "@/services/auth-services";
+import type { CurrentSessionResponse } from "@/types/auth";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [sessionResponse, setSessionResponse] = useState<User | null>(null);
+  const [sessionResponse, setSessionResponse] =
+    useState<CurrentSessionResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function loadSession() {
       try {
         const response = await getCurrentSession();
-        if (response.success) {
+        if (response.success && response.data) {
           setSessionResponse(response);
         } else {
           setSessionResponse(null);
@@ -28,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function refreshSession() {
     try {
       const response = await getCurrentSession();
-      if (response.success) {
+      if (response.success && response.data) {
         setSessionResponse(response);
       } else {
         setSessionResponse(null);

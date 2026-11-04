@@ -1,40 +1,9 @@
 import { toCamelCase, toSnakeCase } from "@/lib/converters";
+import type { AuthResponse, ChangePassword, ChangePasswordProps, CurrentSessionResponse, LoginCredentials, SignUpCredentials } from "@/types/auth";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export interface LoginCredentials {
-  email: string | null;
-  password: string | null;
-}
-export interface SignUpCredentials {
-  fullName: string | null;
-  email: string | null;
-  password: string | null;
-}
-
-export interface AuthResponse {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  errors?: { field: string; message: string }[];
-}
-
-export interface User {
-  success: boolean;
-  message: string;
-  statusCode: number;
-  errors?: { field: string; message: string }[];
-  data: {
-    id: string;
-    fullName: string;
-    email: string;
-    role: string;
-    createdAt: string;
-    updatedAt: string;
-  };
-}
-
-export async function getCurrentSession(): Promise<User> {
+export async function getCurrentSession(): Promise<CurrentSessionResponse> {
   const result = await fetch(`${API_BASE_URL}/users/me`, {
     method: "GET",
     credentials: "include",
@@ -43,7 +12,8 @@ export async function getCurrentSession(): Promise<User> {
     },
   });
   const response = await result.json();
-  return response;
+  const data = toCamelCase(response);
+  return data;
 }
 
 export async function login(
@@ -79,6 +49,33 @@ export async function signUp(
 
 export async function logout() {
   const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+  return response;
+}
+
+export async function changePassword(
+  payload: ChangePassword,
+): Promise<ChangePasswordProps> {
+  const response = await fetch(`${API_BASE_URL}/users/me/password`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      "content-type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify(toSnakeCase(payload)),
+  });
+  console.log("response", response);
+  const result = await response.json();
+  console.log("result", result);
+  const data = toCamelCase(result);
+  return data;
+}
+
+export async function logoutAll() {
+  const response = await fetch(`${API_BASE_URL}/auth/logout-all`, {
     method: "POST",
     credentials: "include",
   });

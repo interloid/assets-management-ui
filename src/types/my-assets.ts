@@ -1,4 +1,4 @@
-import type { AssetListResponse } from "@/services/dashboard-services";
+import type { AssetListResponse } from "./dashboard";
 
 export type MyAsset = NonNullable<AssetListResponse["data"]>[number];
 

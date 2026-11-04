@@ -1,56 +1,9 @@
 import { toCamelCase } from "@/lib/converters";
+import type { AssetListResponse, AssetResponse } from "@/types/dashboard";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export type AssetStats = {
-  total: number;
-  inStock: number;
-  assigned: number;
-  repair: number;
-  retired: number;
-};
 
-export interface AssetResponse {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  errors?: { field: string; message: string }[];
-  data?: AssetStats;
-}
-
-export interface AssetListResponse {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  errors?: { field: string; message: string }[];
-  data?: {
-    id: string;
-    assetTag: string;
-    assignedUser: AssignedUser | null;
-    createdAt: string;
-    type: string;
-    warrantyExpiry: string | null;
-    warrantyExpiresInDays: string | null;
-    status: string;
-    notes: string;
-    purchaseDate: string;
-    serialNumber: string;
-    updatedAt: string;
-  }[];
-  paginationMeta?: {
-    itemsOnPage: number;
-    page: number;
-    recordsPerPage: number;
-    totalItems: number;
-    totalPages: number;
-  };
-}
-
-export type AssignedUser = {
-  id: string;
-  email: string;
-  fullName: string;
-};
 
 export async function getAssetStats(): Promise<AssetResponse> {
   const result = await fetch(`${API_BASE_URL}/assets/stats`, {

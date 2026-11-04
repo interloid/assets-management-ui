@@ -50,3 +50,41 @@ export const signUpSchema = z.object({
   email: emailSchema,
   password: signUpPasswordSchema,
 });
+
+export const currentPasswordSchema = z
+  .union([z.string(), z.null(), z.undefined()])
+  .transform((currentPassword) => currentPassword ?? undefined)
+  .pipe(
+    z
+      .string({ error: "Enter your current password." })
+      .min(1, "Enter your current password."),
+  );
+
+export const newPasswordSchema = z
+  .union([z.string(), z.null(), z.undefined()])
+  .transform((newPassword) => newPassword ?? undefined)
+  .pipe(
+    z
+      .string({ error: "Enter your new password." })
+      .min(1, "Enter your new password."),
+  );
+
+export const confirmNewPasswordSchema = z
+  .union([z.string(), z.null(), z.undefined()])
+  .transform((confirmNewPassword) => confirmNewPassword ?? "")
+  .pipe(
+    z
+      .string({ error: "Confirm your new password." })
+      .min(1, "Confirm your new password."),
+  );
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: currentPasswordSchema,
+    newPassword: newPasswordSchema,
+    confirmNewPassword: confirmNewPasswordSchema,
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmNewPassword"],
+  });

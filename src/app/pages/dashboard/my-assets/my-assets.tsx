@@ -1,6 +1,6 @@
 import MyAssetList from "@/components/dashboard/my-assets-components/my-asset-list";
-import type { AssetListResponse } from "@/services/dashboard-services";
 import { getMyAssets } from "@/services/my-assets-services";
+import type { AssetListResponse } from "@/types/dashboard";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
