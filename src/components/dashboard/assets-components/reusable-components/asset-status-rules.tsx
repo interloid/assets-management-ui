@@ -1,11 +1,7 @@
 import type { Asset, AssetStatus } from "@/types/assets";
-import {
-  getStatusMessage,
-  statusDotStyles,
-  statusLabels,
-} from "../../reusable-components/utils";
 import { Section } from "../view-asset-components/view-asset-drawer";
 import { cn } from "cn";
+import { getStatusMessage, statusByLabels, statusDotStyles } from "../../utils";
 
 export function AssetStatusRules({
   asset,
@@ -32,12 +28,12 @@ export function AssetStatusRules({
                 )}
               >
                 <span
-                  className={`size-2 shrink-0 rounded-full ${statusDotStyles[statusLabels[status]]}`}
+                  className={`size-2 shrink-0 rounded-full ${statusDotStyles[statusByLabels[status]]}`}
                 />
                 <span
                   className={`min-w-0 flex-1 ${message === "Current" && "font-semibold"}`}
                 >
-                  {statusLabels[status]}
+                  {statusByLabels[status]}
                 </span>
                 <span
                   className={`shrink-0 text-xs ${

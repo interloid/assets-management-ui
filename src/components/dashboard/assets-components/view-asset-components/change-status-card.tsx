@@ -8,14 +8,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { AssetStatus, ChangeStatusCardProps } from "@/types/assets";
-import {
-  allowedStatusTransitions,
-  statusDotStyles,
-  statusLabels,
-} from "../../reusable-components/utils";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { X } from "lucide-react";
+import { allowedStatusTransitions, statusByLabels, statusDotStyles } from "../../utils";
 
 export function ChangeStatusCard({
   onOpenChange,
@@ -49,7 +45,7 @@ export function ChangeStatusCard({
             </CardTitle>
 
             <CardDescription>
-              Current status: {statusLabels[currentStatus]}. Only allowed moves
+              Current status: {statusByLabels[currentStatus]}. Only allowed moves
               are listed.
             </CardDescription>
           </div>
@@ -101,9 +97,9 @@ export function ChangeStatusCard({
                   <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                     <span className="flex items-center gap-2 text-sm font-medium">
                       <span
-                        className={`size-2 shrink-0 rounded-full ${statusDotStyles[statusLabels[status]]}`}
+                        className={`size-2 shrink-0 rounded-full ${statusDotStyles[statusByLabels[status]]}`}
                       />
-                      {statusLabels[status]}
+                      {statusByLabels[status]}
                     </span>
                     <span className="text-muted-foreground text-xs">
                       {status === "in_stock"

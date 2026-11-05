@@ -1,12 +1,6 @@
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import type { AssetStatus, ViewAssetDrawerProps } from "@/types/assets";
-import {
-  getStatusMessage,
-  statusDotStyles,
-  statusLabels,
-  statusTextStyles,
-} from "../../reusable-components/utils";
 import { useSidebar } from "@/components/ui/sidebar-context";
 import { useState } from "react";
 import { AssignAssetDialog } from "./asset-assign-dialog";
@@ -24,6 +18,7 @@ import { AssetViewHeader } from "../reusable-components/asset-view-header";
 import DrawerHeader from "../reusable-components/drawer-header";
 import DeleteAssetCard from "./delete-confirmation";
 import { CopyButton } from "../reusable-components/copy-button";
+import { getStatusMessage, statusByLabels, statusDotStyles, statusTextStyles } from "../../utils";
 
 export function DetailRow({
   label,
@@ -258,12 +253,12 @@ export function ViewAssetDrawer({
                               className="flex items-center gap-2 py-3 text-sm"
                             >
                               <span
-                                className={`size-2 shrink-0 rounded-full ${statusDotStyles[statusLabels[status]]}`}
+                                className={`size-2 shrink-0 rounded-full ${statusDotStyles[statusByLabels[status]]}`}
                               />
                               <span
                                 className={`min-w-0 flex-1 ${message === "Current" ? "font-semibold" : null}`}
                               >
-                                {statusLabels[status]}
+                                {statusByLabels[status]}
                               </span>
                               <span
                                 className={`shrink-0 text-xs ${

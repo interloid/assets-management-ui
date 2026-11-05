@@ -12,8 +12,8 @@ import {
 import { Link } from "react-router";
 import { AssetEmptyState } from "./asset-empty-state";
 import { AssetsMobile } from "./assets-mobile-layout";
-import { statusStyles } from "../reusable-components/utils";
 import AssetTableSkeleton from "./asset-skeleton-components/asset-table-skeleton";
+import { statusStyles } from "../utils";
 
 export function AssetTypeIcon({ type }: { type: Asset["type"] }) {
   const className = "size-4 shrink-0 text-muted-foreground";

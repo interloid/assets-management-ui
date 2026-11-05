@@ -4,7 +4,6 @@ import type {
   EditFormSectionProps,
 } from "@/types/assets";
 import { useState } from "react";
-import { assetStatuses, assetTypes } from "../../reusable-components/utils";
 import { ChevronDown, Info, Lock } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useSidebar } from "@/components/ui/sidebar-context";
@@ -13,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { updateAsset } from "@/services/assets.services";
 import { toast } from "sonner";
 import { editAssetSchema } from "@/schemas/asset";
+import { assetStatuses, assetTypes } from "../../utils";
 
 export type editAssetErrors = {
   type: string | null;

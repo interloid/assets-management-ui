@@ -8,9 +8,9 @@ import { Lock } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import { assetTypes } from "../../reusable-components/utils";
 import type { AssetType } from "@/types/assets";
 import { Spinner } from "@/components/ui/spinner";
+import { assetTypes } from "../../utils";
 
 type FormErrors = {
   type: string | null;

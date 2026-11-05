@@ -1,9 +1,5 @@
 import { cn } from "@/lib/utils";
-import type {
-  AssetStatus,
-  AssetType,
-  AssetViewHeaderProps,
-} from "@/types/assets";
+import type { AssetType, AssetViewHeaderProps } from "@/types/assets";
 import {
   Pencil,
   RefreshCw,
@@ -12,15 +8,10 @@ import {
   UserMinus,
   UserPlus,
 } from "lucide-react";
-import {
-  statusDotStyles,
-  statusLabels,
-  statusStyles,
-  typeIcons,
-} from "../../reusable-components/utils";
 import { toStatusLabel } from "@/lib/converters";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "./copy-button";
+import { statusDotStyles, statusStyles, typeIcons } from "../../utils";
 
 export function AssetViewHeader({
   asset,
@@ -58,7 +49,7 @@ export function AssetViewHeader({
               <span
                 className={`size-1.5 rounded-full ${statusDotStyles[toStatusLabel(asset.status)]}`}
               />
-              {statusLabels[asset.status as AssetStatus]}
+              {toStatusLabel(asset.status)}
             </span>
           </div>
           <div className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground">

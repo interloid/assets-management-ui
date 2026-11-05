@@ -36,55 +36,7 @@ export default function StackedProgressBar({
           <div className="flex flex-wrap items-baseline justify-between gap-2 md:pb-1">
             <h2
               id="status-heading"
-              className="text-sm font-medium text-muted-foreground">
-          {title}
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          <span className="text-[26px] font-semibold relative right-1 tracking-tight text-foreground tabular-nums md:text-3xl">
-            <AnimatedNumber value={total} />
-          </span>
-          total
-        </p>
-      </div>
-      <div
-        role="img"
-        aria-label={visibleSegments
-          .map(
-            (segment) =>
-              `${segment.label}: ${segment.count} (${total ? ((segment.count / total) * 100).toFixed(1) : "0"}%)`,
-          )
-          .join(", ")}
-        className="flex h-2 w-full gap-0.5 overflow-hidden rounded-full bg-muted"
-      >
-        {visibleSegments.map((segment) => {
-          const percentage = total ? (segment.count / total) * 100 : 0;
-
-          return (
-            <span
-              key={segment.label}
-              title={`${segment.label}: ${segment.count}`}
-              className={cn(
-                segment.color,
-                "h-full animate-[grow_700ms_ease-out_forwards]",
-              )}
-              style={
-                {
-                  "--target-width": `${percentage}%`,
-                  width: `${percentage}%`,
-                } as React.CSSProperties
-              }
-            />
-          );
-        })}
-      </div>
-      {/* <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))] gap-2 ">
-        {visibleSegments.map((segment) => {
-          const percentage = total ? (segment.count / total) * 100 : 0;
-          return (
-            <Link
-              key={segment.label}
-              className="-m-1 flex flex-col gap-1.5 rounded-md p-3"
-              to="/assets"
+              className="text-sm font-medium text-muted-foreground"
             >
               {title}
             </h2>
@@ -94,10 +46,10 @@ export default function StackedProgressBar({
               </span>
               total
             </p>
-          </div> */}
+          </div>
           <div
             role="img"
-            aria-label={segments
+            aria-label={visibleSegments
               .map(
                 (segment) =>
                   `${segment.label}: ${segment.count} (${total ? ((segment.count / total) * 100).toFixed(1) : "0"}%)`,
@@ -128,7 +80,7 @@ export default function StackedProgressBar({
           </div>
 
           <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))] gap-2">
-            {segments.map((segment) => {
+            {visibleSegments.map((segment) => {
               const percentage = total ? (segment.count / total) * 100 : 0;
 
               return (

@@ -9,10 +9,10 @@ import {
   type User,
 } from "@/services/assets.services";
 import { toast } from "sonner";
-import { assetStatuses, assetTypes } from "../../reusable-components/utils";
 import { ArrowLeft, ChevronDown, Info, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EditAssetFullPageSkeleton from "./edit-asset-full-page-skeleton";
+import { assetStatuses, assetTypes } from "../../utils";
 
 type EditAssetLocationState = {
   asset: Asset;
