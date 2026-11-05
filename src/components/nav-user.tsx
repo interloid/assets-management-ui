@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import SidebarThemeButton from "./theme-button";
 import { getInitials, toCamelCase } from "@/lib/converters";
 import { useAuth } from "@/context/auth";
+import { Button } from "./ui/button";
 
 export function NavUser() {
   const navigate = useNavigate();
@@ -53,14 +54,14 @@ export function NavUser() {
                 <span className="truncate">{userdata.email}</span>
               </div>
             </div>
-            <button
+            <Button
               type="button"
               aria-label="Log out"
-              className="flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer"
+              className="flex size-8 shrink-0 items-center justify-center bg-transparent rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer"
               onClick={logOutSession}
             >
               <LogOut className="size-4" />
-            </button>
+            </Button>
           </div>
         </SidebarMenuItem>
       </SidebarMenu>

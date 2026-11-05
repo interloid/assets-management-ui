@@ -4,17 +4,17 @@ import SignUpPage from "@/app/pages/auth/signup";
 import { Toaster } from "sonner";
 import LoginPage from "@/app/pages/auth/login";
 import { Spinner } from "@/components/ui/spinner";
-import Assets from "./pages/dashboard/assets/assets";
 import Users from "./pages/dashboard/users/users";
 import MyAssets from "./pages/dashboard/my-assets/my-assets";
 import Profile from "./pages/dashboard/profile/profile";
-import Dashboard from "./pages/dashboard/dashboard";
+import Dashboard from "./pages/dashboard";
 import DashboardLayout from "@/layout/dashboard";
 import NotFound from "./pages/not-found";
 import { useAuth } from "@/context/auth";
 import { AddAsset } from "@/components/dashboard/assets-components/add-asset-components/add-asset";
 import { AssetViewFullPage } from "@/components/dashboard/assets-components/view-asset-components/asset-view-fullpage";
 import EditAssetFullPage from "@/components/dashboard/assets-components/edit-asset-components/edit-asset-full-page";
+import AssetsPage from "./pages/dashboard/assets/assets";
 
 export default function App() {
   const { isLoading, isAuthenticated } = useAuth();
@@ -46,7 +46,7 @@ export default function App() {
           <Route element={<DashboardLayout />}>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/assets" element={<Assets />} />
+            <Route path="/assets" element={<AssetsPage />} />
             <Route path="/assets/new" element={<AddAsset />} />
             <Route
               path="/assets/asset-details/:assetId"

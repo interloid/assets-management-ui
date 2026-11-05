@@ -2,26 +2,30 @@ import type { StackedProgressBarProps } from "@/types/dashboard";
 import { useMemo } from "react";
 import { cn } from "cn";
 import { useNavigate } from "react-router";
-import AnimatedNumber from "./reusable-components/animated-number";
 import { Tooltip, TooltipTrigger } from "../ui/tooltip";
-
-const statusByLabel: Record<string, string> = {
-  "In stock": "in_stock",
-  Assigned: "assigned",
-  "In repair": "repair",
-  Retired: "retired",
-};
+// import { Link } from "react-router";
+import AnimatedNumber from "./animated-number";
+import { statusByLabels } from "./utils";
 
 export default function StackedProgressBar({
   title = "Assets by status",
   segments,
 }: StackedProgressBarProps) {
   const navigate = useNavigate();
-  const total = useMemo(
-    () => segments.reduce((sum, segment) => sum + segment.count, 0),
+  const safeSegments = useMemo(
+    () =>
+      segments.map((segment) => ({
+        ...segment,
+        count: Number.isFinite(segment.count) ? Math.max(0, segment.count) : 0,
+      })),
     [segments],
   );
+  const visibleSegments = safeSegments.filter((segment) => segment.count > 0);
 
+  const total = useMemo(
+    () => safeSegments.reduce((sum, segment) => sum + segment.count, 0),
+    [safeSegments],
+  );
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -32,7 +36,55 @@ export default function StackedProgressBar({
           <div className="flex flex-wrap items-baseline justify-between gap-2 md:pb-1">
             <h2
               id="status-heading"
-              className="text-sm font-medium text-muted-foreground"
+              className="text-sm font-medium text-muted-foreground">
+          {title}
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          <span className="text-[26px] font-semibold relative right-1 tracking-tight text-foreground tabular-nums md:text-3xl">
+            <AnimatedNumber value={total} />
+          </span>
+          total
+        </p>
+      </div>
+      <div
+        role="img"
+        aria-label={visibleSegments
+          .map(
+            (segment) =>
+              `${segment.label}: ${segment.count} (${total ? ((segment.count / total) * 100).toFixed(1) : "0"}%)`,
+          )
+          .join(", ")}
+        className="flex h-2 w-full gap-0.5 overflow-hidden rounded-full bg-muted"
+      >
+        {visibleSegments.map((segment) => {
+          const percentage = total ? (segment.count / total) * 100 : 0;
+
+          return (
+            <span
+              key={segment.label}
+              title={`${segment.label}: ${segment.count}`}
+              className={cn(
+                segment.color,
+                "h-full animate-[grow_700ms_ease-out_forwards]",
+              )}
+              style={
+                {
+                  "--target-width": `${percentage}%`,
+                  width: `${percentage}%`,
+                } as React.CSSProperties
+              }
+            />
+          );
+        })}
+      </div>
+      {/* <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))] gap-2 ">
+        {visibleSegments.map((segment) => {
+          const percentage = total ? (segment.count / total) * 100 : 0;
+          return (
+            <Link
+              key={segment.label}
+              className="-m-1 flex flex-col gap-1.5 rounded-md p-3"
+              to="/assets"
             >
               {title}
             </h2>
@@ -42,7 +94,7 @@ export default function StackedProgressBar({
               </span>
               total
             </p>
-          </div>
+          </div> */}
           <div
             role="img"
             aria-label={segments
@@ -85,7 +137,7 @@ export default function StackedProgressBar({
                   className="-m-1 flex flex-col gap-1.5 rounded-md p-3 cursor-pointer hover:bg-muted/90"
                   onClick={() => {
                     if (segment.label) {
-                      const status = statusByLabel[segment.label];
+                      const status = statusByLabels[segment.label];
                       if (!status) return;
                       navigate(`/assets?status=${status}`);
                     }

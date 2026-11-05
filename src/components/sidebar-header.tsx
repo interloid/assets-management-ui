@@ -4,8 +4,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
-} from "../ui/sidebar";
-import { useSidebar } from "../ui/sidebar-context";
+} from "./ui/sidebar";
+import { useSidebar } from "./ui/sidebar-context";
 import interloidMark from "@/assets/interloid-mark.svg";
 
 export default function SidebarHeader() {

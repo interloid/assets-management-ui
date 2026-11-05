@@ -37,12 +37,13 @@ export const statusTabs = [
   { label: "Retired", value: "retired", statKey: "retired" },
 ] as const;
 
-export const statusLabels: Record<AssetStatus, string> = {
-  in_stock: "In stock",
-  assigned: "Assigned",
-  repair: "In repair",
-  retired: "Retired",
+export const statusByLabels: Record<string, string> = {
+  "In stock": "in_stock",
+  Assigned: "assigned",
+  "In repair": "repair",
+  Retired: "retired",
 };
+
 
 export const typeIcons: Record<AssetType, LucideIcon> = {
   laptop: Laptop,
