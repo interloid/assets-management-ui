@@ -2,11 +2,14 @@ import { Eye, EyeOff } from "lucide-react";
 import { Button } from "../ui/button";
 
 type PasswordEyeProps = {
-    showPassword: boolean;
-    onToggle: () => void
-}
+  showPassword: boolean;
+  onToggle: () => void;
+};
 
-export default function PasswordEye({showPassword, onToggle}:PasswordEyeProps) {
+export default function PasswordEye({
+  showPassword,
+  onToggle,
+}: PasswordEyeProps) {
   return (
     <Button
       type="button"

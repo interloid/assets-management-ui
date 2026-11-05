@@ -13,7 +13,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import interloidMark from "@/assets/interloid-mark.svg";
 import { Circle, CircleAlert, CircleCheck, LoaderCircle } from "lucide-react";
 import React, { useState } from "react";
 import { signUpSchema } from "@/schemas/auth";
@@ -22,8 +21,9 @@ import { Link, useNavigate } from "react-router";
 import type { AuthErrors } from "@/types/auth";
 import PasswordEye from "./password-eye";
 import { cn } from "cn";
+import BrandTitle from "./brand-title";
 
-export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
+export function SignUpForm() {
   const navigate = useNavigate();
   const [fullName, setFullName] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
@@ -32,9 +32,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<AuthErrors | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
-  const hasMinLength = (password ?? "").length >= 8;
-  const hasLetter = /[a-zA-Z]/.test(password ?? "");
-  const hasNumber = /[0-9]/.test(password ?? "");
+  const hasMinLength = password && password.length >= 8;
+  const hasLetter = !!password?.match(/[a-zA-Z]/);
+  const hasNumber = !!password?.match(/[0-9]/);
 
   function validateForm() {
     const result = signUpSchema.safeParse({
@@ -93,34 +93,16 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         }
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
   }
 
   return (
-    <main
-      className="flex flex-col w-full gap-6 justify-center items-center"
-      {...props}
-    >
-      <div className="flex gap-2.5 justify-center relative md:gap-[8.5px]">
-        <img
-          src={interloidMark}
-          alt="logo"
-          className="w-8 relative bottom-px"
-        />
-        <div className="flex flex-col leading-4 relative md:left-px">
-          <span className="font-semibold text-[16px]">Interloid</span>
-          <span className="text-muted-foreground text-[13px]">
-            Asset Register
-          </span>
-        </div>
-      </div>
-      <Card
-        className=" w-full md:w-100 p-5 md:p-8 shadow-[0_1px_3px_0_oklch(0_0_0/0.1),0_1px_2px_-1px_oklch(0_0_0/0.1)] border ring-transparent"
-        {...props}
-      >
+    <main className="flex flex-col w-full h-full gap-6 justify-center items-center min-h-full bg-muted p-4 pr-3.5 md:p-10">
+      <BrandTitle />
+      <Card className=" w-full max-w-100 md:w-100 p-5 md:p-8 shadow-[0_1px_3px_0_oklch(0_0_0/0.1),0_1px_2px_-1px_oklch(0_0_0/0.1)] border ring-transparent">
         <CardHeader className="p-0">
           <CardTitle className="text-[22px] font-semibold tracking-[-0.01em] pt-px">
             Create an account
@@ -252,9 +234,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 </div>
               </Field>
               {(errors?.password || serverError) && (
-                <div className="border-destructive/40! bg-destructive/10 p-2 px-3 border h-fit flex w-full gap-2.5 items-center rounded-md animate-il-shake relative bottom-2">
+                <div className="border-destructive/40 bg-destructive/10 p-2 px-3 border h-fit flex w-full gap-2.5 items-center rounded-md animate-il-shake relative bottom-2">
                   <CircleAlert className="w-4 text-destructive" />
-                  <p className="text-destructive!">
+                  <p className="text-destructive">
                     {errors?.password || serverError}
                   </p>
                 </div>

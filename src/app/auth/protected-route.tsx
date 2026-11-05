@@ -1,14 +1,12 @@
 import { Navigate, Outlet } from "react-router";
 
-interface ProtectedRouteProps {
-  isAuthenticated: boolean;
-}
-
 export default function ProtectedRoute({
   isAuthenticated,
-}: ProtectedRouteProps) {
+}: {
+  isAuthenticated: boolean;
+}) {
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace/>;
+    return <Navigate to="/login" replace />;
   }
   return <Outlet />;
 }
