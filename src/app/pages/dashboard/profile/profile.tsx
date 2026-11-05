@@ -1,14 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router";
+import PageUnderDevelopment from "../page-under-development";
 
-export default function Profile() {
-  const navigate = useNavigate();
-  return (
-    <div className="h-full w-full flex items-center justify-center flex-col gap-3">
-      <h1>Profile page is now under development</h1>
-      <Button className="rounded-md" onClick={() => navigate("/dashboard")}>
-        Return to Dashboard
-      </Button>
-    </div>
-  );
+export default function ProfilePage() {
+  return <PageUnderDevelopment title="Profile" />;
+
 }

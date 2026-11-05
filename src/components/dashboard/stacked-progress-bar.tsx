@@ -2,17 +2,27 @@ import type { StackedProgressBarProps } from "@/types/dashboard";
 import { useMemo } from "react";
 import { cn } from "cn";
 import { Link } from "react-router";
-import AnimatedNumber from "./reusable-components/animated-number";
+import AnimatedNumber from "./animated-number";
 
 export default function StackedProgressBar({
   title = "Assets by status",
   segments,
 }: StackedProgressBarProps) {
-  const total = useMemo(
-    () => segments.reduce((sum, segment) => sum + segment.count, 0),
+
+  const safeSegments = useMemo(
+    () =>
+      segments.map((segment) => ({
+        ...segment,
+        count: Number.isFinite(segment.count) ? Math.max(0, segment.count) : 0,
+      })),
     [segments],
   );
+  const visibleSegments = safeSegments.filter((segment) => segment.count > 0);
 
+  const total = useMemo(
+    () => safeSegments.reduce((sum, segment) => sum + segment.count, 0),
+    [safeSegments],
+  );
   return (
     <section
       aria-labelledby="status-heading"
@@ -34,7 +44,7 @@ export default function StackedProgressBar({
       </div>
       <div
         role="img"
-        aria-label={segments
+        aria-label={visibleSegments
           .map(
             (segment) =>
               `${segment.label}: ${segment.count} (${total ? ((segment.count / total) * 100).toFixed(1) : "0"}%)`,
@@ -42,7 +52,7 @@ export default function StackedProgressBar({
           .join(", ")}
         className="flex h-2 w-full gap-0.5 overflow-hidden rounded-full bg-muted"
       >
-        {segments.map((segment) => {
+        {visibleSegments.map((segment) => {
           const percentage = total ? (segment.count / total) * 100 : 0;
 
           return (
@@ -64,7 +74,7 @@ export default function StackedProgressBar({
         })}
       </div>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))] gap-2 ">
-        {segments.map((segment) => {
+        {visibleSegments.map((segment) => {
           const percentage = total ? (segment.count / total) * 100 : 0;
           return (
             <Link
