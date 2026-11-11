@@ -7,9 +7,9 @@ type CamelCaseKeys<T> = T extends readonly (infer U)[]
   ? CamelCaseKeys<U>[]
   : T extends object
     ? {
-        [
-          K in keyof T as K extends string ? SnakeToCamelCase<K> : K
-        ]: CamelCaseKeys<T[K]>;
+        [K in keyof T as K extends string
+          ? SnakeToCamelCase<K>
+          : K]: CamelCaseKeys<T[K]>;
       }
     : T;
 
@@ -85,6 +85,8 @@ export function toStatusLabel(status: string): string {
 
 export const formatDate = (date: string) => {
   if (!date) return "—";
+  const parsed = new Date(date);
+  if (isNaN(parsed.getTime())) return "—";
   return new Date(date).toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
@@ -92,7 +94,8 @@ export const formatDate = (date: string) => {
   });
 };
 
-export function getInitials(fullName: string): string {
+export function getInitials(fullName: string | null): string {
+  if (!fullName || typeof fullName !== "string") return "";
   return fullName
     .trim()
     .split(/\s+/)
@@ -100,4 +103,9 @@ export function getInitials(fullName: string): string {
     .slice(0, 2)
     .map((word) => word.charAt(0).toUpperCase())
     .join("");
+}
+
+export function formatSize(bytes: number) {
+  if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+  return `${Math.round(bytes / 1024)} KB`
 }

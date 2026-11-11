@@ -1,7 +1,8 @@
-import { DetailRow, Section } from "../view-asset-components/view-asset-drawer";
+import { Section } from "./view-asset-components/view-asset-drawer";
 import type { Asset, AssetStatus } from "@/types/assets";
 import { formatDate } from "@/lib/converters";
-import { statusByLabels } from "../../utils";
+import { DetailRow } from "./detail-row";
+import { statusDisplayNames } from "../utils";
 
 export function AssetDetailTable({
   asset,
@@ -30,7 +31,7 @@ export function AssetDetailTable({
         <DetailRow label="Type" value={asset.type} isPage={isPage} />
         <DetailRow
           label="Status"
-          value={statusByLabels[asset.status as AssetStatus]}
+          value={statusDisplayNames[asset.status as AssetStatus]}
           status={asset.status as AssetStatus}
           isPage={isPage}
         />

@@ -10,7 +10,7 @@ import {
 export const statusStyles: Record<string, string> = {
   "In stock": "text-success bg-success/12",
   Assigned: "text-primary bg-primary/12",
-  Repair: "text-warning bg-warning/12",
+  "in repair": "text-warning bg-warning/12",
   Retired: "text-muted-foreground bg-muted",
 };
 
@@ -44,6 +44,12 @@ export const statusByLabels: Record<string, string> = {
   Retired: "retired",
 };
 
+export const statusDisplayNames: Record<AssetStatus, string> = {
+  in_stock: "In stock",
+  assigned: "Assigned",
+  repair: "In repair",
+  retired: "Retired",
+};
 
 export const typeIcons: Record<AssetType, LucideIcon> = {
   laptop: Laptop,

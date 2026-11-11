@@ -3,25 +3,31 @@ import type { RecentlyAddedProps } from "@/types/dashboard";
 import { cn } from "cn";
 import { Link } from "react-router";
 import { statusStyles } from "./utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export default function RecentlyAdded({ assets }: RecentlyAddedProps) {
   return (
     <div className="p-4 md:p-6 md:pt-0 lg:p-10 lg:pl-11.5 lg:pt-0 lg:pr-7 xl:w-1/2 xl:pr-7 2xl:pr-1 py-0 xl:p-0 border-none">
       <section className="overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-sm">
-        <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
-          <div className="flex flex-col gap-0.5">
-            <h2 className="text-base font-semibold">Recently added</h2>
-            <span className="text-[13px] text-muted-foreground">
-              Latest 5 assets in the register
-            </span>
+        <Tooltip>
+          <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
+            <div className="flex flex-col gap-0.5">
+              <h2 className="text-base font-semibold">Recently added</h2>
+              <span className="text-[13px] text-muted-foreground">
+                Latest 5 assets in the register
+              </span>
+            </div>
+            <TooltipTrigger asChild>
+              <Link
+                to="/assets"
+                className="shrink-0 text-sm font-medium hover:underline"
+              >
+                View all
+              </Link>
+            </TooltipTrigger>
           </div>
-          <Link
-            to="/assets"
-            className="shrink-0 text-sm font-medium hover:underline"
-          >
-            View all
-          </Link>
-        </div>
+          <TooltipContent showArrow={false}>Recently added assets</TooltipContent>
+        </Tooltip>
         {assets.length > 0 ? (
           <ul className="m-0 list-none p-0">
             {assets.slice(0, 5).map((asset) => {

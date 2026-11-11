@@ -2,8 +2,7 @@ import type { StackedProgressBarProps } from "@/types/dashboard";
 import { useMemo } from "react";
 import { cn } from "cn";
 import { useNavigate } from "react-router";
-import { Tooltip, TooltipTrigger } from "../ui/tooltip";
-// import { Link } from "react-router";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import AnimatedNumber from "./animated-number";
 import { statusByLabels } from "./utils";
 
@@ -27,8 +26,6 @@ export default function StackedProgressBar({
     [safeSegments],
   );
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
         <section
           aria-labelledby="status-heading"
           className="flex flex-col gap-5 md:p-4.5 md:pt-6 lg:pt-7 lg:p-6 rounded-lg border border-border bg-card p-4 text-card-foreground shadow-sm"
@@ -59,7 +56,6 @@ export default function StackedProgressBar({
           >
             {segments.map((segment) => {
               const percentage = total ? (segment.count / total) * 100 : 0;
-
               return (
                 <span
                   key={segment.label}
@@ -84,39 +80,43 @@ export default function StackedProgressBar({
               const percentage = total ? (segment.count / total) * 100 : 0;
 
               return (
-                <div
-                  key={segment.label}
-                  className="-m-1 flex flex-col gap-1.5 rounded-md p-3 cursor-pointer hover:bg-muted/90"
-                  onClick={() => {
-                    if (segment.label) {
-                      const status = statusByLabels[segment.label];
-                      if (!status) return;
-                      navigate(`/assets?status=${status}`);
-                    }
-                  }}
-                >
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span
-                      className={`size-2 shrink-0 rounded-full ${segment.color}`}
-                      aria-hidden="true"
-                    />
-                    {segment.label}
-                  </div>
-
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-[22px] md:text-[24px] font-semibold tracking-tight tabular-nums">
-                      <AnimatedNumber value={segment.count} />
-                    </span>
-                    <span className="text-[13px] text-muted-foreground tabular-nums">
-                      {percentage.toFixed(0)}%
-                    </span>
-                  </div>
-                </div>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div
+                      key={segment.label}
+                      className="-m-1 flex flex-col gap-1.5 rounded-md p-3 cursor-pointer hover:bg-muted/90"
+                      onClick={() => {
+                        if (segment.label) {
+                          const status = statusByLabels[segment.label];
+                          if (!status) return;
+                          navigate(`/assets?status=${status}`);
+                        }
+                      }}
+                    >
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span
+                          className={`size-2 shrink-0 rounded-full ${segment.color}`}
+                          aria-hidden="true"
+                        />
+                        {segment.label}
+                      </div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-[22px] md:text-[24px] font-semibold tracking-tight tabular-nums">
+                          <AnimatedNumber value={segment.count} />
+                        </span>
+                        <span className="text-[13px] text-muted-foreground tabular-nums">
+                          {percentage.toFixed(0)}%
+                        </span>
+                      </div>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" showArrow={false}>
+                    show {segment.count} in {segment.label} assets
+                  </TooltipContent>
+                </Tooltip>
               );
             })}
           </div>
         </section>
-      </TooltipTrigger>
-    </Tooltip>
   );
 }

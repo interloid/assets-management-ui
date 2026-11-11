@@ -1,8 +1,8 @@
-import { AssetDetailTable } from "../reusable-components/asset-detail-table";
+import { AssetDetailTable } from "../asset-detail-table";
 import { Section } from "./view-asset-drawer";
-import { AssetStatusRules } from "../reusable-components/asset-status-rules";
-import { AssetAssignedUser } from "../reusable-components/asset-assigned-user";
-import { AssetViewHeader } from "../reusable-components/asset-view-header";
+import { AssetStatusRules } from "../asset-status-rules";
+import { AssetAssignedUser } from "../asset-assigned-user";
+import { AssetViewHeader } from "../asset-view-header";
 import type {
   Asset,
   AssetStatus,
@@ -18,6 +18,8 @@ import {
   changeStatus,
   deleteAsset,
   getAssetsById,
+  getFiles,
+  getListUsers,
   unassignAsset,
 } from "@/services/assets.services";
 import type { User } from "@/services/assets.services";
@@ -25,6 +27,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import DeleteAssetCard from "./delete-confirmation";
+import type { AssetAttachmentData } from "./asset-attachment";
+import AssetAttachment from "./asset-attachment";
 
 export function AssetViewFullPage({
   onChangeStatus,
@@ -36,7 +40,7 @@ export function AssetViewFullPage({
   const location = useLocation();
   const state = location.state as { asset?: Asset; allUsers?: User[] } | null;
   const { assetId } = useParams();
-  const allUsers = state?.allUsers ?? [];
+  const [users, setUsers] = useState<User[]>(state?.allUsers ?? []);
   const [asset, setAsset] = useState<Asset | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -47,8 +51,29 @@ export function AssetViewFullPage({
   const [isUnassignLoading, setIsUnassignLoading] = useState<boolean>(false);
   const [isDeleteCardOpen, setIsDeleteCardOpen] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-
+  const [isFileLoading, setIsFileLoading] = useState<boolean>(false);
   const routeAsset = state?.asset?.id === assetId ? state?.asset : null;
+  const [files, setFiles] = useState<AssetAttachmentData[]>([]);
+  const currentAsset = routeAsset ?? asset;
+  const currentAssetId = currentAsset?.id;
+
+  useEffect(() => {
+    if (users.length > 0) return;
+    async function loadUsers() {
+      try {
+        const response = await getListUsers();
+        if (response.success && response.data) {
+          setUsers(response.data);
+        }
+        if (!response.success || !response.data) {
+          toast.error(response.message);
+        }
+      } catch (error) {
+        console.error("Failed to load users:", error);
+      }
+    }
+    void loadUsers();
+  }, [users.length]);
 
   useEffect(() => {
     if (!assetId || routeAsset) return;
@@ -63,7 +88,7 @@ export function AssetViewFullPage({
           toast.error(response.message ?? "Failed to load asset details.");
           return;
         }
-        if (active) {
+        if (response.success && active) {
           setAsset(response.data);
         }
       } catch (error) {
@@ -81,7 +106,40 @@ export function AssetViewFullPage({
     };
   }, [assetId, routeAsset]);
 
-  const currentAsset = routeAsset ?? asset;
+  useEffect(() => {
+    if (!currentAssetId) return;
+
+    const id = currentAssetId;
+    let active = true;
+
+    async function loadFiles() {
+      setIsFileLoading(true);
+      try {
+        const response = await getFiles(id);
+        if (response.success && active) {
+          setFiles(response.data);
+        }
+        if (!response.success || !response.data) {
+          if (response.errors && response.errors !== null) {
+            const errorMessage = response.errors
+              .map((error) => error.message)
+              .join(", ");
+            toast.error(errorMessage);
+          } else {
+            toast.error(response.message);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsFileLoading(false);
+      }
+    }
+    void loadFiles();
+    return () => {
+      active = false;
+    };
+  }, [currentAssetId]);
 
   if (isLoading && !routeAsset) {
     return (
@@ -154,18 +212,37 @@ export function AssetViewFullPage({
     setIsDeleting(true);
     try {
       const response = await deleteAsset(asset.id);
-      if (response.success) {
+      if (response.ok) {
         setIsDeleteCardOpen(false);
         onDelete?.(asset);
-        toast.success(response.message ?? "Asset deleted successfully.");
+        toast.success("Asset deleted successfully.");
         navigate("/assets");
       } else {
-        toast.error(response.message ?? "Failed to delete asset.");
+        toast.error("Failed to delete asset.");
       }
     } catch (error) {
       console.error(error);
     } finally {
       setIsDeleting(false);
+    }
+  }
+
+  async function refreshFiles() {
+    if (!currentAssetId) return;
+
+    setIsFileLoading(true);
+    try {
+      const response = await getFiles(currentAssetId);
+      if (response.success) {
+        setFiles(response.data);
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to refresh attachments.");
+    } finally {
+      setIsFileLoading(false);
     }
   }
 
@@ -187,7 +264,7 @@ export function AssetViewFullPage({
         }}
         onEdit={(selectedAsset) =>
           navigate(`/assets/asset-details/edit/${selectedAsset.id}`, {
-            state: { asset: selectedAsset, allUsers },
+            state: { asset: selectedAsset },
           })
         }
         onDelete={() => {
@@ -215,7 +292,7 @@ export function AssetViewFullPage({
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}
           asset={asset}
-          allUsers={allUsers}
+          allUsers={users}
           onSaved={onSaved}
         />
       )}
@@ -247,6 +324,12 @@ export function AssetViewFullPage({
           onConfirm={handleDeleteAsset}
         />
       )}
+      <AssetAttachment
+        isLoading={isFileLoading}
+        asset={currentAsset}
+        files={files}
+        onFilesChanged={refreshFiles}
+      />
     </section>
   );
 }

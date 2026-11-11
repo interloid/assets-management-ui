@@ -21,6 +21,11 @@ import { toast } from "sonner";
 import WarrantyExpiring from "@/components/dashboard/warranty-expiring";
 import type { AssetType } from "@/types/assets";
 import { typeIcons } from "@/components/dashboard/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 function mapAssetWithIcon<T extends { type: string }>(asset: T) {
   return {
@@ -131,25 +136,39 @@ export default function Dashboard() {
           </span>
         </div>
         <div className="flex gap-1.75 items-end">
-          <Button
-            variant="outline"
-            onClick={() => navigate("/assets")}
-            className="px-3.5 py-4.25 rounded-md shadow-xs gap-2 relative top-px"
-          >
-            <List />
-            <span className="md:leading-1 relative md:bottom-px">
-              All assets
-            </span>
-          </Button>
-          <Button
-            onClick={() => navigate("/assets")}
-            className="px-3.5 py-4.5 pb-4.25 md:px-3.5 md:py-4.5 md:pb-4.5 relative top-0.5 rounded-md gap-2 items-center shadow-xs"
-          >
-            <Plus className="text-primary-foreground font-normal" />
-            <span className="md:leading-1 relative md:bottom-px">
-              Add asset
-            </span>
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/assets")}
+                className="px-3.5 py-4.25 rounded-md shadow-xs gap-2 relative top-px"
+              >
+                <List />
+                <span className="md:leading-1 relative md:bottom-px">
+                  All assets
+                </span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top" showArrow={false} className="mb-1">
+              Open the full asset register
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => navigate("/assets")}
+                className="px-3.5 py-4.5 pb-4.25 md:px-3.5 md:py-4.5 md:pb-4.5 relative top-0.5 rounded-md gap-2 items-center shadow-xs"
+              >
+                <Plus className="text-primary-foreground font-normal" />
+                <span className="md:leading-1 relative md:bottom-px">
+                  Add asset
+                </span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top" showArrow={false} className="mb-1">
+              Register a new asset<span className="bg-muted-foreground px-0.5 rounded-xs text-xs">N</span>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
       <section className="space-y-6 pt-2.25 pb-2 p-4 md:p-6 md:pt-1 lg:p-10 lg:pl-11.5 lg:pt-0 lg:pr-7 lg:pb-6 gap-6 xl:pl-8 2xl:px-8">

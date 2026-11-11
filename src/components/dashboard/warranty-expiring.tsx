@@ -1,26 +1,33 @@
 import { toStatusLabel } from "@/lib/converters";
 import type { WarrantyExpiringProps } from "@/types/dashboard";
 import { Link } from "react-router";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export default function WarrantyExpiring({ assets }: WarrantyExpiringProps) {
   return (
     <div className="p-4 md:p-6 md:pt-0 lg:p-10 lg:pl-11.5 lg:pt-0 lg:pr-7 lg:pb-6.5 border-none xl:w-1/2 xl:py-0 xl:pr-0 xl:pl-8 2xl:pl-1">
       <section className="overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-sm ">
-        <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
-          <div className="flex flex-col gap-0.5">
-            <h2 className="text-base font-semibold">Warranty expiring</h2>
-            <span className="text-[13px] text-muted-foreground">
-              Active assets, next 90 days
-            </span>
+        <Tooltip>
+          <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
+            <div className="flex flex-col gap-0.5">
+              <h2 className="text-base font-semibold">Warranty expiring</h2>
+              <span className="text-[13px] text-muted-foreground">
+                Active assets, next 90 days
+              </span>
+            </div>
+            <TooltipTrigger asChild>
+              <Link
+                to="/assets"
+                className="shrink-0 text-sm font-medium  hover:underline"
+              >
+                View all
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent showArrow={false}>
+              All assets with warranty ending in 90 days
+            </TooltipContent>
           </div>
-
-          <Link
-            to="/assets"
-            className="shrink-0 text-sm font-medium  hover:underline"
-          >
-            View all
-          </Link>
-        </div>
+        </Tooltip>
         {assets.length > 0 ? (
           <ul className="m-0 list-none p-0">
             {assets.map((asset) => {

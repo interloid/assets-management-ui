@@ -23,7 +23,7 @@ export default function StatusTabs({
             role="tab"
             aria-selected={isActive}
             onClick={() => onQueryChange("status", tab.value)}
-            className={`-mb-px inline-flex h-10 shrink-0 items-center gap-2 border-0 border-b-2 bg-transparent px-3 text-sm transition-colors duration-150 ${
+            className={`-mb-px inline-flex h-10 shrink-0 items-center gap-2 border-0 border-b-2 bg-transparent px-3 text-sm transition-colors duration-150 cursor-pointer ${
               isActive
                 ? "border-b-primary font-medium text-foreground"
                 : "border-b-transparent font-normal text-muted-foreground hover:text-foreground"

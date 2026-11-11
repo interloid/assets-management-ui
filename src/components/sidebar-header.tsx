@@ -7,6 +7,7 @@ import {
 } from "./ui/sidebar";
 import { useSidebar } from "./ui/sidebar-context";
 import interloidMark from "@/assets/interloid-mark.svg";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export default function SidebarHeader() {
   const { state } = useSidebar();
@@ -37,16 +38,25 @@ export default function SidebarHeader() {
                 </span>
               </div>
             </SidebarMenuButton>
-            <SidebarTrigger
-              className="absolute right-1 top-3.75 h-5 w-10 items-baseline font-extralight text-muted-foreground cursor-pointer group-data-[collapsible=icon]:static group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:mt-5.75 group-data-[collapsible=icon]:translate-y-0 group-data-[collapsible=icon]:justify-start group-data-[collapsible=icon]:pl-1.25"
-              aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {isCollapsed ? (
-                <PanelLeftOpen className="size-4" />
-              ) : (
-                <PanelLeftClose className="size-4" />
-              )}
-            </SidebarTrigger>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <SidebarTrigger
+                  className="absolute right-1 top-3.75 h-5 w-10 items-baseline font-extralight text-muted-foreground cursor-pointer group-data-[collapsible=icon]:static group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:mt-5.75 group-data-[collapsible=icon]:translate-y-0 group-data-[collapsible=icon]:justify-start group-data-[collapsible=icon]:pl-1.25"
+                  aria-label={
+                    isCollapsed ? "Expand sidebar" : "Collapse sidebar"
+                  }
+                >
+                  {isCollapsed ? (
+                    <PanelLeftOpen className="size-4" />
+                  ) : (
+                    <PanelLeftClose className="size-4" />
+                  )}
+                </SidebarTrigger>
+              </TooltipTrigger>
+              <TooltipContent side="left" align="end" showArrow={false} sideOffset={-10}>
+                {isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              </TooltipContent>
+            </Tooltip>
           </div>
         </SidebarMenuItem>
       </SidebarMenu>

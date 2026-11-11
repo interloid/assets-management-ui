@@ -25,6 +25,7 @@ import {
 import { NavUser } from "./nav-user";
 import { Link, useLocation } from "react-router";
 import { useSidebar } from "@/components/ui/sidebar-context";
+import { Tooltip } from "./ui/tooltip";
 
 export type NavMainItem = {
   title: string;
@@ -85,65 +86,68 @@ export function AppSidebar({
   const { pathname } = useLocation();
   const { isMobile, setOpenMobile } = useSidebar();
   return (
-    <Sidebar
-      collapsible="icon"
-      {...props}
-      className="group-data-[collapsible=icon]:w-16 w-64"
-    >
-      <SidebarHeader className="group-data-[collapsible=icon]:px-4.5 group-data-[collapsible=icon]:py-3.5 pt-1.5">
-        <AppSidebarHeader />
-      </SidebarHeader>
-      <div className="hidden justify-center group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:h-3 group-data-[collapsible=icon]:mt-1">
-        <SidebarSeparator className="h-px w-6" />
-      </div>
-      <SidebarContent className="group-data-[collapsible=icon]:px-2 px-1 gap-1.25 ">
-        {data.navMain.map((item) => (
-          <React.Fragment key={item.title}>
-            <SidebarGroup className="pt-0 group-data-[collapsible=icon]:pb-4">
-              <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu className="gap-0.5 group-data-[collapsible=icon]:gap-1.5">
-                  {item.items.map((navItem) => (
-                    <SidebarMenuItem key={navItem.title}>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={
-                          pathname === navItem.url ||
-                          (navItem.url !== "/dashboard" &&
-                            pathname.startsWith(`${navItem.url}/`))
-                        }
-                        tooltip={navItem.title}
-                        className="data-active:bg-transparent flex gap-2.5 h-9  data-[active=true]:bg-muted hover:bg-muted"
-                      >
-                        <Link
-                          to={navItem.url}
-                          onClick={() => {
-                            if (isMobile) {
-                              setOpenMobile(false);
-                            }
-                          }}
+    <Tooltip>
+      <Sidebar
+        collapsible="icon"
+        {...props}
+        className="group-data-[collapsible=icon]:w-16 w-64"
+      >
+        <SidebarHeader className="group-data-[collapsible=icon]:px-4.5 group-data-[collapsible=icon]:py-3.5 pt-1.5">
+          <AppSidebarHeader />
+        </SidebarHeader>
+        <div className="hidden justify-center group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:h-3 group-data-[collapsible=icon]:mt-1">
+          <SidebarSeparator className="h-px w-6" />
+        </div>
+        <SidebarContent className="group-data-[collapsible=icon]:px-2 px-1 gap-1.25 ">
+          {data.navMain.map((item) => (
+            <React.Fragment key={item.title}>
+              <SidebarGroup className="pt-0 group-data-[collapsible=icon]:pb-4">
+                <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu className="gap-0.5 group-data-[collapsible=icon]:gap-1.5">
+                    {item.items.map((navItem) => (
+                      <SidebarMenuItem key={navItem.title}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={
+                            pathname === navItem.url ||
+                            (navItem.url !== "/dashboard" &&
+                              pathname.startsWith(`${navItem.url}/`))
+                          }
+                          tooltip={navItem.title}
+                          className="data-active:bg-transparent flex gap-2.5 h-9  data-[active=true]:bg-muted hover:bg-muted"
                         >
-                          {navItem.icon && (
-                            <navItem.icon className="text-muted-foreground group-data-[active=true]/menu-button:text-sidebar-primary" />
-                          )}
-                          <span>{navItem.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-            <div className="hidden justify-center group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:h-3 group-data-[collapsible=icon]:pb-1">
-              <SidebarSeparator className="h-px w-6 " />
-            </div>
-          </React.Fragment>
-        ))}
-      </SidebarContent>
-      <SidebarFooter className="border-t">
-        <NavUser />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
+                          <Link
+                            to={navItem.url}
+                            rel="noopener"
+                            onClick={() => {
+                              if (isMobile) {
+                                setOpenMobile(false);
+                              }
+                            }}
+                          >
+                            {navItem.icon && (
+                              <navItem.icon className="text-muted-foreground group-data-[active=true]/menu-button:text-sidebar-primary" />
+                            )}
+                            <span>{navItem.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+              <div className="hidden justify-center group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:h-3 group-data-[collapsible=icon]:pb-1">
+                <SidebarSeparator className="h-px w-6 " />
+              </div>
+            </React.Fragment>
+          ))}
+        </SidebarContent>
+        <SidebarFooter className="border-t">
+          <NavUser />
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+    </Tooltip>
   );
 }

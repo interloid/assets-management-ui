@@ -241,11 +241,12 @@ export function AddAssetForm() {
                 onChange={handleWarrantyExpiryChange}
                 className="h-9 text-[14px] shadow-sm"
               />
-              {errors.warrantyExpiry && (
-                <p className="text-sm text-destructive">
-                  {errors.warrantyExpiry || serverErrors}
-                </p>
-              )}
+              {errors.warrantyExpiry ||
+                (serverErrors && (
+                  <p className="text-sm text-destructive">
+                    {errors.warrantyExpiry || serverErrors}
+                  </p>
+                ))}
             </div>
             <div className="col-span-full flex min-w-0 flex-col gap-1.5">
               <Label htmlFor="notes">

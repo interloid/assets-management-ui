@@ -4,6 +4,11 @@ import { EditAssetDrawer } from "@/components/dashboard/assets-components/edit-a
 import StatusTabs from "@/components/dashboard/assets-components/status-bar";
 import { ViewAssetDrawer } from "@/components/dashboard/assets-components/view-asset-components/view-asset-drawer";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useDebounce } from "@/hooks/use-debounce";
 import {
   getAssetsData,
@@ -172,15 +177,26 @@ export default function Assets() {
           </span>
         </div>
         <div className="flex gap-1.75 items-end">
-          <Button
-            onClick={() => navigate("/assets/new")}
-            className="px-3.5! py-4.5! pb-4.25! md:px-3.5! md:py-4.5! md:pb-4.5! relative top-0.5 rounded-md gap-2 items-center shadow-xs"
-          >
-            <Plus className="text-primary-foreground font-normal!" />
-            <span className="md:leading-1 relative md:bottom-px">
-              Add asset
-            </span>
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => navigate("/assets/new")}
+                className="px-3.5! py-4.5! pb-4.25! md:px-3.5! md:py-4.5! md:pb-4.5! relative top-0.5 rounded-md gap-2 items-center shadow-xs"
+              >
+                <Plus className="text-primary-foreground font-normal!" />
+                <span className="md:leading-1 relative md:bottom-px">
+                  Add asset
+                </span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent showArrow={false} className="mb-1">
+              {" "}
+              Register a new asset
+              <span className="bg-muted-foreground px-0.5 rounded-xs text-xs">
+                N
+              </span>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
       <StatusTabs

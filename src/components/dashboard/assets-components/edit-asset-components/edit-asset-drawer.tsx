@@ -4,15 +4,22 @@ import type {
   EditFormSectionProps,
 } from "@/types/assets";
 import { useState } from "react";
-import { ChevronDown, Info, Lock } from "lucide-react";
+import { Info, Lock } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useSidebar } from "@/components/ui/sidebar-context";
-import DrawerHeader from "../reusable-components/drawer-header";
+import DrawerHeader from "../drawer-header";
 import { Button } from "@/components/ui/button";
 import { updateAsset } from "@/services/assets.services";
 import { toast } from "sonner";
 import { editAssetSchema } from "@/schemas/asset";
 import { assetStatuses, assetTypes } from "../../utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export type editAssetErrors = {
   type: string | null;
@@ -157,7 +164,7 @@ export function EditAssetDrawer({
                           key={value}
                           type="button"
                           onClick={() => setType(value)}
-                          className={`flex min-h-20 flex-col items-start gap-2.5 rounded-md border p-3 text-left transition-colors ${
+                          className={`flex min-h-20 flex-col items-start gap-2.5 rounded-md border p-3 text-left transition-colors cursor-pointer ${
                             type === value
                               ? "border-primary bg-primary/5"
                               : "border-border hover:bg-muted"
@@ -325,26 +332,29 @@ export function EditAssetDrawer({
                 </div>
                 <div className="flex">
                   {status === "assigned" && (
-                    <div className="flex flex-col gap-2 h-17 w-full relative">
-                      <span className="text-[16px]"> Assigned to </span>
-                      <select
+                    <div className="flex w-full flex-col gap-2">
+                      <label className="text-base">Assigned to</label>
+
+                      <Select
                         value={selectedUserId}
-                        onChange={(e) => setSelectedUserId(e.target.value)}
-                        className="h-9 w-full relative appearance-none rounded-md border border-input bg-background px-3 pr-9 text-sm shadow-xs outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        onValueChange={setSelectedUserId}
                       >
-                        <option value="">Choose a person…</option>
-                        {allUsers.map((user) => {
-                          return (
-                            <option key={user.id} value={user.id}>
+                        <SelectTrigger className="h-9 w-full rounded-md">
+                          <SelectValue placeholder="Choose a person…" />
+                        </SelectTrigger>
+
+                        <SelectContent
+                          position="popper"
+                          side="bottom"
+                          avoidCollisions={false}
+                        >
+                          {allUsers.map((user) => (
+                            <SelectItem key={user.id} value={user.id}>
                               {user.fullName} · {user.email}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      <ChevronDown
-                        aria-hidden="true"
-                        className="pointer-events-none absolute right-3 top-3/4 size-4 -translate-y-1/2 text-muted-foreground"
-                      />
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   )}
                   {status === "repair" ? (

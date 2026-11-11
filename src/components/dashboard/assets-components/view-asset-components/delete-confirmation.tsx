@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, X } from "lucide-react";
+import { X } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 
 export type DeleteAssetCardProps = {
@@ -68,14 +68,13 @@ export default function DeleteAssetCard({
             disabled={isDeleting}
             className="rounded-sm px-3.5 py-4 bg-destructive text-background hover:bg-destructive/90"
           >
-            {isDeleting ? <Loader2 className="size-4 animate-spin" /> : null}
             {isDeleting ? (
               <>
                 {" "}
-                <Spinner /> Deleting...
+                <Spinner className="size-4"/> Deleting...
               </>
             ) : (
-              <>Delete</>
+              "Delete"
             )}
           </Button>
         </CardFooter>

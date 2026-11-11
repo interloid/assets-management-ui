@@ -34,7 +34,7 @@ export default function ThemeButton() {
         )}
 
         {!collapsed && (
-          <span className="whitespace-nowrap">
+          <span className="whitespace-nowrap text-foreground">
             {theme === "light" ? "Dark mode" : "Light mode"}
           </span>
         )}

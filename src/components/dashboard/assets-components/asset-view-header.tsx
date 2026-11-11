@@ -11,7 +11,7 @@ import {
 import { toStatusLabel } from "@/lib/converters";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "./copy-button";
-import { statusDotStyles, statusStyles, typeIcons } from "../../utils";
+import { statusDotStyles, statusStyles, typeIcons } from "../utils";
 
 export function AssetViewHeader({
   asset,

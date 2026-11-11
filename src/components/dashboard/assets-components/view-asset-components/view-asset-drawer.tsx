@@ -12,50 +12,11 @@ import {
 } from "@/services/assets.services";
 import { toast } from "sonner";
 import { ReturnToStockCard } from "./return-to-stock-card";
-import { cn } from "@/lib/utils";
-import { AssetDetailTable } from "../reusable-components/asset-detail-table";
-import { AssetViewHeader } from "../reusable-components/asset-view-header";
-import DrawerHeader from "../reusable-components/drawer-header";
+import { AssetDetailTable } from "../asset-detail-table";
+import { AssetViewHeader } from "../asset-view-header";
+import DrawerHeader from "../drawer-header";
 import DeleteAssetCard from "./delete-confirmation";
-import { CopyButton } from "../reusable-components/copy-button";
-import { getStatusMessage, statusByLabels, statusDotStyles, statusTextStyles } from "../../utils";
-
-export function DetailRow({
-  label,
-  value,
-  mono = false,
-  showCopy = false,
-  status,
-  isPage,
-}: {
-  label: string;
-  value: string;
-  mono?: boolean;
-  showCopy?: boolean;
-  status?: AssetStatus;
-  isPage: boolean;
-}) {
-  return (
-    <div
-      className={cn(
-        "grid grid-cols-2 md:grid-cols-[minmax(120px,180px)_minmax(0,1fr)] py-4 px-1 md:py-4  md:px-0 text-sm",
-        isPage && "lg:py-4.25 xl:py-4",
-      )}
-    >
-      <dt className="text-muted-foreground">{label}</dt>
-      <div className="flex w-full items-center">
-        <dd
-          className={`min-w-0 wrap-break-words ml-5 relative top-1 ${
-            mono ? "font-mono" : ""
-          } ${status ? statusTextStyles[status] : "text-foreground"} ${isPage && "lg:ml-3.5"}`}
-        >
-          {value}
-        </dd>
-        {showCopy && <CopyButton value={value} className="relative top-1" />}
-      </div>
-    </div>
-  );
-}
+import { getStatusMessage, statusDisplayNames, statusDotStyles } from "../../utils";
 
 export function Section({
   title,
@@ -150,14 +111,14 @@ export function ViewAssetDrawer({
     setIsDeleting(true);
     try {
       const response = await deleteAsset(asset.id);
-      if (response.success) {
+      if (response.ok) {
         setIsDeleteCardOpen(false);
         onOpenChange(false);
         onDelete?.(asset);
         toast.success("Asset deleted successfully.");
         await onSaved();
       } else {
-        toast.error(response.message ?? "Failed to delete asset.");
+        toast.error("Failed to delete asset.");
       }
     } catch (error) {
       console.error(error);
@@ -253,12 +214,12 @@ export function ViewAssetDrawer({
                               className="flex items-center gap-2 py-3 text-sm"
                             >
                               <span
-                                className={`size-2 shrink-0 rounded-full ${statusDotStyles[statusByLabels[status]]}`}
+                                className={`size-2 shrink-0 rounded-full ${statusDotStyles[statusDisplayNames[status]]}`}
                               />
                               <span
                                 className={`min-w-0 flex-1 ${message === "Current" ? "font-semibold" : null}`}
                               >
-                                {statusByLabels[status]}
+                                {statusDisplayNames[status]}
                               </span>
                               <span
                                 className={`shrink-0 text-xs ${

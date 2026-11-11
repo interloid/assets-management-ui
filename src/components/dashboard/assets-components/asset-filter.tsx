@@ -1,4 +1,11 @@
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { AssetFiltersProps } from "@/types/assets";
 import { ChevronDown, Search, X } from "lucide-react";
 
@@ -113,25 +120,26 @@ type FilterSelectProps = {
 
 function FilterSelect({ label, options, value, onChange }: FilterSelectProps) {
   return (
-    <label className="relative flex min-w-0 flex-[1_1_160px] sm:max-w-55">
-      <span className="sr-only">{label}</span>
-
-      <select
-        aria-label={label}
-        className="h-9 min-w-0 flex-1 cursor-pointer text-muted-foreground appearance-none rounded-md border border-input bg-background py-0 pl-3 pr-8 text-sm shadow-xs outline-none  transition-[border-color,box-shadow] focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
-        value={value}
-        onChange={(event) => onChange(event.currentTarget.value)}
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+    <div className="relative flex min-w-0 flex-[1_1_160px] sm:max-w-55">
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger
+          aria-label={label}
+          className="h-9! min-w-0 flex-1 cursor-pointer text-muted-foreground rounded-md border border-input bg-background py-0 pl-3 pr-8 text-sm shadow-xs outline-none  transition-[border-color,box-shadow] focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          <SelectValue placeholder={label} />
+        </SelectTrigger>
+        <SelectContent position="popper" side="bottom" avoidCollisions={false} className="py-2 px-1 ml-2 rounded-sm w-[93%]">
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value} className="px-2 rounded-sm w-[95%] cursor-pointer">
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       <ChevronDown
         aria-hidden="true"
         className="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
       />
-    </label>
+    </div>
   );
 }
