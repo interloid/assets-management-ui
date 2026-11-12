@@ -83,6 +83,21 @@ export type CreateFile = {
   fileSize: number;
   checksumSha256: string;
 };
+export type CreateAssetFile = {
+  fileId: string;
+  uploadUrl: string;
+  expiresIn: number;
+  headers: Record<string, string>;
+};
+
+export type CreateAssetFileResponse = {
+  type: string | null;
+  serialNumber: string | null;
+  purchaseDate: string | null;
+  warrantyExpiry: string | null;
+  notes: string | null;
+  files: CreateAssetFile[];
+};
 
 export type CreateAssetPayload = {
   type: string | null;
@@ -98,7 +113,7 @@ export interface createAssetResponse {
   StatusCode: number;
   message: string;
   errors?: { field: string; message: string }[];
-  data: CreateAssetPayload[];
+  data: CreateAssetFileResponse;
 }
 
 export async function getAssetsById(assetId: string) {

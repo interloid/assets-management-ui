@@ -284,7 +284,6 @@ export default function AssetAttachment({
     setDeletingFileId(attachment.fileId);
     try {
       const response = await deleteFile(attachment.assetId, attachment.fileId);
-      console.log("response", response);
       if (response.success) {
         toast.success("File deleted succesfully.");
         await onFilesChanged();

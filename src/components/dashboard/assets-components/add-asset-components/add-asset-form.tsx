@@ -118,6 +118,29 @@ export function AddAssetForm() {
         files: filedata,
       });
       if (response.success) {
+        const uploadUrls = response.data.files ?? [];
+        if (uploadUrls.length !== files.length) {
+          toast.error(
+            "The number of upload URLs doesn't match the selected files.",
+          );
+        }
+
+        await Promise.all(
+          files.map(async (file, index) => {
+            const upload = uploadUrls[index];
+
+            const s3Response = await fetch(upload.uploadUrl, {
+              method: "PUT",
+              headers: upload.headers,
+              body: file,
+            });
+
+            if (!s3Response.ok) {
+              toast.error(`upload failed for ${file.name}`);
+            }
+          }),
+        );
+
         toast.success(response.message || "Asset created successfully.");
         navigate(`/assets`);
         return;
@@ -134,9 +157,6 @@ export function AddAssetForm() {
           toast.error(response.message);
         }
       }
-
-      console.log('response', response)
-      
     } catch (error) {
       console.error(error);
     } finally {
