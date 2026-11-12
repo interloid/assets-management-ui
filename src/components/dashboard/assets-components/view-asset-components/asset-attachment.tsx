@@ -176,9 +176,7 @@ export default function AssetAttachment({
     const validFiles: File[] = [];
     newFiles.forEach((file) => {
       const result = fileSchema.safeParse(file);
-      console.log("result", result);
       if (result.success) {
-        console.log("result.success", result.success);
         validFiles.push(file);
       } else {
         toast.error(result.error.issues[0]?.message ?? "Invalid file");

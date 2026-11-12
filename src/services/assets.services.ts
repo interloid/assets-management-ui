@@ -218,7 +218,6 @@ export async function deleteAsset(assetId: string) {
       accept: "application/json",
     },
   });
-  console.log("result", result);
   const response = toCamelCase(result);
   return response;
 }
