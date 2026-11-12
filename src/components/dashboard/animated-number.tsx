@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-interface AnimatedNumberProps {
+export interface AnimatedNumberProps {
   value: number;
   duration?: number;
 }
