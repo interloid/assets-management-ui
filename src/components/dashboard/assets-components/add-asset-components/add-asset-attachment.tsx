@@ -18,7 +18,9 @@ export default function AddAssetAttachment({
   const addFiles = useCallback(
     (newFiles: File[]) => {
       if (files.length + newFiles.length > MAX_FILES) {
-        toast.error(`You can upload a maximum of ${MAX_FILES} files per asset.`);
+        toast.error(
+          `You can upload a maximum of ${MAX_FILES} files per asset.`,
+        );
         return;
       }
       onFilesChange([...files, ...newFiles]);
@@ -47,9 +49,9 @@ export default function AddAssetAttachment({
     });
     addFiles(validFiles);
   }
- 
+
   const maxFiles = Math.max(0, MAX_FILES - files.length);
-  
+
   return (
     <section
       aria-labelledby="attachments-heading"
@@ -68,10 +70,7 @@ export default function AddAssetAttachment({
           </div>
         </div>
       </div>
-      <FileDropzone
-        maxFiles={maxFiles}
-        onFilesSelected={handleFilesSelected}
-      />
+      <FileDropzone maxFiles={maxFiles} onFilesSelected={handleFilesSelected} />
       {files.length > 0 && (
         <div className="mt-4 space-y-2 border-b pb-5">
           {files.map((file, index) => {
