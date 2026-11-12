@@ -14,7 +14,7 @@ const pageTitles: Record<string, string> = {
   "/profile": "Profile",
 };
 
-export default function DashboardHeader() {
+export function MobilePageHeader() {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
 

@@ -44,3 +44,27 @@ export const editAssetSchema = z.object({
   serialNumber: serialNumberSchema,
   purchaseDate: purchaseDateSchema,
 });
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+const ACCEPTED_FILE_TYPES = [
+  "application/pdf",
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+];
+
+export const fileSchema = z
+  .instanceof(File)
+  .refine(
+    (file) => ACCEPTED_FILE_TYPES.includes(file.type),
+    "Only PDF, PNG, JPG, and WebP files are allowed.",
+  )
+  .refine(
+    (file) => file.size <= MAX_FILE_SIZE,
+    "Each file must not exceed 5 MB.",
+  );
+
+export const filesSchema = z
+  .array(fileSchema)
+  .min(1, "Please upload at least one file.");

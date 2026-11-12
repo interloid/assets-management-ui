@@ -8,14 +8,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { AssetStatus, ChangeStatusCardProps } from "@/types/assets";
-import {
-  allowedStatusTransitions,
-  statusDotStyles,
-  statusLabels,
-} from "../../reusable-components/utils";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { X } from "lucide-react";
+import {
+  allowedStatusTransitions,
+  statusDisplayNames,
+  statusDotStyles,
+} from "../../utils";
 
 export function ChangeStatusCard({
   onOpenChange,
@@ -49,8 +49,8 @@ export function ChangeStatusCard({
             </CardTitle>
 
             <CardDescription>
-              Current status: {statusLabels[currentStatus]}. Only allowed moves
-              are listed.
+              Current status: {statusDisplayNames[currentStatus]}. Only allowed
+              moves are listed.
             </CardDescription>
           </div>
 
@@ -81,7 +81,7 @@ export function ChangeStatusCard({
                   role="radio"
                   aria-checked={isSelected}
                   onClick={() => setSelectedStatus(status)}
-                  className={`flex items-start gap-3 rounded-md border p-3 text-left transition-colors ${
+                  className={`flex items-start gap-3 rounded-md border p-3 text-left transition-colors cursor-pointer ${
                     isSelected
                       ? "border-primary bg-primary/5"
                       : "border-border bg-transparent hover:bg-muted/50"
@@ -101,9 +101,9 @@ export function ChangeStatusCard({
                   <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                     <span className="flex items-center gap-2 text-sm font-medium">
                       <span
-                        className={`size-2 shrink-0 rounded-full ${statusDotStyles[statusLabels[status]]}`}
+                        className={`size-2 shrink-0 rounded-full ${statusDotStyles[statusDisplayNames[status]]}`}
                       />
-                      {statusLabels[status]}
+                      {statusDisplayNames[status]}
                     </span>
                     <span className="text-muted-foreground text-xs">
                       {status === "in_stock"
@@ -141,7 +141,6 @@ export function ChangeStatusCard({
           >
             {isLoading ? (
               <>
-                {" "}
                 <Spinner /> Changing Status
               </>
             ) : (

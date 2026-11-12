@@ -1,5 +1,5 @@
-import { AppSidebar } from "@/components/dashboard/app-sidebar";
-import Header from "@/components/dashboard/dashboard-components/dashboard-header";
+import { AppSidebar } from "@/components/app-sidebar";
+import { MobilePageHeader } from "@/components/dashboard/mobile-page-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Outlet } from "react-router";
 
@@ -9,8 +9,8 @@ export default function DashboardLayout() {
       <div>
         <AppSidebar />
       </div>
-      <SidebarInset className="min-w-0">
-        <Header />
+      <SidebarInset>
+        <MobilePageHeader />
         <Outlet />
       </SidebarInset>
     </SidebarProvider>

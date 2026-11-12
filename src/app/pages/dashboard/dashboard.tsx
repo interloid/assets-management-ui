@@ -16,11 +16,11 @@ import WarrantyExpiringSkeleton from "@/components/dashboard/dashboard-component
 import RecentlyAddedSkeleton from "@/components/dashboard/dashboard-components/recently-added-skeleton";
 import StackProgressSkeleton from "@/components/dashboard/dashboard-components/stacked-progress-bar-skeleton";
 import { toast } from "sonner";
-import { typeIcons } from "@/components/dashboard/reusable-components/utils";
 import type { AssetType } from "@/types/assets";
 import StackedProgressBar from "@/components/dashboard/dashboard-components/stacked-progress-bar";
 import WarrantyExpiring from "@/components/dashboard/dashboard-components/warranty-expiring";
 import RecentlyAdded from "@/components/dashboard/dashboard-components/recently-added";
+import { typeIcons } from "@/components/dashboard/utils";
 
 function mapAssetWithIcon<T extends { type: string }>(asset: T) {
   return {

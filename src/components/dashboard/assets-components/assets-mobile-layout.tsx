@@ -3,7 +3,7 @@ import { AssetTypeIcon } from "./asset-table";
 import { toPascalCase, toStatusLabel } from "@/lib/converters";
 import { cn } from "cn";
 import { Link } from "react-router";
-import { statusStyles } from "../reusable-components/utils";
+import { statusStyles } from "../utils";
 
 export type AssetsMobileProps = {
   assets: Asset[];
