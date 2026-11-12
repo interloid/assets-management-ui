@@ -339,7 +339,6 @@ export default function AssetAttachment({
         <FileDropzone onFilesSelected={handleFilesSelected} />
         <div className="flex justify-end items-center gap-3">
           <span className="text-xs sm:text-sm text-warning border p-2 rounded-sm border-input shadow-xs flex gap-1 items-center">
-            {" "}
             <AlertCircle className="size-3.5 sm:size-4" />
             Refresh to view the recently uploaded files.
           </span>
@@ -349,7 +348,7 @@ export default function AssetAttachment({
           >
             {isLoading ? (
               <>
-                <Spinner /> Refreshing{" "}
+                <Spinner /> Refreshing
               </>
             ) : (
               <>

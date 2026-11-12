@@ -154,7 +154,7 @@ export function AssignAssetDialog({
             disabled={!selectedUserId}
             onClick={handleAssignAsset}
             className={cn(
-               !selectedUserId ? "cursor-not-allowed" : "cursor-pointer",
+              !selectedUserId ? "cursor-not-allowed" : "cursor-pointer",
             )}
           >
             {isAssignLoading ? (

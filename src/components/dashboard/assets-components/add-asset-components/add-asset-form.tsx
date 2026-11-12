@@ -285,7 +285,7 @@ export function AddAssetForm() {
             </div>
             <div className="col-span-full flex min-w-0 flex-col gap-1.5">
               <Label htmlFor="notes">
-                Notes{" "}
+                Notes
                 <span className="font-normal text-muted-foreground">
                   (optional)
                 </span>

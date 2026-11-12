@@ -128,9 +128,18 @@ function FilterSelect({ label, options, value, onChange }: FilterSelectProps) {
         >
           <SelectValue placeholder={label} />
         </SelectTrigger>
-        <SelectContent position="popper" side="bottom" avoidCollisions={false} className="py-2 px-1 ml-2 rounded-sm w-[93%]">
+        <SelectContent
+          position="popper"
+          side="bottom"
+          avoidCollisions={false}
+          className="py-2 px-1 ml-2 rounded-sm w-[93%]"
+        >
           {options.map((option) => (
-            <SelectItem key={option.value} value={option.value} className="px-2 rounded-sm w-[95%] cursor-pointer">
+            <SelectItem
+              key={option.value}
+              value={option.value}
+              className="px-2 rounded-sm w-[95%] cursor-pointer"
+            >
               {option.label}
             </SelectItem>
           ))}

@@ -16,7 +16,11 @@ import { AssetDetailTable } from "../asset-detail-table";
 import { AssetViewHeader } from "../asset-view-header";
 import DrawerHeader from "../drawer-header";
 import DeleteAssetCard from "./delete-confirmation";
-import { getStatusMessage, statusDisplayNames, statusDotStyles } from "../../utils";
+import {
+  getStatusMessage,
+  statusDisplayNames,
+  statusDotStyles,
+} from "../../utils";
 
 export function Section({
   title,

@@ -1,7 +1,11 @@
 import type { Asset, AssetStatus } from "@/types/assets";
 import { Section } from "./view-asset-components/view-asset-drawer";
 import { cn } from "cn";
-import { getStatusMessage, statusDisplayNames, statusDotStyles } from "../utils";
+import {
+  getStatusMessage,
+  statusDisplayNames,
+  statusDotStyles,
+} from "../utils";
 
 export function AssetStatusRules({
   asset,

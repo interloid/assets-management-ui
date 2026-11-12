@@ -26,7 +26,9 @@ export default function RecentlyAdded({ assets }: RecentlyAddedProps) {
               </Link>
             </TooltipTrigger>
           </div>
-          <TooltipContent showArrow={false}>Recently added assets</TooltipContent>
+          <TooltipContent showArrow={false}>
+            Recently added assets
+          </TooltipContent>
         </Tooltip>
         {assets.length > 0 ? (
           <ul className="m-0 list-none p-0">

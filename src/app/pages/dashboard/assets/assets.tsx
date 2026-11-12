@@ -190,7 +190,6 @@ export default function Assets() {
               </Button>
             </TooltipTrigger>
             <TooltipContent showArrow={false} className="mb-1">
-              {" "}
               Register a new asset
               <span className="bg-muted-foreground px-0.5 rounded-xs text-xs">
                 N

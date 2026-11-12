@@ -11,7 +11,11 @@ import type { AssetStatus, ChangeStatusCardProps } from "@/types/assets";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { X } from "lucide-react";
-import { allowedStatusTransitions, statusDisplayNames, statusDotStyles } from "../../utils";
+import {
+  allowedStatusTransitions,
+  statusDisplayNames,
+  statusDotStyles,
+} from "../../utils";
 
 export function ChangeStatusCard({
   onOpenChange,
@@ -45,8 +49,8 @@ export function ChangeStatusCard({
             </CardTitle>
 
             <CardDescription>
-              Current status: {statusDisplayNames[currentStatus]}. Only allowed moves
-              are listed.
+              Current status: {statusDisplayNames[currentStatus]}. Only allowed
+              moves are listed.
             </CardDescription>
           </div>
 
@@ -137,7 +141,6 @@ export function ChangeStatusCard({
           >
             {isLoading ? (
               <>
-                {" "}
                 <Spinner /> Changing Status
               </>
             ) : (

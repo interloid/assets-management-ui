@@ -7,9 +7,9 @@ type CamelCaseKeys<T> = T extends readonly (infer U)[]
   ? CamelCaseKeys<U>[]
   : T extends object
     ? {
-        [K in keyof T as K extends string
-          ? SnakeToCamelCase<K>
-          : K]: CamelCaseKeys<T[K]>;
+        [
+          K in keyof T as K extends string ? SnakeToCamelCase<K> : K
+        ]: CamelCaseKeys<T[K]>;
       }
     : T;
 

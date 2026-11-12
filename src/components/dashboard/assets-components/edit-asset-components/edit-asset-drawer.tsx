@@ -242,7 +242,7 @@ export function EditAssetDrawer({
                       htmlFor="warrantyExpiry"
                       className="text-sm font-medium"
                     >
-                      Warranty expiry{" "}
+                      Warranty expiry
                       <span className="text-muted-foreground">(optional)</span>
                     </label>
                     <input
@@ -255,7 +255,7 @@ export function EditAssetDrawer({
                   </div>
                   <div className="col-span-full flex flex-col gap-1.5">
                     <label htmlFor="notes" className="text-sm font-medium">
-                      Notes{" "}
+                      Notes
                       <span className="text-muted-foreground">(optional)</span>
                     </label>
                     <textarea
@@ -279,11 +279,11 @@ export function EditAssetDrawer({
                     Status &amp; assignment
                   </h3>
                   <p className="text-xs text-muted-foreground">
-                    Current:{" "}
+                    Current:
                     {
                       assetStatuses.find((item) => item.value === asset?.status)
                         ?.label
-                    }{" "}
+                    }
                     Only allowed moves can be selected.
                   </p>
                 </div>

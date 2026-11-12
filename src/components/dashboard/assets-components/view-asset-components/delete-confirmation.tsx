@@ -70,8 +70,7 @@ export default function DeleteAssetCard({
           >
             {isDeleting ? (
               <>
-                {" "}
-                <Spinner className="size-4"/> Deleting...
+                <Spinner className="size-4" /> Deleting...
               </>
             ) : (
               "Delete"

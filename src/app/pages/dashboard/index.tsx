@@ -166,7 +166,10 @@ export default function Dashboard() {
               </Button>
             </TooltipTrigger>
             <TooltipContent side="top" showArrow={false} className="mb-1">
-              Register a new asset<span className="bg-muted-foreground px-0.5 rounded-xs text-xs">N</span>
+              Register a new asset
+              <span className="bg-muted-foreground px-0.5 rounded-xs text-xs">
+                N
+              </span>
             </TooltipContent>
           </Tooltip>
         </div>

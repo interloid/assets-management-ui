@@ -53,7 +53,12 @@ export default function SidebarHeader() {
                   )}
                 </SidebarTrigger>
               </TooltipTrigger>
-              <TooltipContent side="left" align="end" showArrow={false} sideOffset={-10}>
+              <TooltipContent
+                side="left"
+                align="end"
+                showArrow={false}
+                sideOffset={-10}
+              >
                 {isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
               </TooltipContent>
             </Tooltip>

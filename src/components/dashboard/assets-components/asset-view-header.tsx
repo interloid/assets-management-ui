@@ -76,11 +76,11 @@ export function AssetViewHeader({
         >
           {asset.status === "assigned" ? (
             <>
-              <UserMinus className="size-4" /> Unassign{" "}
+              <UserMinus className="size-4" /> Unassign
             </>
           ) : (
             <>
-              <UserPlus className="size-4" /> Assign{" "}
+              <UserPlus className="size-4" /> Assign
             </>
           )}
         </Button>

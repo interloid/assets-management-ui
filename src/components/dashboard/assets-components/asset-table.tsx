@@ -56,7 +56,12 @@ export function WarrantyCell({
           {formatDate(warranty)}
         </td>
       </TooltipTrigger>
-      <TooltipContent side="top" align="start" showArrow={false} sideOffset={-12}>
+      <TooltipContent
+        side="top"
+        align="start"
+        showArrow={false}
+        sideOffset={-12}
+      >
         {warrantyExpires
           ? `Warranty ends ${formatDate(warranty)}`
           : "This asset has no warranty"}
@@ -196,7 +201,12 @@ export default function AssetTable({
                         />
                       )}
                     </TooltipTrigger>
-                    <TooltipContent side="top" align="start" showArrow={false} sideOffset={-12}>
+                    <TooltipContent
+                      side="top"
+                      align="start"
+                      showArrow={false}
+                      sideOffset={-12}
+                    >
                       {asset.warrantyExpiry
                         ? `Warranty ends ${asset.warrantyExpiry}`
                         : "This asset has no warranty"}
@@ -212,11 +222,11 @@ export default function AssetTable({
         </div>
         <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-3 text-sm text-muted-foreground">
           <span className="flex gap-1">
-            Showing{" "}
+            Showing
             <strong className="font-medium text-foreground">
               {startItem}-{endItem}
             </strong>
-            of <strong className="font-medium text-foreground">{total}</strong>{" "}
+            of <strong className="font-medium text-foreground">{total}</strong>
             assets
           </span>
 

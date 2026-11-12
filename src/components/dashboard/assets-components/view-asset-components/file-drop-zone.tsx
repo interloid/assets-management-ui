@@ -65,7 +65,7 @@ export function FileDropzone({ onFilesSelected }: FileDropzoneProps) {
               : "border-border hover:border-primary/60 hover:bg-muted/40",
       )}
     >
-      <input {...getInputProps()} type="file"/>
+      <input {...getInputProps()} type="file" />
       <CloudUpload className="size-9 text-primary" aria-hidden="true" />
       <p className="font-medium">
         {isDragActive

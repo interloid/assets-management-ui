@@ -310,7 +310,7 @@ function EditAssetForm({
               </div>
               <div className="col-span-full flex flex-col gap-1.5">
                 <label htmlFor="notes" className="text-sm font-medium">
-                  Notes{" "}
+                  Notes
                   <span className="text-muted-foreground">(optional)</span>
                 </label>
                 <textarea
@@ -332,11 +332,11 @@ function EditAssetForm({
             <div className="flex flex-col gap-1">
               <h3 className="text-sm font-medium">Status & assignment</h3>
               <p className="text-xs text-muted-foreground">
-                Current:{" "}
+                Current:
                 {
                   assetStatuses.find((item) => item.value === asset?.status)
                     ?.label
-                }{" "}
+                }
                 Only allowed moves can be selected.
               </p>
             </div>
