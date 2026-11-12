@@ -15,6 +15,7 @@ import type { AssignAssetDialogProps } from "@/types/assets";
 import { Spinner } from "@/components/ui/spinner";
 import { assignAsset } from "@/services/assets-services";
 import { toast } from "sonner";
+import { cn } from "cn";
 
 export function AssignAssetDialog({
   onOpenChange,
@@ -152,6 +153,9 @@ export function AssignAssetDialog({
             type="button"
             disabled={!selectedUserId}
             onClick={handleAssignAsset}
+            className={cn(
+              !selectedUserId ? "cursor-not-allowed" : "cursor-pointer",
+            )}
           >
             {isAssignLoading ? (
               <>

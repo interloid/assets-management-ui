@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { cn } from "cn";
 
 type CopyButtonProps = {
   value: string;
@@ -13,6 +15,7 @@ export function CopyButton({ value, className }: CopyButtonProps) {
     try {
       await navigator.clipboard.writeText(value);
       setIsCopied(true);
+      toast.success(`${value} - Copied successfully`);
       setTimeout(() => {
         setIsCopied(false);
       }, 2000);
@@ -26,7 +29,7 @@ export function CopyButton({ value, className }: CopyButtonProps) {
       variant="ghost"
       size="icon"
       onClick={handleCopy}
-      className={className}
+      className={cn(className, "cursor-pointer")}
       aria-label={isCopied ? "Copied" : "Copy"}
     >
       {isCopied ? (

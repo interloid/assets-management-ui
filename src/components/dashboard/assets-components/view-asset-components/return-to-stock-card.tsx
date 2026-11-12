@@ -77,7 +77,6 @@ export function ReturnToStockCard({
           >
             {isLoading ? (
               <>
-                {" "}
                 <Spinner /> Returning
               </>
             ) : (

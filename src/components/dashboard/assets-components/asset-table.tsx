@@ -12,8 +12,13 @@ import {
 import { Link } from "react-router";
 import { AssetEmptyState } from "./asset-empty-state";
 import { AssetsMobile } from "./assets-mobile-layout";
-import { statusStyles } from "../reusable-components/utils";
 import AssetTableSkeleton from "./asset-skeleton-components/asset-table-skeleton";
+import { statusStyles } from "../utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function AssetTypeIcon({ type }: { type: Asset["type"] }) {
   const className = "size-4 shrink-0 text-muted-foreground";
@@ -38,14 +43,30 @@ export function WarrantyCell({
   warrantyExpires: string | null | number;
 }) {
   return (
-    <td
-      className={`whitespace-nowrap px-4 py-2.5 ${
-        warrantyExpires === "Expired" ? "text-destructive" : "text-foreground"
-      }`}
-    >
-      {warrantyExpires === "Expired" && `${warrantyExpires} `}
-      {formatDate(warranty)}
-    </td>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <td
+          className={`whitespace-nowrap px-4 py-2.5 cursor-pointer ${
+            warrantyExpires === "Expired"
+              ? "text-destructive"
+              : "text-foreground"
+          }`}
+        >
+          {warrantyExpires === "Expired" && `${warrantyExpires}`}
+          {formatDate(warranty)}
+        </td>
+      </TooltipTrigger>
+      <TooltipContent
+        side="top"
+        align="start"
+        showArrow={false}
+        sideOffset={-12}
+      >
+        {warrantyExpires
+          ? `Warranty ends ${formatDate(warranty)}`
+          : "This asset has no warranty"}
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
@@ -70,7 +91,6 @@ export default function AssetTable({
       </div>
     );
   }
-
   if (assets.length === 0) {
     return <AssetEmptyState onClearFilters={handleClearFilters} />;
   }
@@ -82,9 +102,9 @@ export default function AssetTable({
         className="overflow-hidden rounded-lg border border-border bg-card shadow-sm hidden md:block"
       >
         <div className="overflow-x-auto ">
-          <table className="w-full min-w-200 border-collapse text-sm">
-            <thead className="bg-muted text-left">
-              <tr>
+          <table className="w-full min-w-215 border-collapse text-sm">
+            <thead>
+              <tr className="bg-muted text-left">
                 {[
                   "Asset",
                   "Type",
@@ -96,7 +116,7 @@ export default function AssetTable({
                   <th
                     key={heading}
                     scope="col"
-                    className="px-4 py-2.75 text-xs font-medium text-muted-foreground"
+                    className="px-4 py-2.5 text-xs font-medium text-muted-foreground"
                   >
                     {heading}
                   </th>
@@ -106,7 +126,6 @@ export default function AssetTable({
                 </th>
               </tr>
             </thead>
-
             <tbody>
               {assets.map((asset) => (
                 <tr
@@ -114,7 +133,7 @@ export default function AssetTable({
                   onClick={() => onRowClick(asset)}
                   className="border-t border-border transition-colors hover:bg-muted/50 cursor-pointer"
                 >
-                  <td className="px-4 py-2.75">
+                  <td className="px-4 py-2.5">
                     <Link to={`/assets`} className="flex flex-col no-underline">
                       <span className="font-mono text-[13px] font-medium text-foreground">
                         {asset.assetTag}
@@ -146,7 +165,6 @@ export default function AssetTable({
                       {toStatusLabel(asset.status)}
                     </span>
                   </td>
-
                   <td className="px-4 py-2.5">
                     {asset.assignedUser ? (
                       <span className="inline-flex items-center gap-2 text-foreground">
@@ -159,27 +177,43 @@ export default function AssetTable({
                       <span className="text-muted-foreground">Unassigned</span>
                     )}
                   </td>
-
                   <td className="whitespace-nowrap px-4 py-2.5 tabular-nums">
                     {formatDate(asset.purchaseDate)}
                   </td>
-                  {asset.warrantyExpiry === null ? (
-                    <td className="whitespace-nowrap px-4 py-2.5 text-muted-foreground">
-                      No warranty
-                    </td>
-                  ) : Number(asset.warrantyExpiresInDays) <= 90 ? (
-                    <td className="whitespace-nowrap px-4 py-2.5 text-warning">
-                      Expires in {asset.warrantyExpiresInDays} days
-                    </td>
-                  ) : (
-                    <WarrantyCell
-                      warranty={asset.warrantyExpiry}
-                      warrantyExpires={asset.warrantyExpiresInDays}
-                    />
-                  )}
-
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      {asset.warrantyExpiry === null ? (
+                        <td className="whitespace-nowrap px-4 py-2.5 text-muted-foreground">
+                          No warranty
+                        </td>
+                      ) : Number(asset.warrantyExpiresInDays) < 0 ? (
+                        <td className="whitespace-nowrap px-4 py-2.5 text-destructive">
+                          Expired
+                        </td>
+                      ) : Number(asset.warrantyExpiresInDays) <= 90 ? (
+                        <td className="whitespace-nowrap px-4 py-2.5 text-warning">
+                          Expires in {asset.warrantyExpiresInDays} days
+                        </td>
+                      ) : (
+                        <WarrantyCell
+                          warranty={asset.warrantyExpiry}
+                          warrantyExpires={asset.warrantyExpiresInDays}
+                        />
+                      )}
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="top"
+                      align="start"
+                      showArrow={false}
+                      sideOffset={-12}
+                    >
+                      {asset.warrantyExpiry
+                        ? `Warranty ends ${asset.warrantyExpiry}`
+                        : "This asset has no warranty"}
+                    </TooltipContent>
+                  </Tooltip>
                   <td className="py-2.5 pl-0 pr-3 text-muted-foreground">
-                    <ChevronRight aria-hidden="true" className="size-4" />
+                    <ChevronRight aria-hidden="true" className="size-4.5" />
                   </td>
                 </tr>
               ))}
@@ -188,11 +222,11 @@ export default function AssetTable({
         </div>
         <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-3 text-sm text-muted-foreground">
           <span className="flex gap-1">
-            Showing{" "}
+            Showing
             <strong className="font-medium text-foreground">
               {startItem}-{endItem}
             </strong>
-            of <strong className="font-medium text-foreground">{total}</strong>{" "}
+            of <strong className="font-medium text-foreground">{total}</strong>
             assets
           </span>
 

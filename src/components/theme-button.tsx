@@ -1,7 +1,8 @@
 import { cn } from "cn";
 import { Moon, Sun } from "lucide-react";
-import { useSidebar } from "../ui/sidebar-context";
+import { useSidebar } from "./ui/sidebar-context";
 import { useTheme } from "@/context/theme";
+import { Button } from "./ui/button";
 
 export default function ThemeButton() {
   const { state } = useSidebar();
@@ -10,7 +11,7 @@ export default function ThemeButton() {
 
   return (
     <div className="flex flex-col gap-0.5 border-b border-sidebar-border px-0 py-2">
-      <button
+      <Button
         type="button"
         aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
         title={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
@@ -33,11 +34,11 @@ export default function ThemeButton() {
         )}
 
         {!collapsed && (
-          <span className="whitespace-nowrap">
+          <span className="whitespace-nowrap text-foreground">
             {theme === "light" ? "Dark mode" : "Light mode"}
           </span>
         )}
-      </button>
+      </Button>
     </div>
   );
 }

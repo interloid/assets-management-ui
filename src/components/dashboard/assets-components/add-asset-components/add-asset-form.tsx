@@ -4,13 +4,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createAssetSchema } from "@/schemas/asset";
 import { createAsset } from "@/services/assets-services";
-import { Lock } from "lucide-react";
+import { AlertCircle, Lock } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import { assetTypes } from "../../reusable-components/utils";
 import type { AssetType } from "@/types/assets";
 import { Spinner } from "@/components/ui/spinner";
+import { assetTypes } from "../../utils";
+import AddAssetAttachment from "./add-asset-attachment";
+import { calculateFileHash } from "@/lib/converters";
 
 type FormErrors = {
   type: string | null;
@@ -26,6 +28,7 @@ export function AddAssetForm() {
   const [purchaseDate, setPurchaseDate] = useState<string | null>(null);
   const [warrantyExpiry, setwarrantyExpiry] = useState<string | null>(null);
   const [notes, setNotes] = useState<string | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [errors, setErrors] = useState<FormErrors>({
     type: null,
     serialNumber: null,
@@ -98,14 +101,46 @@ export function AddAssetForm() {
     }
     setIsLoading(true);
     try {
+      const filedata = await Promise.all(
+        files.map(async (file) => ({
+          filename: file.name,
+          contentType: file.type,
+          fileSize: file.size,
+          checksumSha256: await calculateFileHash(file),
+        })),
+      );
       const response = await createAsset({
         type,
         serialNumber,
         purchaseDate,
         warrantyExpiry,
         notes,
+        files: filedata,
       });
       if (response.success) {
+        const uploadUrls = response.data.files ?? [];
+        if (uploadUrls.length !== files.length) {
+          toast.error(
+            "The number of upload URLs doesn't match the selected files.",
+          );
+        }
+
+        await Promise.all(
+          files.map(async (file, index) => {
+            const upload = uploadUrls[index];
+
+            const s3Response = await fetch(upload.uploadUrl, {
+              method: "PUT",
+              headers: upload.headers,
+              body: file,
+            });
+
+            if (!s3Response.ok) {
+              toast.error(`upload failed for ${file.name}`);
+            }
+          }),
+        );
+
         toast.success(response.message || "Asset created successfully.");
         navigate(`/assets`);
         return;
@@ -128,6 +163,7 @@ export function AddAssetForm() {
       setIsLoading(false);
     }
   }
+
   return (
     <form
       noValidate
@@ -243,13 +279,13 @@ export function AddAssetForm() {
               />
               {errors.warrantyExpiry && (
                 <p className="text-sm text-destructive">
-                  {errors.warrantyExpiry || serverErrors}
+                  {errors.warrantyExpiry}
                 </p>
               )}
             </div>
             <div className="col-span-full flex min-w-0 flex-col gap-1.5">
               <Label htmlFor="notes">
-                Notes{" "}
+                Notes
                 <span className="font-normal text-muted-foreground">
                   (optional)
                 </span>
@@ -266,6 +302,18 @@ export function AddAssetForm() {
                 Searchable from the assets list.
               </p>
             </div>
+          </div>
+          <div className="p-5">
+            <AddAssetAttachment files={files} onFilesChange={setFiles} />
+            {serverErrors && (
+              <div
+                role="alert"
+                className="mt-3 flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
+              >
+                <AlertCircle className="mt-0.5 size-4 shrink-0" />
+                <span>{serverErrors}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
