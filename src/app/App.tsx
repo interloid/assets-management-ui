@@ -4,9 +4,8 @@ import SignUpPage from "@/app/pages/auth/signup";
 import { Toaster } from "sonner";
 import LoginPage from "@/app/pages/auth/login";
 import { Spinner } from "@/components/ui/spinner";
-import Assets from "./pages/dashboard/assets/assets";
 import { UsersPage } from "./pages/dashboard/users/users";
-import Dashboard from "./pages/dashboard/dashboard";
+import Dashboard from "./pages/dashboard";
 import DashboardLayout from "@/layout/dashboard";
 import NotFound from "./pages/not-found";
 import { useAuth } from "@/context/auth";
@@ -15,6 +14,7 @@ import { AssetViewFullPage } from "@/components/dashboard/assets-components/view
 import EditAssetFullPage from "@/components/dashboard/assets-components/edit-asset-components/edit-asset-full-page";
 import MyAssetsPage from "./pages/dashboard/my-assets/my-assets";
 import ProfilePage from "./pages/dashboard/profile/profile";
+import Assets from "./pages/dashboard/assets/assets";
 
 export default function App() {
   const { isLoading, isAuthenticated } = useAuth();

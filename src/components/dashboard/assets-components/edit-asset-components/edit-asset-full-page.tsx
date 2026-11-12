@@ -1,17 +1,17 @@
 import { editAssetSchema } from "@/schemas/asset";
 import type { Asset, AssetStatus, AssetType, User } from "@/types/assets";
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router"; // 👈 Link imported here
+import { Link, useLocation, useNavigate, useParams } from "react-router";
 import type { editAssetErrors } from "./edit-asset-drawer";
 import {
   getAssetsById,
   updateAsset,
 } from "@/services/assets-services";
 import { toast } from "sonner";
-import { assetStatuses, assetTypes } from "../../reusable-components/utils";
 import { ArrowLeft, ChevronDown, Info, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EditAssetFullPageSkeleton from "./edit-asset-full-page-skeleton";
+import { assetStatuses, assetTypes } from "../../utils";
 
 type EditAssetLocationState = {
   asset: Asset;
@@ -25,6 +25,7 @@ export default function EditAssetFullPage() {
   const { assetId } = useParams();
   const [asset, setAsset] = useState<Asset | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!assetId) return;
@@ -37,6 +38,8 @@ export default function EditAssetFullPage() {
       try {
         const response = await getAssetsById(currentAssetId);
         if (!response.success || !response.data) {
+          setError(response.message || "Asset not found.");
+          toast.error(response.message);
           return;
         }
         if (response.success || response.data) {
@@ -60,14 +63,15 @@ export default function EditAssetFullPage() {
     <EditAssetFullPageSkeleton />
   ) : asset ? (
     <EditAssetForm asset={asset} allUsers={allUsers} />
-  ) : (
+  ) : error ? (
     <div className="flex h-full flex-col items-center justify-center gap-2">
       <p>No asset was provided.</p>
+
       <Link to="/assets">
         <Button className="rounded-sm">Return to Assets</Button>
       </Link>
     </div>
-  );
+  ) : null;
 }
 
 function EditAssetForm({
@@ -305,7 +309,7 @@ function EditAssetForm({
               </div>
               <div className="col-span-full flex flex-col gap-1.5">
                 <label htmlFor="notes" className="text-sm font-medium">
-                  Notes{" "}
+                  Notes
                   <span className="text-muted-foreground">(optional)</span>
                 </label>
                 <textarea
@@ -327,11 +331,11 @@ function EditAssetForm({
             <div className="flex flex-col gap-1">
               <h3 className="text-sm font-medium">Status & assignment</h3>
               <p className="text-xs text-muted-foreground">
-                Current:{" "}
+                Current:
                 {
                   assetStatuses.find((item) => item.value === asset?.status)
                     ?.label
-                }{" "}
+                }
                 Only allowed moves can be selected.
               </p>
             </div>

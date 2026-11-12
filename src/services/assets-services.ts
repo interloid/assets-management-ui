@@ -1,5 +1,6 @@
 import { toCamelCase, toSnakeCase } from "@/lib/converters";
-import type { AssetQuery, AssetStatus, CreateAssetPayload, createAssetResponse, UpdateAssetPayload, UpdateAssetResponse, UsersResponse } from "@/types/assets";
+import type { AssetQuery, AssetStatus, UpdateAssetPayload, UpdateAssetResponse, UsersResponse } from "@/types/assets";
+import type { AssetAttachmentData } from "@/components/dashboard/assets-components/view-asset-components/asset-attachment";
 import type { AssetListResponse } from "@/types/dashboard";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -59,11 +60,48 @@ export async function getListUsers(): Promise<UsersResponse> {
       accept: "application/json",
     },
   });
-  const response: UsersResponse = toCamelCase(await result.json());
+  const response = toCamelCase(await result.json());
   return response;
 }
 
+export type CreateFile = {
+  filename: string;
+  contentType: string;
+  fileSize: number;
+  checksumSha256: string;
+};
+export type CreateAssetFile = {
+  fileId: string;
+  uploadUrl: string;
+  expiresIn: number;
+  headers: Record<string, string>;
+};
 
+export type CreateAssetFileResponse = {
+  type: string | null;
+  serialNumber: string | null;
+  purchaseDate: string | null;
+  warrantyExpiry: string | null;
+  notes: string | null;
+  files: CreateAssetFile[];
+};
+
+export type CreateAssetPayload = {
+  type: string | null;
+  serialNumber: string | null;
+  purchaseDate: string | null;
+  warrantyExpiry: string | null;
+  notes: string | null;
+  files: CreateFile[];
+};
+
+export interface createAssetResponse {
+  success: boolean;
+  StatusCode: number;
+  message: string;
+  errors?: { field: string; message: string }[];
+  data: CreateAssetFileResponse;
+}
 
 export async function getAssetsById(assetId: string) {
   const result = await fetch(`${API_BASE_URL}/assets/${assetId}`, {
@@ -74,7 +112,8 @@ export async function getAssetsById(assetId: string) {
     },
   });
   const response = await result.json();
-  return toCamelCase(response);
+  const data = toCamelCase(response);
+  return data;
 }
 
 export async function createAsset(
@@ -88,7 +127,7 @@ export async function createAsset(
     },
     body: JSON.stringify(toSnakeCase(payload)),
   });
-  const response: createAssetResponse = await result.json();
+  const response = await result.json();
   const data = toCamelCase(response);
   return data;
 }
@@ -103,7 +142,8 @@ export async function assignAsset(assetId: string, userId: string) {
     body: JSON.stringify({ user_id: userId }),
   });
   const response = await result.json();
-  return toCamelCase(response);
+  const data = toCamelCase(response);
+  return data;
 }
 
 export async function changeStatus(assetId: string, status: AssetStatus) {
@@ -117,7 +157,8 @@ export async function changeStatus(assetId: string, status: AssetStatus) {
   });
 
   const response = await result.json();
-  return toCamelCase(response);
+  const data = toCamelCase(response);
+  return data;
 }
 
 export async function unassignAsset(assetId: string) {
@@ -129,7 +170,8 @@ export async function unassignAsset(assetId: string) {
     },
   });
   const response = await result.json();
-  return toCamelCase(response);
+  const data = toCamelCase(response);
+  return data;
 }
 
 
@@ -147,7 +189,8 @@ export async function updateAsset(
     body: JSON.stringify(toSnakeCase(payload)),
   });
   const response = await result.json();
-  return toCamelCase(response);
+  const data = toCamelCase(response);
+  return data;
 }
 
 export async function deleteAsset(assetId: string) {
@@ -159,11 +202,88 @@ export async function deleteAsset(assetId: string) {
       accept: "application/json",
     },
   });
+  const response = toCamelCase(result);
+  return response;
+}
+export type UploadUrlPayload = {
+  filename: string;
+  contentType: string;
+  fileSize: number;
+  checksumSha256: string;
+};
 
-  if (result.status === 204) {
-    return { success: true, message: "Asset deleted successfully." };
-  }
+export type GenerateUploadFile = {
+  fileId: string;
+  uploadUrl: string;
+  expiresIn: number;
+  headers: Record<string, string>;
+};
 
+export interface GenerateUploadUrlProps {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  errors?: { field: string; message: string }[];
+  data: {
+    files: GenerateUploadFile[];
+  };
+}
+
+export async function generateUploadUrl(
+  assetId: string,
+  payload: UploadUrlPayload[],
+): Promise<GenerateUploadUrlProps> {
+  const result = await fetch(
+    `${API_BASE_URL}/assets/${assetId}/files/presign`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(toSnakeCase({ files: payload })),
+    },
+  );
   const response = await result.json();
-  return toCamelCase(response);
+  const data = toCamelCase(response);
+  return data;
+}
+
+type ApiError = { field: string; message: string };
+
+export type GetFilesResponse = {
+  success: boolean;
+  message: string;
+  errors?: ApiError[];
+  data: AssetAttachmentData[];
+};
+
+export async function getFiles(assetId: string): Promise<GetFilesResponse> {
+  const result = await fetch(`${API_BASE_URL}/assets/${assetId}/files`, {
+    method: "GET",
+    credentials: "include",
+    cache: "no-store",
+    headers: {
+      accept: "application/json",
+    },
+  });
+  const response = await result.json();
+  const data = toCamelCase(response);
+  return data;
+}
+
+export async function deleteFile(assetId: string, fileId: string) {
+  const result = await fetch(
+    `${API_BASE_URL}/assets/${assetId}/files/${fileId}`,
+    {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+    },
+  );
+  return { success: result.ok };
 }

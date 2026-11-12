@@ -1,12 +1,12 @@
 import type { AssetType } from "@/types/assets";
 import { PackageOpen, Shield, SquareOff } from "lucide-react";
-import { typeIcons } from "../reusable-components/utils";
 import { Link } from "react-router";
 import { cn } from "cn";
 import { formatDate } from "@/lib/converters";
 import type { MyAssetsProps } from "@/types/my-assets";
 import AssignedAssetsHeader from "./my-asset-header";
 import AssignedAssetsSkeleton from "./my-asset-skeleton";
+import { typeIcons } from "../utils";
 
 export default function MyAssetList({
   assets,
@@ -45,7 +45,7 @@ export default function MyAssetList({
             return (
               <Link
                 key={asset.id}
-                to={`/dashboard/assets/${asset.id}`}
+                to={`/assets/asset-details/${asset.id}`}
                 className={cn(
                   "flex flex-col rounded-lg border bg-card shadow-sm",
                   "text-card-foreground no-underline",

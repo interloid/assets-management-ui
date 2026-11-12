@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/converters";
-import { CopyButton } from "../assets-components/reusable-components/copy-button";
+import { CopyButton } from "../assets-components/copy-button";
 
 export interface ProfileUser {
   id: string;

@@ -18,6 +18,8 @@ import { useAuth } from "@/context/auth";
 import { changePasswordSchema } from "@/schemas/auth";
 import { changePassword, logoutAll } from "@/services/auth-services";
 import type { ChangePasswordErrors } from "@/types/auth";
+import PasswordEye from "@/components/auth/password-eye";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function SecuritySettings() {
   const navigate = useNavigate();
@@ -27,6 +29,9 @@ export default function SecuritySettings() {
   const [confirmNewPassword, setConfirmNewPassword] = useState<string | null>(
     null,
   );
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
@@ -69,11 +74,16 @@ export default function SecuritySettings() {
         newPassword: validatedData.newPassword,
       });
       if (response.success) {
-        setCurrentPassword(null);
-        setNewPassword(null);
-        setConfirmNewPassword(null);
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmNewPassword("");
+        setShowCurrentPassword(false);
+        setShowNewPassword(false);
+        setShowConfirmPassword(false);
         setErrors(null);
         toast.success(response.message || "Password updated successfully.");
+        setSessionResponse(null);
+        navigate("/login", { replace: true });
       }
       if (!response.success) {
         const errorMessage =
@@ -82,8 +92,6 @@ export default function SecuritySettings() {
           "Unable to update your password.";
         toast.error(errorMessage);
         return;
-      } else {
-        toast.error(response.message);
       }
     } catch (error) {
       console.error(error);
@@ -101,13 +109,16 @@ export default function SecuritySettings() {
         setIsLogoutDialogOpen(false);
         toast.success("You have been signed out of all sessions.");
         navigate("/login", { replace: true });
-      }
-      if (!response.ok) {
-        toast.error("Unable to sign out all sessions. Please try again.");
         return;
-      } else {
-        toast.error("Unable to sign out all sessions. Please try again.");
       }
+      if (response.status === 401) {
+        setSessionResponse(null);
+        setIsLogoutDialogOpen(false);
+        toast.error("Your session has ended. Please sign in again.");
+        navigate("/login", { replace: true });
+        return;
+      }
+      toast.error("Unable to sign out all sessions. Please try again.");
     } catch (error) {
       console.error(error);
     } finally {
@@ -130,14 +141,20 @@ export default function SecuritySettings() {
         <div className="grid grid-cols-1 gap-4 p-5 md:pt-5.5 md:grid-cols-2 md:gap-y-5 md:gap-x-4.5 md:pb-2.5 lg:gap-y-5 lg:pb-3">
           <div className="flex flex-col gap-2 md:gap-2.5 md:col-span-2 md:max-w-90">
             <Label htmlFor="current-password">Current password</Label>
-            <Input
-              id="current-password"
-              type="password"
-              autoComplete="current-password"
-              className="rounded-md h-9 border border-input shadow-xs px-3 text-sm"
-              value={currentPassword ?? undefined}
-              onChange={(event) => setCurrentPassword(event.target.value)}
-            />
+            <div className="relative">
+              <Input
+                id="current-password"
+                type={showCurrentPassword ? "text" : "password"}
+                autoComplete="current-password"
+                className="rounded-md h-9 border border-input shadow-xs px-3 text-sm"
+                value={currentPassword ?? undefined}
+                onChange={(event) => setCurrentPassword(event.target.value)}
+              />
+              <PasswordEye
+                showPassword={showCurrentPassword}
+                onToggle={() => setShowCurrentPassword((visible) => !visible)}
+              />
+            </div>
             {errors?.currentPassword && (
               <p className="text-sm text-destructive">
                 {errors.currentPassword}
@@ -146,28 +163,40 @@ export default function SecuritySettings() {
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="new-password">New password</Label>
-            <Input
-              id="new-password"
-              type="password"
-              autoComplete="new-password"
-              className="rounded-md h-9 border border-input shadow-xs px-3 text-sm"
-              value={newPassword ?? undefined}
-              onChange={(event) => setNewPassword(event.target.value)}
-            />
+            <div className="relative">
+              <Input
+                id="new-password"
+                type={showNewPassword ? "text" : "password"}
+                autoComplete="new-password"
+                className="rounded-md h-9 border border-input shadow-xs px-3 text-sm"
+                value={newPassword ?? undefined}
+                onChange={(event) => setNewPassword(event.target.value)}
+              />
+              <PasswordEye
+                showPassword={showNewPassword}
+                onToggle={() => setShowNewPassword((visible) => !visible)}
+              />
+            </div>
             {errors?.newPassword && (
               <p className="text-sm text-destructive">{errors?.newPassword}</p>
             )}
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="confirm-password">Confirm new password</Label>
-            <Input
-              id="confirm-password"
-              type="password"
-              autoComplete="new-password"
-              className="rounded-md h-9 border-input shadow-xs px-3 text-sm"
-              value={confirmNewPassword ?? undefined}
-              onChange={(event) => setConfirmNewPassword(event.target.value)}
-            />
+            <div className="relative">
+              <Input
+                id="confirm-password"
+                type={showConfirmPassword ? "text" : "password"}
+                autoComplete="new-password"
+                className="rounded-md h-9 border-input shadow-xs px-3 text-sm"
+                value={confirmNewPassword ?? undefined}
+                onChange={(event) => setConfirmNewPassword(event.target.value)}
+              />
+              <PasswordEye
+                showPassword={showConfirmPassword}
+                onToggle={() => setShowConfirmPassword((visible) => !visible)}
+              />
+            </div>
             {errors?.confirmNewPassword && (
               <p className="text-sm text-destructive">
                 {errors.confirmNewPassword}
@@ -229,7 +258,7 @@ export default function SecuritySettings() {
             className="h-9 rounded-md px-3.5"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Updating..." : "Update password"}
+            {isSubmitting ?<><Spinner/> Updating... </> : "Update password"}
           </Button>
         </div>
       </form>
