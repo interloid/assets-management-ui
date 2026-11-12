@@ -113,7 +113,7 @@ export function AddAssetForm() {
         type,
         serialNumber,
         purchaseDate,
-        warrantyExpiry,
+        ...(warrantyExpiry  ?{ warrantyExpiry } : {}),
         notes,
         files: filedata,
       });
@@ -273,7 +273,7 @@ export function AddAssetForm() {
                 id="warrantyExpiry"
                 type="date"
                 min={purchaseDate || undefined}
-                value={warrantyExpiry ?? ""}
+                value={warrantyExpiry ?? undefined}
                 onChange={handleWarrantyExpiryChange}
                 className="h-9 text-[14px] shadow-sm"
               />

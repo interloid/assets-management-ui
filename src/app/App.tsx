@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router";
+import { Navigate, Outlet, Route, Routes } from "react-router";
 import ProtectedRoute from "@/app/auth/protected-route";
 import SignUpPage from "@/app/pages/auth/signup";
 import { Toaster } from "sonner";
@@ -16,8 +16,20 @@ import MyAssetsPage from "./pages/dashboard/my-assets/my-assets";
 import ProfilePage from "./pages/dashboard/profile/profile";
 import Assets from "./pages/dashboard/assets/assets";
 
+function AdminRoute() {
+  const { sessionResponse } = useAuth();
+  if (sessionResponse?.data.role.toLowerCase() !== "admin") {
+    return <Navigate to="/my-assets" replace />;
+  }
+  return <Outlet />;
+}
+
 export default function App() {
-  const { isLoading, isAuthenticated } = useAuth();
+  const { isLoading, isAuthenticated, sessionResponse } = useAuth();
+  const homePath =
+    sessionResponse?.data.role.toLowerCase() === "admin"
+      ? "/dashboard"
+      : "/my-assets";
 
   if (isLoading) {
     return (
@@ -34,29 +46,27 @@ export default function App() {
         <Route
           path="/login"
           element={
-            isAuthenticated ? (
-              <Navigate to="/dashboard" replace />
-            ) : (
-              <LoginPage />
-            )
+            isAuthenticated ? <Navigate to={homePath} replace /> : <LoginPage />
           }
         />
         <Route path="/signup" element={<SignUpPage />} />
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
           <Route element={<DashboardLayout />}>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/assets" element={<Assets />} />
-            <Route path="/assets/new" element={<AddAsset />} />
-            <Route
-              path="/assets/asset-details/:assetId"
-              element={<AssetViewFullPage />}
-            />
-            <Route
-              path="/assets/asset-details/edit/:assetId"
-              element={<EditAssetFullPage />}
-            />
-            <Route path="/users" element={<UsersPage />} />
+            <Route path="/" element={<Navigate to={homePath} replace />} />
+            <Route element={<AdminRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/assets" element={<Assets />} />
+              <Route path="/assets/new" element={<AddAsset />} />
+              <Route
+                path="/assets/asset-details/:assetId"
+                element={<AssetViewFullPage />}
+              />
+              <Route
+                path="/assets/asset-details/edit/:assetId"
+                element={<EditAssetFullPage />}
+              />
+              <Route path="/users" element={<UsersPage />} />
+            </Route>
             <Route path="/my-assets" element={<MyAssetsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
           </Route>

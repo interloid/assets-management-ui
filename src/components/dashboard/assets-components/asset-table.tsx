@@ -52,7 +52,7 @@ export function WarrantyCell({
               : "text-foreground"
           }`}
         >
-          {warrantyExpires === "Expired" && `${warrantyExpires}`}
+          {warrantyExpires === "Expired" && `${warrantyExpires}`}{" "}
           {formatDate(warranty)}
         </td>
       </TooltipTrigger>

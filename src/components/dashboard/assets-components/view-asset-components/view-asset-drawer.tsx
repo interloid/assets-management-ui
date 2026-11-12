@@ -2,12 +2,13 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import type { AssetStatus, ViewAssetDrawerProps } from "@/types/assets";
 import { useSidebar } from "@/components/ui/sidebar-context";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AssignAssetDialog } from "./asset-assign-dialog";
 import { ChangeStatusCard } from "./change-status-card";
 import {
   changeStatus,
   deleteAsset,
+  getFiles,
   unassignAsset,
 } from "@/services/assets-services";
 import { toast } from "sonner";
@@ -21,6 +22,9 @@ import {
   statusDisplayNames,
   statusDotStyles,
 } from "../../utils";
+import type { AssetAttachmentData } from "./asset-attachment";
+import { useParams } from "react-router";
+import AssetAttachment from "./asset-attachment";
 
 export function Section({
   title,
@@ -52,6 +56,7 @@ export function ViewAssetDrawer({
   onDelete,
 }: ViewAssetDrawerProps) {
   const { state } = useSidebar();
+  const { assetId } = useParams();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [isChangeStatus, setIsChangeStatus] = useState<boolean>(false);
   const [isReturnToStockOpen, setIsReturnToStockOpen] =
@@ -61,6 +66,46 @@ export function ViewAssetDrawer({
   const [isUnassignLoading, setIsUnassignLoading] = useState<boolean>(false);
   const [isDeleteCardOpen, setIsDeleteCardOpen] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [isFileLoading, setIsFileLoading] = useState<boolean>(false);
+  const routeAsset = asset?.id === assetId ? asset : null;
+  const [files, setFiles] = useState<AssetAttachmentData[]>([]);
+  const currentAsset = routeAsset ?? asset;
+  const currentAssetId = currentAsset?.id;
+
+  useEffect(() => {
+    if (!currentAssetId) return;
+
+    const id = currentAssetId;
+    let active = true;
+
+    async function loadFiles() {
+      setIsFileLoading(true);
+      try {
+        const response = await getFiles(id);
+        if (response.success && active) {
+          setFiles(response.data);
+        }
+        if (!response.success || !response.data) {
+          if (response.errors && response.errors !== null) {
+            const errorMessage = response.errors
+              .map((error) => error.message)
+              .join(", ");
+            toast.error(errorMessage);
+          } else {
+            toast.error(response.message);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsFileLoading(false);
+      }
+    }
+    void loadFiles();
+    return () => {
+      active = false;
+    };
+  }, [currentAssetId]);
 
   function handleAssignAsset() {
     if (!asset) return;
@@ -131,6 +176,25 @@ export function ViewAssetDrawer({
     }
   }
 
+  async function refreshFiles() {
+    if (!currentAssetId) return;
+
+    setIsFileLoading(true);
+    try {
+      const response = await getFiles(currentAssetId);
+      if (response.success) {
+        setFiles(response.data);
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to refresh attachments.");
+    } finally {
+      setIsFileLoading(false);
+    }
+  }
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
@@ -138,7 +202,7 @@ export function ViewAssetDrawer({
         overlayClassName={`top-14 bottom-0 lg:top-0  ${
           state === "expanded" ? "lg:left-64" : "lg:left-16"
         }`}
-        className="flex w-full fixed  bottom-0 right-0 data-[side=right]:top-14 lg:data-[side=right]:top-0 z-50 min-w-full sm:min-w-153 lg:min-w-153 xl:min-w-[57.5%] 2xl:min-w-[63.25%] flex-col gap-0 p-0"
+        className="flex w-full fixed bottom-0 right-0 data-[side=right]:top-14 lg:data-[side=right]:top-0 z-50 min-w-full sm:min-w-153 lg:min-w-153 xl:min-w-[57.5%] 2xl:min-w-[63.25%] flex-col gap-0 p-0"
         style={{ height: "auto" }}
       >
         {!asset ? (
@@ -245,6 +309,14 @@ export function ViewAssetDrawer({
                     </Section>
                   </div>
                 </div>
+                {currentAsset && (
+                  <AssetAttachment
+                    isLoading={isFileLoading}
+                    asset={currentAsset}
+                    files={files}
+                    onFilesChanged={refreshFiles}
+                  />
+                )}
               </div>
             </div>
             <Separator />

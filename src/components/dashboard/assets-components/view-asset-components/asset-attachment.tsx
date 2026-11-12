@@ -19,12 +19,12 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, type ChangeEvent } from "react";
 import { toast } from "sonner";
 import { FileDropzone } from "./file-drop-zone";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router";
-import { fileSchema } from "@/schemas/asset";
+import { fileSchema, MAX_FILES } from "@/schemas/asset";
 import FilePreview from "../file-preview";
 
 export interface PaginationMeta {
@@ -161,6 +161,13 @@ export default function AssetAttachment({
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
+  const activeFileCount = files.filter(
+    (file) => file.status !== "deleted",
+  ).length;
+  const remainingFiles = Math.max(
+    0,
+    MAX_FILES - activeFileCount - selectedFiles.length,
+  );
 
   const addFiles = useCallback((newFiles: File[]) => {
     setSelectedFiles((currentFiles) => [...currentFiles, ...newFiles]);
@@ -173,6 +180,11 @@ export default function AssetAttachment({
   };
 
   function handleFilesSelected(newFiles: File[]) {
+    if (newFiles.length > remainingFiles) {
+      toast.error(`You can upload a maximum of ${MAX_FILES} files per asset.`);
+      return;
+    }
+
     const validFiles: File[] = [];
     newFiles.forEach((file) => {
       const result = fileSchema.safeParse(file);
@@ -183,6 +195,25 @@ export default function AssetAttachment({
       }
     });
     addFiles(validFiles);
+  }
+
+  function handleFileInputChange(event: ChangeEvent<HTMLInputElement>) {
+    const chosenFiles = Array.from(event.currentTarget.files ?? []);
+    event.currentTarget.value = "";
+    if (isUploading) return;
+    if (chosenFiles.length > remainingFiles) {
+      toast.error(`You can upload a maximum of ${MAX_FILES} files per asset.`);
+      return;
+    }
+    const validFiles = chosenFiles.filter((file) => {
+      const result = fileSchema.safeParse(file);
+      if (!result.success) {
+        toast.error(result.error.issues[0]?.message ?? "Invalid file");
+        return false;
+      }
+      return true;
+    });
+    void uploadSelectedFiles(validFiles);
   }
 
   async function handleDownload(attachment: AssetAttachmentData) {
@@ -300,7 +331,7 @@ export default function AssetAttachment({
   return (
     <section
       aria-labelledby="attachments-heading"
-      className="rounded-2xl border bg-card p-4 text-card-foreground sm:p-6"
+      className="rounded-lg border bg-card p-4 text-card-foreground sm:p-6"
     >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-start gap-3">
@@ -329,14 +360,14 @@ export default function AssetAttachment({
         multiple
         className="hidden"
         accept=".pdf,.png,.jpg,.jpeg,.webp"
-        onChange={(event) => {
-          const selectedFiles = Array.from(event.currentTarget.files ?? []);
-          event.currentTarget.value = "";
-          void uploadSelectedFiles(selectedFiles);
-        }}
+        onChange={handleFileInputChange}
       />
       <div className="flex flex-col gap-4 w-full">
-        <FileDropzone onFilesSelected={handleFilesSelected} />
+        <FileDropzone
+          maxFiles={remainingFiles}
+          disabled={isUploading}
+          onFilesSelected={handleFilesSelected}
+        />
         <div className="flex justify-end items-center gap-3">
           <span className="text-xs sm:text-sm text-warning border p-2 rounded-sm border-input shadow-xs flex gap-1 items-center">
             <AlertCircle className="size-3.5 sm:size-4" />
@@ -362,14 +393,26 @@ export default function AssetAttachment({
       {errors.length > 0 && (
         <div
           role="alert"
-          className="mt-3 flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
+          className="mt-3 flex items-start justify-between gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
         >
-          <AlertCircle className="mt-0.5 size-4 shrink-0" />
-          <ul className="space-y-0.5">
-            {errors.map((message) => (
-              <li key={message}>{message}</li>
-            ))}
-          </ul>
+          <div className="flex min-w-0 items-start gap-2">
+            <AlertCircle className="mt-0.5 size-4 shrink-0" />
+            <ul className="space-y-0.5">
+              {errors.map((message) => (
+                <li key={message}>{message}</li>
+              ))}
+            </ul>
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Dismiss upload error"
+            onClick={() => setErrors([])}
+            className="shrink-0 text-destructive hover:bg-destructive/10 hover:text-destructive"
+          >
+            <X className="size-4" />
+          </Button>
         </div>
       )}
       {selectedFiles.length > 0 && (
@@ -395,13 +438,26 @@ export default function AssetAttachment({
       )}
       {isLoading && (
         <div className="mt-5 space-y-3" aria-label="Loading attachments">
-          <div className="flex items-center gap-3 rounded-xl border p-3">
-            <Skeleton className="size-11 shrink-0" />
-            <div className="flex-1 space-y-2">
-              <Skeleton className="h-4 w-2/3" />
-              <Skeleton className="h-3 w-1/3" />
+          {Array.from({ length: files.length }).map(() => (
+            <div className="rounded-xl border bg-background/40 p-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <Skeleton className="size-11 shrink-0 rounded-lg" />
+
+                <div className="min-w-0 flex-1 space-y-2">
+                  <Skeleton className="h-4 w-2/3" />
+                  <Skeleton className="h-3 w-1/3" />
+                </div>
+
+                <Skeleton className="h-6 w-20 rounded-full" />
+              </div>
+
+              <div className="mt-3 grid grid-cols-3 gap-2 border-t pt-3 sm:flex sm:justify-end sm:border-t-0 sm:pt-0">
+                <Skeleton className="h-9 w-full sm:w-20" />
+                <Skeleton className="h-9 w-full sm:w-24" />
+                <Skeleton className="h-9 w-full sm:w-20" />
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       )}
       {!isLoading && files.length === 0 ? (
@@ -500,8 +556,8 @@ export default function AssetAttachment({
       <div className="mt-4 flex items-center gap-3 rounded-lg bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
         <Info className="size-4 shrink-0 text-primary" aria-hidden="true" />
         <p>
-          Files are securely stored in Amazon S3 and will be available for
-          download for minutes via secure links.
+          Files are securely stored in Amazon S3. Download links are available
+          for a limited time.
         </p>
       </div>
     </section>

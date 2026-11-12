@@ -46,6 +46,7 @@ export const editAssetSchema = z.object({
 });
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
+export const MAX_FILES = 5;
 
 const ACCEPTED_FILE_TYPES = [
   "application/pdf",
@@ -67,4 +68,5 @@ export const fileSchema = z
 
 export const filesSchema = z
   .array(fileSchema)
-  .min(1, "Please upload at least one file.");
+  .min(1, "Please upload at least one file.")
+  .max(MAX_FILES, `You can upload a maximum of ${MAX_FILES} files.`);

@@ -2,7 +2,7 @@ import { Paperclip, X } from "lucide-react";
 import { FileDropzone } from "../view-asset-components/file-drop-zone";
 import { useCallback } from "react";
 import { toast } from "sonner";
-import { fileSchema } from "@/schemas/asset";
+import { fileSchema, MAX_FILES } from "@/schemas/asset";
 import { Button } from "@/components/ui/button";
 import FilePreview from "../file-preview";
 
@@ -17,6 +17,10 @@ export default function AddAssetAttachment({
 }: AddAssetAttachmentProps) {
   const addFiles = useCallback(
     (newFiles: File[]) => {
+      if (files.length + newFiles.length > MAX_FILES) {
+        toast.error(`You can upload a maximum of ${MAX_FILES} files per asset.`);
+        return;
+      }
       onFilesChange([...files, ...newFiles]);
     },
     [files, onFilesChange],
@@ -27,6 +31,11 @@ export default function AddAssetAttachment({
   };
 
   function handleFilesSelected(newFiles: File[]) {
+    if (files.length + newFiles.length > MAX_FILES) {
+      toast.error(`You can upload a maximum of ${MAX_FILES} files per asset.`);
+      return;
+    }
+
     const validFiles: File[] = [];
     newFiles.forEach((file) => {
       const result = fileSchema.safeParse(file);
@@ -38,7 +47,9 @@ export default function AddAssetAttachment({
     });
     addFiles(validFiles);
   }
-
+ 
+  const maxFiles = Math.max(0, MAX_FILES - files.length);
+  
   return (
     <section
       aria-labelledby="attachments-heading"
@@ -57,7 +68,10 @@ export default function AddAssetAttachment({
           </div>
         </div>
       </div>
-      <FileDropzone onFilesSelected={handleFilesSelected} />
+      <FileDropzone
+        maxFiles={maxFiles}
+        onFilesSelected={handleFilesSelected}
+      />
       {files.length > 0 && (
         <div className="mt-4 space-y-2 border-b pb-5">
           {files.map((file, index) => {

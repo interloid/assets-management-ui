@@ -26,9 +26,11 @@ import { NavUser } from "./nav-user";
 import { Link, useLocation } from "react-router";
 import { useSidebar } from "@/components/ui/sidebar-context";
 import { Tooltip } from "./ui/tooltip";
+import { useAuth } from "@/context/auth";
 
 export type NavMainItem = {
   title: string;
+  adminOnly?: boolean;
   items: {
     title: string;
     url: string;
@@ -44,6 +46,7 @@ const data: SidebarData = {
   navMain: [
     {
       title: "Manage",
+      adminOnly: true,
       items: [
         {
           title: "Dashboard",
@@ -85,6 +88,12 @@ export function AppSidebar({
 }: React.ComponentProps<typeof Sidebar> & {}) {
   const { pathname } = useLocation();
   const { isMobile, setOpenMobile } = useSidebar();
+  const { sessionResponse } = useAuth();
+  const isAdmin = sessionResponse?.data.role.toLowerCase() === "admin";
+  const visibleNav = data.navMain.filter(
+    (item) => !item.adminOnly || isAdmin,
+  );
+
   return (
     <Tooltip>
       <Sidebar
@@ -99,7 +108,7 @@ export function AppSidebar({
           <SidebarSeparator className="h-px w-6" />
         </div>
         <SidebarContent className="group-data-[collapsible=icon]:px-2 px-1 gap-1.25 ">
-          {data.navMain.map((item) => (
+          {visibleNav.map((item) => (
             <React.Fragment key={item.title}>
               <SidebarGroup className="pt-0 group-data-[collapsible=icon]:pb-4">
                 <SidebarGroupLabel>{item.title}</SidebarGroupLabel>

@@ -90,7 +90,7 @@ export type CreateAssetPayload = {
   type: string | null;
   serialNumber: string | null;
   purchaseDate: string | null;
-  warrantyExpiry: string | null;
+  warrantyExpiry?: string | null;
   notes: string | null;
   files: CreateFile[];
 };
