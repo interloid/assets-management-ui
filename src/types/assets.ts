@@ -4,6 +4,11 @@ import type { AssetStats, AssignedUser } from "@/services/dashboard.services";
 export type AssetStatus = "in_stock" | "assigned" | "repair" | "retired";
 export type AssetType = "laptop" | "monitor" | "phone" | "accessory";
 
+export type AssetFile = {
+  fileId: string,
+  uploadUrl: string,
+  expiresIn: number,
+}
 export type Asset = {
   id: string;
   assetTag: string;
@@ -18,6 +23,7 @@ export type Asset = {
   updatedAt: string;
   assignedUser: AssignedUser | null;
   initials: string;
+  files: AssetFile[];
 };
 
 export type AssetTableProps = {

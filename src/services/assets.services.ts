@@ -77,12 +77,20 @@ export async function getListUsers(): Promise<UsersResponse> {
   return response;
 }
 
+export type CreateFile = {
+  filename: string;
+  contentType: string;
+  fileSize: number;
+  checksumSha256: string;
+};
+
 export type CreateAssetPayload = {
   type: string | null;
   serialNumber: string | null;
   purchaseDate: string | null;
   warrantyExpiry: string | null;
   notes: string | null;
+  files: CreateFile[];
 };
 
 export interface createAssetResponse {
@@ -115,7 +123,7 @@ export async function createAsset(
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify(toSnakeCase({ files: [payload] })),
+    body: JSON.stringify(toSnakeCase(payload)),
   });
   const response = await result.json();
   const data = toCamelCase(response);

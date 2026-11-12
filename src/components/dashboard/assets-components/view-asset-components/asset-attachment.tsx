@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { formatDate, formatSize } from "@/lib/converters";
+import { calculateFileHash, formatDate, formatSize } from "@/lib/converters";
 import { downloadFile } from "@/lib/download-asset-attachment";
 import { deleteFile, generateUploadUrl } from "@/services/assets.services";
 import type { Asset } from "@/types/assets";
@@ -15,6 +15,7 @@ import {
   FileText,
   Info,
   Paperclip,
+  RefreshCw,
   Trash2,
   X,
 } from "lucide-react";
@@ -24,6 +25,7 @@ import { FileDropzone } from "./file-drop-zone";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router";
 import { fileSchema } from "@/schemas/asset";
+import FilePreview from "../file-preview";
 
 export interface PaginationMeta {
   items_on_page: number;
@@ -185,13 +187,6 @@ export default function AssetAttachment({
     addFiles(validFiles);
   }
 
-  async function calculateFileHash(file: File): Promise<string> {
-    const fileBuffer = await file.arrayBuffer();
-    const hashBuffer = await crypto.subtle.digest("SHA-256", fileBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map((byte) => byte.toString(16).padStart(2, "0")).join("");
-  }
-
   async function handleDownload(attachment: AssetAttachmentData) {
     try {
       await downloadFile({
@@ -243,21 +238,18 @@ export default function AssetAttachment({
           try {
             const s3Response = await fetch(upload.uploadUrl, {
               method: "PUT",
-              credentials: "omit",
+              credentials: "include",
               headers: upload.headers,
               body: file,
             });
-            if (!s3Response.ok) {
-              toast.error(
-                `Upload failed for ${file.name} (${s3Response.status})`,
-              );
-              return { file, success: false };
+            if (s3Response.ok) {
+              toast.success(`${file.name} uploaded successfully`);
+              return { file, success: true };
             }
-            toast.success(`${file.name} uploaded successfully`);
-            return { file, success: true };
+            toast.error(`Upload failed for ${file.name}`);
+            return { file, success: false };
           } catch (error) {
             console.error(error);
-            toast.error(`Failed to upload ${file.name}`);
             return { file, success: false };
           }
         }),
@@ -346,7 +338,31 @@ export default function AssetAttachment({
           void uploadSelectedFiles(selectedFiles);
         }}
       />
-      <FileDropzone onFilesSelected={handleFilesSelected} />
+      <div className="flex flex-col gap-4 w-full">
+        <FileDropzone onFilesSelected={handleFilesSelected} />
+        <div className="flex justify-end items-center gap-3">
+          <span className="text-xs sm:text-sm text-warning border p-2 rounded-sm border-input shadow-xs flex gap-1 items-center">
+            {" "}
+            <AlertCircle className="size-3.5 sm:size-4" />
+            Refresh to view the recently uploaded files.
+          </span>
+          <Button
+            onClick={async () => await onFilesChanged()}
+            className="flex w-fit h-9 items-center self-end bg-primary text-background justify-center gap-2 rounded-md border px-2 text-xs font-medium transition-colors hover:bg-primary/90 sm:px-3 sm:text-sm"
+          >
+            {isLoading ? (
+              <>
+                <Spinner /> Refreshing{" "}
+              </>
+            ) : (
+              <>
+                <RefreshCw />
+                Refresh
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
       {errors.length > 0 && (
         <div
           role="alert"
@@ -367,12 +383,7 @@ export default function AssetAttachment({
               key={`${file.name}-${file.lastModified}-${index}`}
               className="flex items-center justify-between rounded-md border p-3"
             >
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium">{file.name}</p>
-                <p className="text-xs text-muted-foreground">
-                  {(file.size / 1024 / 1024).toFixed(2)} MB
-                </p>
-              </div>
+              <FilePreview file={file} />
               <Button
                 type="button"
                 variant="ghost"
