@@ -23,7 +23,7 @@ export type Asset = {
   updatedAt: string;
   assignedUser: AssignedUser | null;
   initials: string;
-  files: AssetFile[];
+  files?: AssetFile[];
 };
 
 export type AssetTableProps = {
